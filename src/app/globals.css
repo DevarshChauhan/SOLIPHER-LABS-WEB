@@ -1,26 +1,181 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --background: #050506;
+  --surface: #0c0c0e;
+  --surface-raised: #141417;
+  --border: #232327;
+  --foreground: #f5f5f7;
+  --muted: #9a9aa2;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --red-50: #fff0f0;
+  --red-200: #ffb3b8;
+  --red-400: #ff4d55;
+  --red-500: #e4002b;
+  --red-600: #c4001f;
+  --red-700: #9c0018;
+
+  --dog-blue: #2f6fed;
+  --dog-blue-dark: #1c4fc4;
+  --dog-chrome: #c9d3e0;
+  --dog-chrome-dark: #7d8798;
+  --dog-eye: #8ecbff;
+  --dog-visor: #0a0e18;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+.light {
+  color-scheme: light;
+
+  --background: #ffffff;
+  --surface: #f6f7f8;
+  --surface-raised: #edeef0;
+  --border: #e0e1e4;
+  --foreground: #0a0e12;
+  --muted: #52585f;
+
+  /* Light theme swaps the accent from red to an emerald-blue teal. */
+  --red-50: #f0fdfa;
+  --red-200: #99f6e4;
+  --red-400: #2dd4bf;
+  --red-500: #0d9488;
+  --red-600: #0f766e;
+  --red-700: #115e59;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+
+  --color-red-50: var(--red-50);
+  --color-red-200: var(--red-200);
+  --color-red-400: var(--red-400);
+  --color-red-500: var(--red-500);
+  --color-red-600: var(--red-600);
+  --color-red-700: var(--red-700);
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-wordmark);
+
+  --animate-fade-up: fade-up 0.6s ease-out both;
+  --animate-pulse-slow: pulse-slow 3s ease-in-out infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
+
+  @keyframes pulse-slow {
+    0%,
+    100% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+}
+
+html {
+  color-scheme: dark;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 999px;
+  border: 2px solid var(--background);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--red-700);
+}
+
+::selection {
+  background: var(--red-600);
+  color: white;
+}
+
+.text-gradient-red {
+  background: linear-gradient(120deg, var(--red-400), var(--red-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.grid-fade-mask {
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black 40%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, black 40%, transparent 100%);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+.rd-bob {
+  animation: rd-bob 2.6s ease-in-out infinite;
+}
+
+@keyframes rd-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rd-bob {
+    animation: none;
+  }
+}
+
+.quote-marquee-mask {
+  mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent);
+}
+.quote-marquee-track {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+  scroll-behavior: auto;
+  overscroll-behavior-x: contain;
+}
+.quote-marquee-track::-webkit-scrollbar {
+  display: none;
+}
+.quote-marquee-track:active {
+  cursor: grabbing;
 }
