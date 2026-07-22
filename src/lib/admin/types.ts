@@ -1,5 +1,5 @@
 export type LicenseType = "trial" | "paid";
-export type PaymentProvider = "razorpay" | "skydo" | "manual";
+export type PaymentProvider = "paytm" | "skydo" | "manual";
 export type PaymentStatus = "pending" | "succeeded" | "failed";
 export type CompanyCategory = "gpu_cloud" | "ai_product";
 

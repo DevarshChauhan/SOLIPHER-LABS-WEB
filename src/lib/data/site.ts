@@ -8,8 +8,8 @@ export const site = {
   description:
     "Solipher Labs is an R&D lab building patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software, and shipping them into deployable products.",
   social: {
-    linkedin: "https://www.linkedin.com/company/solipherlabs",
-    github: "https://github.com/solipherlabs",
+    linkedin: "https://www.linkedin.com/company/solipher-labs/",
+    github: "https://github.com/SOLIPHER-LABS",
     x: "https://x.com/solipherlabs",
   },
   founders: [
@@ -32,6 +32,7 @@ export const navLinks = [
 
 export const productNavLinks = [
   { href: "/products/shard-gateway", label: "SHARD Gateway" },
+  { href: "/products/solipher-shard-context", label: "SHARD Context" },
   { href: "/products", label: "All Products" },
 ] as const;
 

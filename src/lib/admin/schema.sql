@@ -41,7 +41,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS licenses_trial_fingerprint_idx
 CREATE TABLE IF NOT EXISTS payments (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   company_id      UUID NOT NULL REFERENCES companies(id) ON DELETE CASCADE,
-  provider        TEXT NOT NULL CHECK (provider IN ('razorpay', 'skydo', 'manual')),
+  provider        TEXT NOT NULL CHECK (provider IN ('paytm', 'skydo', 'manual')),
   provider_ref    TEXT,
   amount          NUMERIC(12, 2) NOT NULL,
   currency        TEXT NOT NULL DEFAULT 'INR',

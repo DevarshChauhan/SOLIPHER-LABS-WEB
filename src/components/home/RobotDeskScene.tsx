@@ -1,14 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { HeartPulse, Layers, Cpu } from "lucide-react";
+import { Network, Scissors } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { HumanoidRobot } from "@/components/home/HumanoidRobot";
 
 const chips = [
-  { label: "Solipher Triage", icon: HeartPulse, delay: 0 },
-  { label: "Solipher Index", icon: Layers, delay: 0.18 },
-  { label: "Solipher SHARD", icon: Cpu, delay: 0.36 },
+  { label: "SHARD Gateway", icon: Network, delay: 0 },
+  { label: "SHARD Context", icon: Scissors, delay: 0.18 },
 ];
 
 export function RobotDeskScene() {

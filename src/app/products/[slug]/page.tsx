@@ -8,12 +8,7 @@ import { FadeInView } from "@/components/ui/FadeInView";
 import { products } from "@/lib/data/products";
 import {
   Check,
-  HeartPulse,
   Layers,
-  Cpu,
-  Database,
-  ShieldCheck,
-  Building2,
   Scissors,
   Target,
   Lightbulb,
@@ -29,13 +24,7 @@ const statusTone: Record<string, "neutral" | "red" | "green"> = {
 };
 
 const productIcons: Record<string, LucideIcon> = {
-  "solipher-triage": HeartPulse,
-  "solipher-index": Layers,
-  "solipher-shard": Cpu,
   "solipher-shard-context": Scissors,
-  "solipher-cache": Database,
-  "solipher-shield": ShieldCheck,
-  "solipher-erp": Building2,
 };
 
 function SubsectionLabel({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
@@ -126,13 +115,11 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                 </div>
               </div>
 
-              {product.slug === "solipher-shard" && (
-                <div className="mt-8">
-                  <Button href="/products/shard-gateway" variant="secondary">
-                    What it is, installation guide, and pricing <ArrowRight size={14} />
-                  </Button>
-                </div>
-              )}
+              <div className="mt-8">
+                <Button href="/products/shard-gateway" variant="secondary">
+                  See SHARD Gateway, the productized admission-control engine <ArrowRight size={14} />
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 content-start gap-4 lg:sticky lg:top-24 lg:self-start">

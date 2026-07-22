@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { getPaymentLink, getCompanyById } from "@/lib/admin/db";
-import { PayButton } from "@/components/admin/PayButton";
 import { LogoMark } from "@/components/ui/Logo";
 
 export const dynamic = "force-dynamic";
@@ -34,7 +33,7 @@ export default async function PayPage({ params }: { params: Promise<{ linkId: st
 
         {expired ? (
           <div className="rounded-lg border border-border bg-background px-4 py-6 text-center text-sm text-muted">
-            This payment link has expired. Please contact Solipher Labs for a new one.
+            This invoice has expired. Please contact Solipher Labs for a new one.
           </div>
         ) : (
           <>
@@ -45,10 +44,13 @@ export default async function PayPage({ params }: { params: Promise<{ linkId: st
                 {link.termYears}-year SHARD Gateway license
               </div>
             </div>
-            <PayButton linkId={link.id} companyName={company.name} />
-            <p className="text-xs text-muted text-center">
-              Secure checkout via Razorpay. Your license is issued automatically once payment clears.
-            </p>
+            <div className="rounded-lg border border-border bg-background px-5 py-5 text-center text-sm text-muted flex flex-col gap-2">
+              <p>
+                Reach out to <span className="text-foreground font-medium">contact@solipherlabs.in</span> to pay this
+                invoice by bank transfer or UPI.
+              </p>
+              <p className="text-xs">Mention your company name — we&rsquo;ll confirm receipt and issue your license directly.</p>
+            </div>
           </>
         )}
       </div>

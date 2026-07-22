@@ -528,9 +528,9 @@ export default function ShardGatewayPage() {
           </p>
 
           <p className="mt-8 text-sm text-muted">
-            Looking for the broader admission-control research and roadmap?{" "}
-            <Link href="/products/solipher-shard" className="text-red-400 underline underline-offset-2 hover:text-red-300">
-              See Solipher SHARD on the Products page
+            Looking for the context-compilation side of this work?{" "}
+            <Link href="/products/solipher-shard-context" className="text-red-400 underline underline-offset-2 hover:text-red-300">
+              See Solipher SHARD Context on the Products page
             </Link>
             .
           </p>
