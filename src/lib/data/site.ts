@@ -32,6 +32,7 @@ export const navLinks = [
 
 export const productNavLinks = [
   { href: "/products/shard-gateway", label: "SHARD Gateway" },
+  { href: "/products/shard-context", label: "SHARD Context" },
   { href: "/products", label: "All Products" },
 ] as const;
 
