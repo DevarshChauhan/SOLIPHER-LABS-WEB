@@ -9,22 +9,16 @@ import { products } from "@/lib/data/products";
 import {
   Check,
   Layers,
-  Scissors,
   Target,
   Lightbulb,
   TrendingUp,
   Briefcase,
-  ArrowRight,
   type LucideIcon,
 } from "lucide-react";
 
 const statusTone: Record<string, "neutral" | "red" | "green"> = {
   available: "green",
   "early-access": "red",
-};
-
-const productIcons: Record<string, LucideIcon> = {
-  "solipher-shard-context": Scissors,
 };
 
 function SubsectionLabel({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
@@ -57,8 +51,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const product = products.find((p) => p.slug === slug);
   if (!product) notFound();
 
-  const Icon = productIcons[product.slug] ?? Layers;
-
   return (
     <>
       <PageHero eyebrow="Products" title={product.name} description={product.tagline} />
@@ -68,7 +60,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <FadeInView className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_400px]">
             <div>
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/5">
-                <Icon size={22} className="text-red-500" />
+                <Layers size={22} className="text-red-500" />
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge>{product.category}</Badge>
@@ -113,12 +105,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <div className="mt-8">
-                <Button href="/products/shard-gateway" variant="secondary">
-                  See SHARD Gateway, the productized admission-control engine <ArrowRight size={14} />
-                </Button>
               </div>
             </div>
 

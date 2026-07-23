@@ -529,7 +529,7 @@ export default function ShardGatewayPage() {
 
           <p className="mt-8 text-sm text-muted">
             Looking for the context-compilation side of this work?{" "}
-            <Link href="/products/solipher-shard-context" className="text-red-400 underline underline-offset-2 hover:text-red-300">
+            <Link href="/products/shard-context" className="text-red-400 underline underline-offset-2 hover:text-red-300">
               See Solipher SHARD Context on the Products page
             </Link>
             .
