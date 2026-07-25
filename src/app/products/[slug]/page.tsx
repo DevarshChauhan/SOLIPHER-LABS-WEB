@@ -8,32 +8,17 @@ import { FadeInView } from "@/components/ui/FadeInView";
 import { products } from "@/lib/data/products";
 import {
   Check,
-  HeartPulse,
   Layers,
-  Cpu,
-  Database,
-  ShieldCheck,
-  Building2,
   Target,
   Lightbulb,
   TrendingUp,
   Briefcase,
-  ArrowRight,
   type LucideIcon,
 } from "lucide-react";
 
 const statusTone: Record<string, "neutral" | "red" | "green"> = {
   available: "green",
   "early-access": "red",
-};
-
-const productIcons: Record<string, LucideIcon> = {
-  "solipher-triage": HeartPulse,
-  "solipher-index": Layers,
-  "solipher-shard": Cpu,
-  "solipher-cache": Database,
-  "solipher-shield": ShieldCheck,
-  "solipher-erp": Building2,
 };
 
 function SubsectionLabel({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
@@ -66,8 +51,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
   const product = products.find((p) => p.slug === slug);
   if (!product) notFound();
 
-  const Icon = productIcons[product.slug] ?? Layers;
-
   return (
     <>
       <PageHero eyebrow="Products" title={product.name} description={product.tagline} />
@@ -77,7 +60,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <FadeInView className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_400px]">
             <div>
               <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/5">
-                <Icon size={22} className="text-red-500" />
+                <Layers size={22} className="text-red-500" />
               </div>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge>{product.category}</Badge>
@@ -123,14 +106,6 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
                   ))}
                 </div>
               </div>
-
-              {product.slug === "solipher-shard" && (
-                <div className="mt-8">
-                  <Button href="/products/shard-gateway" variant="secondary">
-                    What it is, installation guide, and pricing <ArrowRight size={14} />
-                  </Button>
-                </div>
-              )}
             </div>
 
             <div className="grid grid-cols-1 content-start gap-4 lg:sticky lg:top-24 lg:self-start">

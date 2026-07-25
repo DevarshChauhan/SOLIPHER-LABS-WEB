@@ -4,6 +4,7 @@ import { AdminHeader } from "@/components/admin/AdminHeader";
 import { StatusPill } from "@/components/admin/StatusPill";
 import { RevokeLicenseButton } from "@/components/admin/RevokeLicenseButton";
 import { GeneratePaymentLinkForm } from "@/components/admin/GeneratePaymentLinkForm";
+import { MarkPaidForm } from "@/components/admin/MarkPaidForm";
 import { Mail, User, Building2, Fingerprint } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -60,7 +61,14 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
 
         <section className="mb-10">
           <h2 className="text-sm font-medium text-muted mb-3">Get paid</h2>
-          <GeneratePaymentLinkForm companyId={company.id} />
+          <p className="text-xs text-muted mb-3">
+            No payment gateway is wired up -- payment is a direct bank transfer/UPI to the Slice account. Send an
+            invoice link, then confirm receipt here once the money lands.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <GeneratePaymentLinkForm companyId={company.id} />
+            <MarkPaidForm companyId={company.id} />
+          </div>
         </section>
 
         <section className="mb-10">

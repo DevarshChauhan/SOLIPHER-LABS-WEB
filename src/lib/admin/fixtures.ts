@@ -21,7 +21,7 @@ export const fixtureLicenses: License[] = [
 ];
 
 export const fixturePayments: Payment[] = [
-  { id: "p1", companyId: "c1", provider: "razorpay", providerRef: "pay_R001", amount: 96000, currency: "INR", status: "succeeded", createdAt: new Date(now - 60 * day).toISOString() },
+  { id: "p1", companyId: "c1", provider: "manual", providerRef: null, amount: 96000, currency: "INR", status: "succeeded", createdAt: new Date(now - 60 * day).toISOString() },
   { id: "p2", companyId: "c2", provider: "manual", providerRef: "invoice-2044", amount: 120000, currency: "INR", status: "succeeded", createdAt: new Date(now - 40 * day).toISOString() },
-  { id: "p3", companyId: "c3", provider: "razorpay", providerRef: "pay_R002", amount: 84000, currency: "INR", status: "succeeded", createdAt: new Date(now - 20 * day).toISOString() },
+  { id: "p3", companyId: "c3", provider: "manual", providerRef: null, amount: 84000, currency: "INR", status: "succeeded", createdAt: new Date(now - 20 * day).toISOString() },
 ];

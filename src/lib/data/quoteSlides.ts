@@ -15,9 +15,9 @@ export const quoteSlides: QuoteSlide[] = [
   {
     id: "research-products",
     title: "Research & Products",
-    description: "Solipher SHARD runtime and SHARD Context, our patent-backed AI infrastructure.",
+    description: "SHARD Gateway and SHARD Context, our patent-backed AI infrastructure.",
     icon: Cpu,
-    href: "/products/solipher-shard",
+    href: "/products/shard-gateway",
   },
   {
     id: "odoo-erp",

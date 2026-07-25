@@ -180,7 +180,7 @@ export async function getCompanyById(companyId: string): Promise<Company | null>
   return res.rows.length ? rowToCompany(res.rows[0]) : null;
 }
 
-/** Anti-double-processing: a webhook (provider, provider_ref) pair that's already been recorded is never processed twice, even under Razorpay's own retry behavior. */
+/** Anti-double-processing: a (provider, provider_ref) pair that's already been recorded is never processed twice, even under a payment gateway's own callback/webhook retry behavior. */
 export async function findPaymentByProviderRef(provider: Payment["provider"], providerRef: string): Promise<Payment | null> {
   if (!hasDb) {
     return mem.payments.find((p) => p.provider === provider && p.providerRef === providerRef) ?? null;

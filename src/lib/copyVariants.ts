@@ -81,16 +81,16 @@ export const productsVariants = [
     description: "Each product solves one named problem. Pricing is quote-based; every deployment is different.",
   },
   {
-    title: "Six products. Six problems we got tired of watching people work around.",
+    title: "Admission control and context compilation, for AI inference that stays predictable.",
     description: "Every product below started as original research before it became something you can license or deploy.",
   },
   {
     title: "Original engineering, shipped as something you can actually buy.",
-    description: "From medical imaging to AI infrastructure: patent-backed work, packaged into a product with a price.",
+    description: "AI infrastructure, patent-backed, packaged into a product with a price.",
   },
   {
     title: "Built in the lab. Ready for production.",
-    description: "Six products, spanning medical imaging, high-performance infrastructure, AI inference, and enterprise software.",
+    description: "Two products, both AI inference infrastructure, both measured against real hardware.",
   },
 ] as const;
 
