@@ -4,17 +4,19 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading, Badge } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
-import { Check, Mail, AlertTriangle, ShieldCheck, Scale } from "lucide-react";
+import { Check, Mail, AlertTriangle, ShieldCheck, Scale, Package, Cpu, ShieldAlert } from "lucide-react";
 import { ContextDiagram } from "@/components/products/ContextDiagram";
 import { BaselineComparisonChart, type BaselineRow } from "@/components/products/BaselineComparisonChart";
 
 const envSpecs = [
-  { k: "Model", v: "openai/gpt-oss-120b, hosted open-weight (Vertex AI Model Garden)" },
+  { k: "Model", v: "openai/gpt-oss-120b-maas, hosted open-weight (Vertex AI Model Garden)" },
+  { k: "Second model tested", v: "openai/gpt-oss-20b-maas, same endpoint, different size" },
   { k: "Endpoint", v: "Global region, OpenAI-compatible chat completions" },
+  { k: "GCP project", v: "weighty-planet-500504-k6" },
   { k: "Tokenizer", v: "cl100k_base-compatible, real token counts, never estimated" },
-  { k: "Codebase", v: "8-crate Rust workspace, ~18,100 lines, 459 automated tests" },
+  { k: "Codebase", v: "8-crate Rust workspace, 462 automated tests, 0 regressions" },
   { k: "Memory safety", v: "#![forbid(unsafe_code)] verified in all 8 crate roots" },
-  { k: "Clean-room host", v: "GCE e2-small, Debian 12, self-destructing after the run" },
+  { k: "Benchmark machine", v: "AMD Ryzen Z1 Extreme, 8 cores / 16 threads, local, offline" },
 ];
 
 const evalScenarios = [
@@ -24,24 +26,31 @@ const evalScenarios = [
 ];
 
 const baselineRows: BaselineRow[] = [
-  { name: "SHARD Context", tokens: 126, distractorIncluded: false, isShardContext: true },
-  { name: "Full context", tokens: 416, distractorIncluded: true },
-  { name: "Recent-window truncation", tokens: 416, distractorIncluded: true },
-  { name: "BM25 top-K", tokens: 416, distractorIncluded: true },
-  { name: "Hierarchical summary", tokens: 405, distractorIncluded: true },
+  { name: "SHARD Context (16/16 scenarios)", tokens: 144, distractorIncluded: false, isShardContext: true },
+  { name: "Full context", tokens: 879, distractorIncluded: true },
+  { name: "Recent-window truncation", tokens: 879, distractorIncluded: true },
+  { name: "BM25 top-K", tokens: 879, distractorIncluded: true },
+  { name: "Hierarchical summary", tokens: 858, distractorIncluded: true },
+];
+
+const bm25FixRows = [
+  { corpus: "10 documents", before: "100µs", after: "2.4µs" },
+  { corpus: "100 documents", before: "1.04ms", after: "23.4µs" },
+  { corpus: "1,000 documents", before: "10.7ms (2.1x over the 5ms budget)", after: "256µs (19.5x under budget)" },
 ];
 
 const cleanRoomAttempts = [
-  { label: "Attempt 1", result: "Every step exited 127 (“command not found”)", detail: "The startup environment's $HOME was empty, which broke the Rust toolchain's own PATH setup — an environment bug, not a code bug. The VM still uploaded its logs and deleted itself on schedule." },
+  { label: "Attempt 1", result: "Every step exited 127 (“command not found”)", detail: "The startup environment's $HOME was empty, which broke the Rust toolchain's own PATH setup, an environment bug, not a code bug. The VM still uploaded its logs and deleted itself on schedule." },
   { label: "Attempt 2", result: "459/459 tests, 0 clippy warnings, all 3 scenarios passed live", detail: "Same source, same live model, fixed environment. Re-confirms the fix from Attempt 1's own diagnosis holds on hardware that had never run this code before." },
 ];
 
 const currentGaps = [
-  "No published latency benchmarks yet — the core solvers are provably cheap at their current caps, but nothing has been measured and published as a number.",
-  "Retrieval isn't yet tuned for large corpora — correct and fast at evaluation scale, no caching story yet for production-size document sets.",
-  "Snapshot integrity is hash-based, not cryptographically signed — tamper-evident today, not tamper-proof against an adversary who controls both the data and its hash.",
-  "Security CI gates (dependency scanning, fuzzing) are specified in policy, not yet wired into automated CI.",
-  "Dense (embedding-based) retrieval comparison needs a hosted embedding model we haven't wired up yet — excluded from the results below rather than faked.",
+  "Snapshot integrity is hash-based, not cryptographically signed, tamper-evident today, not tamper-proof against an adversary who controls both the data and its hash. A deliberate architecture decision (ADR-0014), pending key management design, not an oversight.",
+  "Byte-identical replay is proven within one CPU architecture; cross-architecture replay fixtures remain an open item.",
+  "The model adapter does not yet select a region-specific endpoint automatically, found while testing a second model family (Meta's Llama) against a region-locked endpoint.",
+  "No visual product surface yet beyond CLI output.",
+  "Dense (embedding-based) retrieval comparison needs a hosted embedding model we haven't wired up yet, excluded from the results below rather than faked.",
+  "Adversarial testing so far covers two crafted prompt-injection payloads against one model, real evidence, not a comprehensive red-team result.",
 ];
 
 export const metadata: Metadata = {
@@ -50,13 +59,21 @@ export const metadata: Metadata = {
     "Solipher SHARD Context compiles the smallest context package that still fits your model's exact token budget, without dropping the facts marked required. Real results below, measured against a live model.",
 };
 
+function CodeBlock({ children }: { children: string }) {
+  return (
+    <pre className="overflow-x-auto rounded-xl border border-border bg-background p-4 text-xs leading-relaxed text-foreground/90">
+      <code className="font-mono whitespace-pre">{children}</code>
+    </pre>
+  );
+}
+
 export default function ShardContextPage() {
   return (
     <>
       <PageHero
         eyebrow="Products · AI infrastructure"
         title="Solipher SHARD Context"
-        description="Shrinks what you send to an LLM without losing the facts that have to be exactly right — compiled to your model's exact token budget, never an estimate."
+        description="Shrinks what you send to an LLM without losing the facts that have to be exactly right, compiled to your model's exact token budget, never an estimate."
       />
 
       {/* What it is */}
@@ -168,20 +185,62 @@ export default function ShardContextPage() {
           {/* Baseline comparison */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              Compared against the required baselines, same corpus, same query, same budget
+              Scaled from one 3-document demo to 16 real scenarios, live-verified
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-              One relevant document, two genuine distractors, a 4,000-token budget. Every other approach let a
-              distractor into the rendered context, at roughly 3.3&times; the token cost, not because the budget
-              was tight (there was plenty of room to include everything, and every other approach did), but
-              because none of them stop once the evidence requirement is actually satisfied.
+              16 real, topically distinct articles, fetched from a public question-answering dataset. Each becomes
+              its own scenario: a real question, its own real answer-bearing document, and five other articles as
+              genuine distractors. 64 real offline selection decisions, plus 16 real live compiles against the
+              production GCP project above. Every approach below except SHARD Context let a distractor into the
+              rendered context in all 16 of 16 scenarios, not because the budget was tight, but because none of
+              them stop once the evidence requirement is actually satisfied. Numbers are averages across all 16
+              scenarios, not one cherry-picked run.
             </p>
             <div className="mt-5">
-              <BaselineComparisonChart title="Tokens reaching the model" rows={baselineRows} />
+              <BaselineComparisonChart title="Average tokens reaching the model, 16 real scenarios" rows={baselineRows} />
             </div>
             <p className="mt-3 text-xs text-muted">
               Dense (embedding-based) top-K is intentionally excluded here, it needs a hosted embedding model we
               haven&rsquo;t wired up against Vertex AI yet, a named gap, not worked around with a fake embedder.
+            </p>
+          </div>
+
+          {/* BM25 fix */}
+          <div className="mt-12 rounded-2xl border border-red-500/40 bg-red-500/[0.06] p-7">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-red-400">
+              <AlertTriangle size={14} /> A real budget violation, found and then fixed, not just disclosed
+            </div>
+            <p className="mt-3 text-sm leading-relaxed text-foreground/90">
+              Scaling the benchmark above to 16 scenarios required benchmarking retrieval at real corpus sizes,
+              which surfaced a real, measured problem: BM25 retrieval rebuilt its entire corpus index from scratch
+              on every single call. At 1,000 documents that cost roughly 10.7ms, about 2.1&times; over the
+              retrieval stage&rsquo;s own 5ms budget.
+            </p>
+            <div className="mt-4 overflow-x-auto">
+              <table className="w-full min-w-[420px] border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-wider text-muted">
+                    <th className="pb-2 pr-4 font-medium">Corpus size</th>
+                    <th className="pb-2 pr-4 font-medium">Before the fix</th>
+                    <th className="pb-2 font-medium">After the fix</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {bm25FixRows.map((row) => (
+                    <tr key={row.corpus} className="border-b border-border last:border-0">
+                      <td className="py-2.5 pr-4 text-foreground">{row.corpus}</td>
+                      <td className="py-2.5 pr-4 font-mono text-xs text-muted">{row.before}</td>
+                      <td className="py-2.5 font-mono text-xs text-red-400">{row.after}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-4 text-sm leading-relaxed text-foreground/90">
+              The fix: the index is now built once, when the snapshot is indexed, instead of on every query, since
+              both are pure functions of an immutable snapshot. Re-measured with the same benchmark: a 97.6%
+              latency reduction at 1,000 documents, with zero regressions across the workspace&rsquo;s 462-test
+              suite.
             </p>
           </div>
 
@@ -205,6 +264,79 @@ export default function ShardContextPage() {
               ))}
             </div>
           </div>
+
+          {/* Second model + adversarial testing */}
+          <div className="mt-12 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10">
+                <Cpu size={20} className="text-red-500" />
+              </div>
+              <h3 className="font-display text-lg font-semibold text-foreground">A second live model, not a claim tested once</h3>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+                The runtime adapter layer claims to work with any OpenAI-compatible endpoint. Re-running the same
+                compile against <code className="font-mono text-xs text-red-400">openai/gpt-oss-20b-maas</code>,
+                changing only the model field, compiled successfully on the first attempt with identical results.
+                A third attempt against a different model family, Meta&rsquo;s Llama, hit a real, understood
+                boundary, a region-specific endpoint this adapter does not yet select automatically, disclosed
+                rather than hidden.
+              </p>
+            </div>
+            <div className="rounded-2xl border border-border bg-background p-6">
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10">
+                <ShieldAlert size={20} className="text-red-500" />
+              </div>
+              <h3 className="font-display text-lg font-semibold text-foreground">A real, live prompt-injection test</h3>
+              <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+                Two hostile documents were run through the live pipeline. A loud, explicit injection asking the
+                model to fabricate a citation succeeded against the live model, but the system&rsquo;s own
+                existing validation rejected the unknown id and failed the request closed, no fabricated citation
+                reached the output. A quieter injection asking the model to falsely certify unrelated content as
+                exact evidence did not succeed at all, the model correctly declined to answer instead. Evidence
+                for one model on two crafted payloads, reported exactly as found.
+              </p>
+            </div>
+          </div>
+
+          {/* Installation */}
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              Two real installation paths, both actually run, not just written
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Docker had to be installed on the test machine first, since it wasn&rsquo;t there. The image was
+              then built and run against the live GCP project above with real mounted credentials, and the
+              install script was run end to end on a real machine, ending in a real version print from the
+              installed binary.
+            </p>
+            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="mb-3 flex items-center gap-2 font-mono text-xs font-semibold text-red-400">
+                  <Package size={14} /> Docker
+                </div>
+                <CodeBlock>{`docker build -f docker/Dockerfile -t shard-context-cli .
+docker run --rm shard-context-cli --version
+
+docker run --rm \\
+  -v ~/.config/gcloud/application_default_credentials.json:/home/shard/.config/gcloud/application_default_credentials.json:ro \\
+  -v $(pwd)/data:/data:ro \\
+  shard-context-cli compile --config /data/config.toml --document /data/doc.txt --query "..."`}</CodeBlock>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="mb-3 flex items-center gap-2 font-mono text-xs font-semibold text-red-400">
+                  <Package size={14} /> Bare metal
+                </div>
+                <CodeBlock>{`bash docker/install.sh
+gcloud auth application-default login
+shard-context-cli compile --config <path.toml> --document <path> --query <text>`}</CodeBlock>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-muted">
+              That verification work found and fixed a real bug: the CLI hardcoded every document&rsquo;s id to
+              the literal word &ldquo;document&rdquo;, which collided with the extraction prompt&rsquo;s own JSON
+              field name closely enough to reliably make the live model hallucinate a fabricated citation. Fixed
+              by deriving the id from the document&rsquo;s own filename instead.
+            </p>
+          </div>
         </Container>
       </section>
 
@@ -226,8 +358,11 @@ export default function ShardContextPage() {
               <ul className="mt-3 space-y-2.5">
                 {[
                   "A working, tested compiler pipeline, not a prototype: ingestion, retrieval, scoring, mandatory-cover and optional-fill solvers, structural firewall, all with real test coverage",
-                  "Run end to end against a live, hosted model across three distinct evaluation scenarios",
-                  "A real bug found via adversarial testing and fixed, then re-verified live, twice",
+                  "Baseline comparison scaled to 16 real scenarios, live-verified: 0% distractor inclusion, 83.6% fewer tokens than every offline baseline",
+                  "A real retrieval budget violation found and fixed at the root, 97.6% faster at 1,000 documents, re-measured, zero regressions",
+                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 462 tests, fuzzing, dependency scanning",
+                  "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
+                  "A second live model tested for real adapter portability, and real prompt-injection tests run against the live pipeline",
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
