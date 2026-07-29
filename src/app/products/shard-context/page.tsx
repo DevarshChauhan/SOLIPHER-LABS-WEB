@@ -9,6 +9,7 @@ import { ContextDiagram } from "@/components/products/ContextDiagram";
 import { BaselineComparisonChart, type BaselineRow } from "@/components/products/BaselineComparisonChart";
 import { Bm25FixChart, type Bm25FixRow } from "@/components/products/Bm25FixChart";
 import { ModelPortabilityChart, type ModelPortabilityRow } from "@/components/products/ModelPortabilityChart";
+import { PerModelBaselineChart, type PerModelBaselineRow } from "@/components/products/PerModelBaselineChart";
 
 const envSpecs = [
   { k: "Primary model", v: "openai/gpt-oss-120b-maas, hosted open-weight (Vertex AI Model Garden)" },
@@ -34,6 +35,14 @@ const modelPortabilityRows: ModelPortabilityRow[] = [
     total: 1,
     note: "Single-scenario portability check, not a full 16-scenario run",
   },
+];
+
+const perModelBaselineRows: PerModelBaselineRow[] = [
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI, open-weight", contextPct: 0, note: "0/16" },
+  { model: "qwen/qwen3-235b-a22b-instruct-2507-maas", vendor: "Alibaba", contextPct: 0, note: "0/16" },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", contextPct: 0, note: "0/16" },
+  { model: "deepseek-ai/deepseek-v3.2-maas", vendor: "DeepSeek", contextPct: 0, note: "0/10 completed" },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", contextPct: 0, note: "0/1" },
 ];
 
 const evalScenarios = [
@@ -286,6 +295,13 @@ export default function ShardContextPage() {
                 title="Correct selections out of 16 real scenarios, per model"
                 subtitle="Every candidate probed live before a full run; every gap shown is a rate limit, never a wrong answer."
                 rows={modelPortabilityRows}
+              />
+            </div>
+            <div className="mt-6">
+              <PerModelBaselineChart
+                title="Baseline vs SHARD Context, distractor inclusion rate, per model"
+                subtitle="The offline baselines never call a model, so their 100% rate is a fixed reference line. What varies per model is SHARD Context's own real result, zero, every time."
+                rows={perModelBaselineRows}
               />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-muted">
