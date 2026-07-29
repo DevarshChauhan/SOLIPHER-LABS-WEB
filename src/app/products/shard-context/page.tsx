@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { Check, Mail, AlertTriangle, ShieldCheck, Scale, Package, ShieldAlert } from "lucide-react";
 import { ContextDiagram } from "@/components/products/ContextDiagram";
 import { BaselineComparisonChart, type BaselineRow } from "@/components/products/BaselineComparisonChart";
+import { Bm25FixChart, type Bm25FixRow } from "@/components/products/Bm25FixChart";
+import { ModelPortabilityChart, type ModelPortabilityRow } from "@/components/products/ModelPortabilityChart";
 
 const envSpecs = [
   { k: "Primary model", v: "openai/gpt-oss-120b-maas, hosted open-weight (Vertex AI Model Garden)" },
@@ -19,12 +21,19 @@ const envSpecs = [
   { k: "Benchmark machine", v: "AMD Ryzen Z1 Extreme, 8 cores / 16 threads, local, offline" },
 ];
 
-const modelPortabilityRows = [
-  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI (open-weight)", result: "16/16, multiple independent runs" },
-  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI (open-weight)", result: "Verified, identical behavior" },
-  { model: "qwen/qwen3-235b-a22b-instruct-2507-maas", vendor: "Alibaba", result: "16 passed, 0 failed, 0 errored" },
-  { model: "deepseek-ai/deepseek-v3.2-maas", vendor: "DeepSeek", result: "10 passed, 0 failed, 6 rate-limited" },
-  { model: "google/gemini-3.5-flash-lite", vendor: "Google (native)", result: "16 passed, 0 failed, 0 errored" },
+const modelPortabilityRows: ModelPortabilityRow[] = [
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI, open-weight", correct: 16, rateLimited: 0, total: 16 },
+  { model: "qwen/qwen3-235b-a22b-instruct-2507-maas", vendor: "Alibaba", correct: 16, rateLimited: 0, total: 16 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", correct: 16, rateLimited: 0, total: 16 },
+  { model: "deepseek-ai/deepseek-v3.2-maas", vendor: "DeepSeek", correct: 10, rateLimited: 6, total: 16 },
+  {
+    model: "openai/gpt-oss-20b-maas",
+    vendor: "OpenAI, open-weight, smaller size",
+    correct: 1,
+    rateLimited: 0,
+    total: 1,
+    note: "Single-scenario portability check, not a full 16-scenario run",
+  },
 ];
 
 const evalScenarios = [
@@ -41,10 +50,10 @@ const baselineRows: BaselineRow[] = [
   { name: "Hierarchical summary", tokens: 858, distractorIncluded: true },
 ];
 
-const bm25FixRows = [
-  { corpus: "10 documents", before: "100µs", after: "2.4µs" },
-  { corpus: "100 documents", before: "1.04ms", after: "23.4µs" },
-  { corpus: "1,000 documents", before: "10.7ms (2.1x over the 5ms budget)", after: "256µs (19.5x under budget)" },
+const bm25FixRows: Bm25FixRow[] = [
+  { corpus: "10 documents", beforeUs: 100, afterUs: 2.4, beforeLabel: "100µs", afterLabel: "2.4µs" },
+  { corpus: "100 documents", beforeUs: 1040, afterUs: 23.4, beforeLabel: "1.04ms", afterLabel: "23.4µs" },
+  { corpus: "1,000 documents", beforeUs: 10700, afterUs: 256, beforeLabel: "10.7ms (2.1x over budget)", afterLabel: "256µs (19.5x under)" },
 ];
 
 const cleanRoomAttempts = [
@@ -224,25 +233,12 @@ export default function ShardContextPage() {
               on every single call. At 1,000 documents that cost roughly 10.7ms, about 2.1&times; over the
               retrieval stage&rsquo;s own 5ms budget.
             </p>
-            <div className="mt-4 overflow-x-auto">
-              <table className="w-full min-w-[420px] border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-wider text-muted">
-                    <th className="pb-2 pr-4 font-medium">Corpus size</th>
-                    <th className="pb-2 pr-4 font-medium">Before the fix</th>
-                    <th className="pb-2 font-medium">After the fix</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {bm25FixRows.map((row) => (
-                    <tr key={row.corpus} className="border-b border-border last:border-0">
-                      <td className="py-2.5 pr-4 text-foreground">{row.corpus}</td>
-                      <td className="py-2.5 pr-4 font-mono text-xs text-muted">{row.before}</td>
-                      <td className="py-2.5 font-mono text-xs text-red-400">{row.after}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mt-5">
+              <Bm25FixChart
+                title="BM25 retrieval latency, before vs after the fix"
+                subtitle="Same benchmark, same three corpus sizes, re-measured after the fix, not a different test."
+                rows={bm25FixRows}
+              />
             </div>
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
               The fix: the index is now built once, when the snapshot is indexed, instead of on every query, since
@@ -285,25 +281,12 @@ export default function ShardContextPage() {
               this entire pass, every error was a rate limit from this session&rsquo;s own call volume, never a
               wrong document.
             </p>
-            <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-background p-6">
-              <table className="w-full min-w-[520px] border-collapse text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-wider text-muted">
-                    <th className="pb-2 pr-4 font-medium">Model</th>
-                    <th className="pb-2 pr-4 font-medium">Vendor</th>
-                    <th className="pb-2 font-medium">16-scenario live result</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {modelPortabilityRows.map((row) => (
-                    <tr key={row.model} className="border-b border-border last:border-0">
-                      <td className="py-2.5 pr-4 font-mono text-xs text-foreground">{row.model}</td>
-                      <td className="py-2.5 pr-4 text-muted">{row.vendor}</td>
-                      <td className="py-2.5 font-mono text-xs text-red-400">{row.result}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="mt-5">
+              <ModelPortabilityChart
+                title="Correct selections out of 16 real scenarios, per model"
+                subtitle="Every candidate probed live before a full run; every gap shown is a rate limit, never a wrong answer."
+                rows={modelPortabilityRows}
+              />
             </div>
             <p className="mt-3 text-xs leading-relaxed text-muted">
               A real reliability finding, not glossed over: Qwen intermittently returned a response that failed
