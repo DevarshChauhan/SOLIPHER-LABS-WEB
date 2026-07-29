@@ -107,8 +107,8 @@ const cleanRoomAttempts = [
 
 const currentGaps = [
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
-  "The visual surface is a single static HTML viewer (load a --json-out file, see it rendered), not a full product console with a server, persistence, or multi-run history.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. The quote-verification fix closes the self-report trust gap it found, but does not itself verify a selected document's topical relevance.",
+  "The visual surface now has real multi-run history and comparison, but it's still browser-local storage, not a server: nothing is shared across machines or persisted anywhere a second person could see it.",
 ];
 
 export const metadata: Metadata = {
@@ -539,7 +539,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
-                  "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup",
+                  "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup, now with real multi-run history and a side-by-side hash-diff compare mode, verified in a live browser session including surviving an actual page reload",
                   "All five required baselines now run live, including Dense (embedding-based) top-K via a real Vertex AI text-embedding-005 adapter, no fake embedder anywhere",
                   "Cross-architecture replay-hash CI: the hash and canonical-encoding primitives every structured replay hash is built on are verified byte-identical on a real x86_64 runner and a real aarch64 runner in the same CI run, not just proven on one architecture",
                   "Real Ed25519 snapshot signing (ADR-0016): a signed snapshot's tampered content is detected by an actual test that mutates it after signing, not just a construction check. Single-key, no rotation or HSM yet, named honestly rather than oversold",
