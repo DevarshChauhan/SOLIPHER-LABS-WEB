@@ -10,6 +10,7 @@ import { BaselineComparisonChart, type BaselineRow } from "@/components/products
 import { Bm25FixChart, type Bm25FixRow } from "@/components/products/Bm25FixChart";
 import { ModelPortabilityChart, type ModelPortabilityRow } from "@/components/products/ModelPortabilityChart";
 import { PerModelBaselineChart, type PerModelBaselineRow } from "@/components/products/PerModelBaselineChart";
+import { PerModelPerfChart, type PerModelPerfRow } from "@/components/products/PerModelPerfChart";
 
 const envSpecs = [
   { k: "Primary model", v: "openai/gpt-oss-120b-maas, hosted open-weight (Vertex AI Model Garden)" },
@@ -35,6 +36,36 @@ const modelPortabilityRows: ModelPortabilityRow[] = [
     total: 1,
     note: "Single-scenario portability check, not a full 16-scenario run",
   },
+];
+
+const perModelLatencyRows: PerModelPerfRow[] = [
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", value: 2507, n: 3 },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", value: 1924, n: 3 },
+  { model: "qwen/qwen3-235b", vendor: "Alibaba", value: 1524, n: 3 },
+  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", value: 2837, n: 3 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", value: 1350, n: 3 },
+];
+
+const perModelTokenRows: PerModelPerfRow[] = [
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", value: 642, n: 3 },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", value: 699, n: 3 },
+  { model: "qwen/qwen3-235b", vendor: "Alibaba", value: 395, n: 3 },
+  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", value: 402, n: 3 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", value: 393, n: 3 },
+];
+
+const perModelThroughputRows: PerModelPerfRow[] = [
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", value: 1000 / 2507, n: 3 },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", value: 1000 / 1924, n: 3 },
+  { model: "qwen/qwen3-235b", vendor: "Alibaba", value: 1000 / 1524, n: 3 },
+  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", value: 1000 / 2837, n: 3 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", value: 1000 / 1350, n: 3 },
+];
+
+const qualityRows = [
+  { question: "How many full time teachers does Victoria have?", truth: "63,519", full: "63,519", compiled: "63,519" },
+  { question: "Which country today is a remnant of the Ottoman empire?", truth: "Turkey", full: "Turkey", compiled: "Turkey" },
+  { question: "When was Warsaw ranked as the 32nd most liveable city?", truth: "2012", full: "2012", compiled: "2012" },
 ];
 
 const perModelBaselineRows: PerModelBaselineRow[] = [
@@ -311,6 +342,79 @@ export default function ShardContextPage() {
               of failure this project&rsquo;s own fail-closed validation already handles cleanly. Claude, Grok, and
               Kimi were attempted and honestly reported as blocked (see Not Yet, Honestly below) rather than
               forced by guessing more model ids.
+            </p>
+          </div>
+
+          {/* Per-model latency, tokens, throughput */}
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              API cost per model: latency, tokens, and throughput
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              A real, small, controlled sample, 3 real scenarios per model, sent as the exact atom
+              extraction prompt shape, timed end to end, with token usage read from each API response&rsquo;s
+              own usage field. Every model reached a full n=3 sample; two calls hit real transient 429s and
+              were retried rather than left as gaps.
+            </p>
+            <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <PerModelPerfChart
+                title="Avg latency"
+                rows={perModelLatencyRows}
+                max={3000}
+                fmt={(v) => `${(v / 1000).toFixed(1)}s`}
+              />
+              <PerModelPerfChart
+                title="Avg tokens per call"
+                rows={perModelTokenRows}
+                max={750}
+                fmt={(v) => `${Math.round(v)}`}
+              />
+              <PerModelPerfChart
+                title="Throughput (1 / latency)"
+                rows={perModelThroughputRows}
+                max={1.0}
+                fmt={(v) => `${v.toFixed(2)}/s`}
+              />
+            </div>
+          </div>
+
+          {/* Answer quality */}
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              Does compiling down to less context ever change the answer?
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Every earlier check verified document selection, never the actual final answer text. Real
+              test: the same question, asked twice, once with the full 6-document context (the relevant
+              document plus 5 genuine distractors) and once with only SHARD Context&rsquo;s own compiled,
+              1-document output, against the same live model.
+            </p>
+            <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-background p-6">
+              <table className="w-full min-w-[560px] border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-wider text-muted">
+                    <th className="pb-2 pr-4 font-medium">Question</th>
+                    <th className="pb-2 pr-4 font-medium">Ground truth</th>
+                    <th className="pb-2 pr-4 font-medium">Full context</th>
+                    <th className="pb-2 font-medium">SHARD Context</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {qualityRows.map((r) => (
+                    <tr key={r.question} className="border-b border-border last:border-0">
+                      <td className="py-2.5 pr-4 text-foreground">{r.question}</td>
+                      <td className="py-2.5 pr-4 font-mono text-xs text-muted">{r.truth}</td>
+                      <td className="py-2.5 pr-4 font-mono text-xs text-red-400">{r.full}</td>
+                      <td className="py-2.5 font-mono text-xs text-red-400">{r.compiled}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              All 6 answers (3 scenarios, 2 conditions each) matched the ground truth exactly, and full
+              context vs. SHARD Context produced identical answers every time. A real, small sample on one
+              model, not a comprehensive claim, but a real, previously missing check now actually run.
             </p>
           </div>
 
