@@ -107,7 +107,7 @@ const cleanRoomAttempts = [
 
 const currentGaps = [
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
-  "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. The quote-verification fix closes the self-report trust gap it found, but does not itself verify a selected document's topical relevance.",
+  "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. A real embedding-backed relevance check now exists (see Real today), but re-running the exact quiet-injection scenario live confirmed it only gates high-risk-atom eligibility, the same as the quote-verification fix before it, it does not by itself prevent an irrelevant document from being selected for an ordinary, non-high-risk atom.",
   "The visual surface now has real multi-run history and comparison, but it's still browser-local storage, not a server: nothing is shared across machines or persisted anywhere a second person could see it.",
 ];
 
@@ -464,10 +464,20 @@ export default function ShardContextPage() {
                 classification against the document&rsquo;s own text. Fixed by requiring the model to supply the
                 literal quote it claims answers the question, and verifying that quote is an actual substring of
                 the document before honoring the claim, otherwise it is downgraded to the weaker
-                &ldquo;derived&rdquo; classification. Stated plainly: this closes the specific trust gap in that
-                self-report, it does not by itself verify that a selected document is topically relevant to the
-                query, that remains open. Evidence across three models on two crafted payloads, reported exactly
-                as found, including what the fix does not solve.
+                &ldquo;derived&rdquo; classification. Stated plainly at the time: this closed the specific trust
+                gap in that self-report, it did not by itself verify that a selected document is topically
+                relevant to the query. That gap is now closed too, with a real embedding-backed check (cosine
+                similarity between the query and the claimed quote, via the same real Vertex AI embedding model
+                used elsewhere on this page), gating the claim the same way. Re-running the exact quiet-injection
+                scenario live against Qwen and DeepSeek with the new check enabled gave an honest, unglamorous
+                result: the compile outcome was unchanged, because that specific query&rsquo;s atom was never
+                classified high-risk, and the weaker &ldquo;derived&rdquo; classification the check correctly
+                downgrades an irrelevant quote to remains legitimately sufficient for an ordinary atom&rsquo;s
+                coverage requirement, by design. The real, verified effect of both fixes together is narrower and
+                more honest than &ldquo;blocks the attack&rdquo;: they stop an unverifiable or irrelevant
+                self-reported &ldquo;exact&rdquo; claim from being trusted for the one thing that classification
+                actually gates, high-risk-atom eligibility. Evidence across three models on two crafted payloads,
+                reported exactly as found, including what neither fix solves.
               </p>
             </div>
           </div>
@@ -538,6 +548,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 466 tests, fuzzing, dependency scanning",
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
+                  "A real, embedding-backed topical-relevance check on top of the quote-verification fix, re-tested live against the same adversarial scenario, with the honest result (and its real limit) reported, not just the fix",
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
                   "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup, now with real multi-run history and a side-by-side hash-diff compare mode, verified in a live browser session including surviving an actual page reload",
                   "All five required baselines now run live, including Dense (embedding-based) top-K via a real Vertex AI text-embedding-005 adapter, no fake embedder anywhere",
