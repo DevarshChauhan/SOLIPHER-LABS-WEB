@@ -111,7 +111,7 @@ const currentGaps = [
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
   "The visual surface is a single static HTML viewer (load a --json-out file, see it rendered), not a full product console with a server, persistence, or multi-run history.",
   "Dense (embedding-based) retrieval comparison needs a hosted embedding model we haven't wired up yet, excluded from the results below rather than faked.",
-  "Adversarial testing so far covers two crafted prompt-injection payloads against one model, real evidence, not a comprehensive red-team result.",
+  "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. The quote-verification fix closes the self-report trust gap it found, but does not itself verify a selected document's topical relevance.",
 ];
 
 export const metadata: Metadata = {
@@ -436,14 +436,22 @@ export default function ShardContextPage() {
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10">
                 <ShieldAlert size={20} className="text-red-500" />
               </div>
-              <h3 className="font-display text-lg font-semibold text-foreground">A real, live prompt-injection test</h3>
+              <h3 className="font-display text-lg font-semibold text-foreground">A real, live prompt-injection test, broadened, and a real gap it found</h3>
               <p className="mt-2 text-sm leading-relaxed text-foreground/85">
-                Two hostile documents were run through the live pipeline. A loud, explicit injection asking the
-                model to fabricate a citation succeeded against the live model, but the system&rsquo;s own
-                existing validation rejected the unknown id and failed the request closed, no fabricated citation
-                reached the output. A quieter injection asking the model to falsely certify unrelated content as
-                exact evidence did not succeed at all, the model correctly declined to answer instead. Evidence
-                for one model on two crafted payloads, reported exactly as found.
+                Two hostile documents were run through the live pipeline against three model families (Alibaba
+                Qwen, Google Gemini, DeepSeek). A loud, explicit injection asking the model to fabricate a
+                citation succeeded against two of the three models, but the system&rsquo;s own existing
+                validation rejected the unknown id every time and failed the request closed, no fabricated
+                citation ever reached the output. A quieter injection, keeping the real document id but asking
+                the model to falsely certify unrelated content as exact evidence, succeeded against two of the
+                three models, a real gap: nothing previously checked that self-reported &ldquo;exact&rdquo;
+                classification against the document&rsquo;s own text. Fixed by requiring the model to supply the
+                literal quote it claims answers the question, and verifying that quote is an actual substring of
+                the document before honoring the claim, otherwise it is downgraded to the weaker
+                &ldquo;derived&rdquo; classification. Stated plainly: this closes the specific trust gap in that
+                self-report, it does not by itself verify that a selected document is topically relevant to the
+                query, that remains open. Evidence across three models on two crafted payloads, reported exactly
+                as found, including what the fix does not solve.
               </p>
             </div>
           </div>
@@ -511,9 +519,9 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "A working, tested compiler pipeline, not a prototype: ingestion, retrieval, scoring, mandatory-cover and optional-fill solvers, structural firewall, all with real test coverage",
                   "Baseline comparison scaled to 16 real scenarios, live-verified: 0% distractor inclusion, 83.6% fewer tokens than every offline baseline",
                   "A real retrieval budget violation found and fixed at the root, 97.6% faster at 1,000 documents, re-measured, zero regressions",
-                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 462 tests, fuzzing, dependency scanning",
+                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 466 tests, fuzzing, dependency scanning",
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
-                  "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests run against the live pipeline",
+                  "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
                   "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup",
                 ].map((item) => (
