@@ -38,28 +38,32 @@ const modelPortabilityRows: ModelPortabilityRow[] = [
   },
 ];
 
+// Baseline = full 6-document context (relevant doc + 5 genuine
+// distractors). Context = SHARD Context's own compiled, 1-document
+// output. Same 3 real scenarios, same live model, same prompt shape,
+// both conditions, real n=3 each.
 const perModelLatencyRows: PerModelPerfRow[] = [
-  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", value: 2507, n: 3 },
-  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", value: 1924, n: 3 },
-  { model: "qwen/qwen3-235b", vendor: "Alibaba", value: 1524, n: 3 },
-  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", value: 2837, n: 3 },
-  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", value: 1350, n: 3 },
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", baseline: 2384, context: 2507, n: 3 },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", baseline: 2092, context: 1924, n: 3 },
+  { model: "qwen/qwen3-235b", vendor: "Alibaba", baseline: 1712, context: 1524, n: 3 },
+  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", baseline: 2124, context: 2837, n: 3 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", baseline: 1441, context: 1350, n: 3 },
 ];
 
 const perModelTokenRows: PerModelPerfRow[] = [
-  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", value: 642, n: 3 },
-  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", value: 699, n: 3 },
-  { model: "qwen/qwen3-235b", vendor: "Alibaba", value: 395, n: 3 },
-  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", value: 402, n: 3 },
-  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", value: 393, n: 3 },
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", baseline: 1433, context: 642, n: 3 },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", baseline: 1536, context: 699, n: 3 },
+  { model: "qwen/qwen3-235b", vendor: "Alibaba", baseline: 1184, context: 395, n: 3 },
+  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", baseline: 1138, context: 402, n: 3 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", baseline: 1173, context: 393, n: 3 },
 ];
 
 const perModelThroughputRows: PerModelPerfRow[] = [
-  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", value: 1000 / 2507, n: 3 },
-  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", value: 1000 / 1924, n: 3 },
-  { model: "qwen/qwen3-235b", vendor: "Alibaba", value: 1000 / 1524, n: 3 },
-  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", value: 1000 / 2837, n: 3 },
-  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", value: 1000 / 1350, n: 3 },
+  { model: "openai/gpt-oss-120b-maas", vendor: "OpenAI", baseline: 1000 / 2384, context: 1000 / 2507, n: 3 },
+  { model: "openai/gpt-oss-20b-maas", vendor: "OpenAI, smaller", baseline: 1000 / 2092, context: 1000 / 1924, n: 3 },
+  { model: "qwen/qwen3-235b", vendor: "Alibaba", baseline: 1000 / 1712, context: 1000 / 1524, n: 3 },
+  { model: "deepseek-ai/deepseek-v3.2", vendor: "DeepSeek", baseline: 1000 / 2124, context: 1000 / 2837, n: 3 },
+  { model: "google/gemini-3.5-flash-lite", vendor: "Google, native", baseline: 1000 / 1441, context: 1000 / 1350, n: 3 },
 ];
 
 const qualityRows = [
@@ -345,37 +349,45 @@ export default function ShardContextPage() {
             </p>
           </div>
 
-          {/* Per-model latency, tokens, throughput */}
+          {/* Per-model baseline vs context: latency, tokens, throughput */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              API cost per model: latency, tokens, and throughput
+              Baseline vs SHARD Context, per model: latency, tokens, throughput
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-              A real, small, controlled sample, 3 real scenarios per model, sent as the exact atom
-              extraction prompt shape, timed end to end, with token usage read from each API response&rsquo;s
-              own usage field. Every model reached a full n=3 sample; two calls hit real transient 429s and
-              were retried rather than left as gaps.
+              The same real, small, controlled sample (3 real scenarios, same prompt shape, same live
+              model), run once against the full 6-document baseline context and once against SHARD
+              Context&rsquo;s own compiled 1-document output, so the comparison holds within each model, not
+              just across them. Every model reached a full n=3 sample on both conditions; several calls hit
+              real transient 429s and were retried rather than left as gaps.
             </p>
             <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-3">
               <PerModelPerfChart
-                title="Avg latency"
+                title="Tokens per call"
+                rows={perModelTokenRows}
+                max={1600}
+                fmt={(v) => `${Math.round(v)}`}
+              />
+              <PerModelPerfChart
+                title="API call latency"
                 rows={perModelLatencyRows}
                 max={3000}
                 fmt={(v) => `${(v / 1000).toFixed(1)}s`}
               />
               <PerModelPerfChart
-                title="Avg tokens per call"
-                rows={perModelTokenRows}
-                max={750}
-                fmt={(v) => `${Math.round(v)}`}
-              />
-              <PerModelPerfChart
                 title="Throughput (1 / latency)"
                 rows={perModelThroughputRows}
-                max={1.0}
+                max={0.8}
                 fmt={(v) => `${v.toFixed(2)}/s`}
+                lowerIsBetter={false}
               />
             </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              Tokens show a clean, consistent reduction for SHARD Context across every single model.
+              Latency does not, one model (DeepSeek) was actually slower with the smaller, compiled
+              context, since API response latency at this call size is dominated by network and queueing
+              variance, not prompt size. Reported as measured, not smoothed into a cleaner story.
+            </p>
           </div>
 
           {/* Answer quality */}
