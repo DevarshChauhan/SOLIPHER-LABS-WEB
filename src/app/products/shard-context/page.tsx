@@ -109,7 +109,7 @@ const currentGaps = [
   "Snapshot integrity is hash-based, not cryptographically signed, tamper-evident today, not tamper-proof against an adversary who controls both the data and its hash. A deliberate architecture decision (ADR-0014), pending key management design, not an oversight.",
   "Byte-identical replay is proven within one CPU architecture; cross-architecture replay fixtures remain an open item.",
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
-  "No visual product surface yet beyond CLI output.",
+  "The visual surface is a single static HTML viewer (load a --json-out file, see it rendered), not a full product console with a server, persistence, or multi-run history.",
   "Dense (embedding-based) retrieval comparison needs a hosted embedding model we haven't wired up yet, excluded from the results below rather than faked.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against one model, real evidence, not a comprehensive red-team result.",
 ];
@@ -515,6 +515,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests run against the live pipeline",
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
+                  "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
                     <Check size={16} className="mt-0.5 shrink-0 text-red-500" />
