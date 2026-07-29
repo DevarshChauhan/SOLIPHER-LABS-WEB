@@ -109,6 +109,7 @@ const currentGaps = [
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. A real embedding-backed relevance check now exists (see Real today), but re-running the exact quiet-injection scenario live confirmed it only gates high-risk-atom eligibility, the same as the quote-verification fix before it, it does not by itself prevent an irrelevant document from being selected for an ordinary, non-high-risk atom.",
   "The visual surface now has real multi-run history and comparison, but it's still browser-local storage, not a server: nothing is shared across machines or persisted anywhere a second person could see it.",
+  "The full evaluation program still has real gaps: no p95 compile-latency measurement anywhere, no dedicated controller microbenchmark (Stratum A), and the sixth required baseline (individually disabling the mandatory solver, structural firewall, stable-prefix policy, and fallback) isn't built yet, since it means adding ablation switches to the core compile() orchestrator itself, not a separate module.",
 ];
 
 export const metadata: Metadata = {
@@ -545,7 +546,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "A working, tested compiler pipeline, not a prototype: ingestion, retrieval, scoring, mandatory-cover and optional-fill solvers, structural firewall, all with real test coverage",
                   "Baseline comparison scaled to 16 real scenarios, live-verified: 0% distractor inclusion, 83.6% fewer tokens than every offline baseline",
                   "A real retrieval budget violation found and fixed at the root, 97.6% faster at 1,000 documents, re-measured, zero regressions",
-                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 466 tests, fuzzing, dependency scanning",
+                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 499 tests, fuzzing, dependency scanning",
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
                   "A real, embedding-backed topical-relevance check on top of the quote-verification fix, re-tested live against the same adversarial scenario, with the honest result (and its real limit) reported, not just the fix",
@@ -554,6 +555,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "All five required baselines now run live, including Dense (embedding-based) top-K via a real Vertex AI text-embedding-005 adapter, no fake embedder anywhere",
                   "Cross-architecture replay-hash CI: the hash and canonical-encoding primitives every structured replay hash is built on are verified byte-identical on a real x86_64 runner and a real aarch64 runner in the same CI run, not just proven on one architecture",
                   "Real Ed25519 snapshot signing (ADR-0016): a signed snapshot's tampered content is detected by an actual test that mutates it after signing, not just a construction check. Single-key, no rotation or HSM yet, named honestly rather than oversold",
+                  "Long-document QA and conversation-memory scenarios (Strata B and C) scaled beyond a single smoke test, matching the transparent-RAG scenario count expansion done earlier, all run live",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
                     <Check size={16} className="mt-0.5 shrink-0 text-red-500" />
