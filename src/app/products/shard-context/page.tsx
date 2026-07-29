@@ -110,7 +110,6 @@ const currentGaps = [
   "Byte-identical replay is proven within one CPU architecture; cross-architecture replay fixtures remain an open item.",
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
   "The visual surface is a single static HTML viewer (load a --json-out file, see it rendered), not a full product console with a server, persistence, or multi-run history.",
-  "Dense (embedding-based) retrieval comparison needs a hosted embedding model we haven't wired up yet, excluded from the results below rather than faked.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. The quote-verification fix closes the self-report trust gap it found, but does not itself verify a selected document's topical relevance.",
 ];
 
@@ -261,8 +260,10 @@ export default function ShardContextPage() {
               <BaselineComparisonChart title="Average tokens reaching the model, 16 real scenarios" rows={baselineRows} />
             </div>
             <p className="mt-3 text-xs text-muted">
-              Dense (embedding-based) top-K is intentionally excluded here, it needs a hosted embedding model we
-              haven&rsquo;t wired up against Vertex AI yet, a named gap, not worked around with a fake embedder.
+              Dense (embedding-based) top-K is excluded from this specific 16-scenario chart, that run has not
+              been repeated with it yet. A real Dense top-K adapter (Vertex AI&rsquo;s text-embedding-005, no
+              OpenAI key needed) now exists and has been run live against a smaller, 3-document comparison
+              instead, see below.
             </p>
           </div>
 
@@ -287,7 +288,7 @@ export default function ShardContextPage() {
             <p className="mt-4 text-sm leading-relaxed text-foreground/90">
               The fix: the index is now built once, when the snapshot is indexed, instead of on every query, since
               both are pure functions of an immutable snapshot. Re-measured with the same benchmark: a 97.6%
-              latency reduction at 1,000 documents, with zero regressions across the workspace&rsquo;s 462-test
+              latency reduction at 1,000 documents, with zero regressions across the workspace&rsquo;s 470-test
               suite.
             </p>
           </div>
@@ -430,6 +431,23 @@ export default function ShardContextPage() {
             </p>
           </div>
 
+          {/* Dense top-K, live */}
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              Dense (embedding-based) top-K, closed for real, against Vertex AI
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              The one required baseline this project could not run live before now had a real, working algorithm
+              (cosine similarity ranking) with no real embedding model behind it. A new adapter calls Vertex
+              AI&rsquo;s own <code className="font-mono text-xs">text-embedding-005</code> endpoint, no OpenAI
+              key needed, run live against the same 3-document teacher-count scenario used throughout this page.
+              Honest result: at that scenario&rsquo;s token budget, Dense top-K included all three documents,
+              the same distractor-inclusion outcome every other simple baseline already showed here, since the
+              budget was generous enough to fit the whole small corpus regardless of similarity ranking. Not a
+              favorable result, reported anyway.
+            </p>
+          </div>
+
           {/* Adversarial testing */}
           <div className="mt-12">
             <div className="rounded-2xl border border-border bg-background p-6">
@@ -524,6 +542,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
                   "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup",
+                  "All five required baselines now run live, including Dense (embedding-based) top-K via a real Vertex AI text-embedding-005 adapter, no fake embedder anywhere",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
                     <Check size={16} className="mt-0.5 shrink-0 text-red-500" />
