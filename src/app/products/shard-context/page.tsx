@@ -107,7 +107,6 @@ const cleanRoomAttempts = [
 
 const currentGaps = [
   "Snapshot integrity is hash-based, not cryptographically signed, tamper-evident today, not tamper-proof against an adversary who controls both the data and its hash. A deliberate architecture decision (ADR-0014), pending key management design, not an oversight.",
-  "Byte-identical replay is proven within one CPU architecture; cross-architecture replay fixtures remain an open item.",
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
   "The visual surface is a single static HTML viewer (load a --json-out file, see it rendered), not a full product console with a server, persistence, or multi-run history.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result. The quote-verification fix closes the self-report trust gap it found, but does not itself verify a selected document's topical relevance.",
@@ -543,6 +542,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "Independently reproduced from a clean environment, not just re-run on the machine that built it",
                   "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup",
                   "All five required baselines now run live, including Dense (embedding-based) top-K via a real Vertex AI text-embedding-005 adapter, no fake embedder anywhere",
+                  "Cross-architecture replay-hash CI: the hash and canonical-encoding primitives every structured replay hash is built on are verified byte-identical on a real x86_64 runner and a real aarch64 runner in the same CI run, not just proven on one architecture",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
                     <Check size={16} className="mt-0.5 shrink-0 text-red-500" />
