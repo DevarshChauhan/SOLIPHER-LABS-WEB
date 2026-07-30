@@ -11,6 +11,7 @@ import { Bm25FixChart, type Bm25FixRow } from "@/components/products/Bm25FixChar
 import { ModelPortabilityChart, type ModelPortabilityRow } from "@/components/products/ModelPortabilityChart";
 import { PerModelBaselineChart, type PerModelBaselineRow } from "@/components/products/PerModelBaselineChart";
 import { PerModelPerfChart, type PerModelPerfRow } from "@/components/products/PerModelPerfChart";
+import { CpuCyclesChart, type CpuCyclesData } from "@/components/products/CpuCyclesChart";
 
 const envSpecs = [
   { k: "Primary model", v: "openai/gpt-oss-120b-maas, hosted open-weight (Vertex AI Model Garden)" },
@@ -94,6 +95,14 @@ const baselineRows: BaselineRow[] = [
   { name: "Hierarchical summary", tokens: 858, distractorIncluded: true },
 ];
 
+const cpuCyclesData: CpuCyclesData = {
+  cyclesPerCall: 6_174_977,
+  instructionsPerCall: 20_285_010,
+  cpi: 0.304,
+  iterations: 2000,
+  environment: "Real Linux (WSL2 Ubuntu, kernel perf_event_paranoid=2), hardware performance counters via Linux perf_event_open, not wall-clock/assumed-frequency",
+};
+
 const bm25FixRows: Bm25FixRow[] = [
   { corpus: "10 documents", beforeUs: 100, afterUs: 2.4, beforeLabel: "100µs", afterLabel: "2.4µs" },
   { corpus: "100 documents", beforeUs: 1040, afterUs: 23.4, beforeLabel: "1.04ms", afterLabel: "23.4µs" },
@@ -109,7 +118,6 @@ const currentGaps = [
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result.",
   "The visual surface now has real multi-run history and comparison, but it's still browser-local storage, not a server: nothing is shared across machines or persisted anywhere a second person could see it.",
-  "The ablations baseline is real for three of its four components; the fourth, stable-prefix policy, isn't exercised since no real caching mechanism exists in this codebase yet to disable. CPU cycles (one of Stratum A's own named outputs) aren't measured either, since a portable, honest measurement would need either unsafe platform intrinsics or an assumed CPU frequency, neither of which this project is willing to fake.",
   "Scaling the real corpus to 48 articles surfaced two genuine limits, reported rather than smoothed over: a fixed relevance floor doesn't cleanly separate every distractor once two articles share enough real vocabulary (Harvard and University of Chicago, both being about American research universities, being the clearest case), and asking a live model to cite one specific passage among many occasionally gets a citation wrong, a case an existing check catches and rejects rather than silently misattributing.",
 ];
 
@@ -448,6 +456,29 @@ export default function ShardContextPage() {
             </p>
           </div>
 
+          {/* CPU cycles, real */}
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              CPU cycles, the last named Stratum A output, measured for real
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Stratum A (the controller microbenchmark) names CPU cycles as one of its own required
+              outputs, alongside compile latency, RPS, RAM, determinism and terminal-state distribution.
+              It stayed honestly unmeasured for a while, since deriving a cycle count from wall-clock time
+              and an assumed CPU frequency would be a fabricated precision under turbo boost and
+              throttling, not a real measurement. Real hardware performance counters (Linux{" "}
+              <code className="font-mono text-xs">perf_event_open</code>) close that gap instead, read
+              directly from the CPU, not derived.
+            </p>
+            <div className="mt-5">
+              <CpuCyclesChart
+                title="Cycles and instructions per compile() call"
+                subtitle="2,000 real compile() calls, the same clean-dispatch scenario used throughout Stratum A."
+                data={cpuCyclesData}
+              />
+            </div>
+          </div>
+
           {/* Adversarial testing */}
           <div className="mt-12">
             <div className="rounded-2xl border border-border bg-background p-6">
@@ -547,7 +578,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "A working, tested compiler pipeline, not a prototype: ingestion, retrieval, scoring, mandatory-cover and optional-fill solvers, structural firewall, all with real test coverage",
                   "Baseline comparison scaled to 16 real scenarios, live-verified: 0% distractor inclusion, 83.6% fewer tokens than every offline baseline",
                   "A real retrieval budget violation found and fixed at the root, 97.6% faster at 1,000 documents, re-measured, zero regressions",
-                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 545 tests, fuzzing, dependency scanning",
+                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 555 tests, fuzzing, dependency scanning",
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
                   "A real, embedding-backed topical-relevance check on top of the quote-verification fix, re-tested live against the same adversarial scenario, with the honest result (and its real limit) reported, not just the fix",
@@ -571,6 +602,8 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "The baseline comparison was re-run under a real, tight token budget for the first time, rather than one so generous nothing ever had to be left out. The result is the strongest evidence yet for why this approach exists: at a 100-token budget, the two 'smart,' relevance-ranked baselines drop the actual correct document in 46 of 48 real scenarios, while still spending part of that budget on an unrelated one. They rank correctly, then run out of room for the answer, real behavior, not a hypothetical, and it disappears as the budget loosens, exactly as the mechanism predicts",
                   "SHARD Context's own selection was then tested at those exact same tight budgets, closing the comparison. Across every budget from 100 tokens up to 1,000, it dropped the correct document zero times, in 47 real scenarios each. At the tightest budget it mostly reports, honestly, that it cannot fit a safe answer at all, rather than guessing, the same real distinction the fixed sixth outcome above exists to surface. This is the mechanism working as designed: covering the required fact is treated as a hard requirement solved on its own terms, never a best-effort ranking that can be crowded out by a smaller wrong answer",
                   "A gap in the topical-relevance check named honestly for a while has been closed at the root: an off-topic quote used to only get relabeled internally, a relabeling that turned out to have no actual effect for an ordinary, non-critical fact. Now an irrelevant quote is discarded outright, and a real test proves the specific document it came from can no longer satisfy that fact's coverage requirement at all, for any fact, not only the high-stakes ones the original fix covered",
+                  "The ablations baseline now covers all four named components, not three: stable-prefix/dynamic-tail packet classification is real and wired into the one place it's actually rendered, routing pinned, version-stable facts into a canonically ordered, cache-friendly prefix instead of leaving everything in the dynamic tail. Proven, not just built: a test shows the split can only change where a packet renders, never which packets get selected, and a second test proves two requests sharing the same pinned fact but differing everywhere else still render a byte-identical, reusable prefix",
+                  "CPU cycles, the one Stratum A output this project had named as honestly unmeasured (a wall-clock-and-assumed-frequency number would have been a fabricated precision, not a real one), are now measured for real: actual Linux hardware performance-counter reads, not an estimate, verified on real hardware at 6.17M cycles and 20.29M instructions per compile() call. Falls back to an honest \"not measured\" message, never a guess, on any OS or sandboxed environment without counter access",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
                     <Check size={16} className="mt-0.5 shrink-0 text-red-500" />
