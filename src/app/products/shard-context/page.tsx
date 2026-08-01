@@ -12,6 +12,7 @@ import { ModelPortabilityChart, type ModelPortabilityRow } from "@/components/pr
 import { PerModelBaselineChart, type PerModelBaselineRow } from "@/components/products/PerModelBaselineChart";
 import { PerModelPerfChart, type PerModelPerfRow } from "@/components/products/PerModelPerfChart";
 import { CpuCyclesChart, type CpuCyclesData } from "@/components/products/CpuCyclesChart";
+import { TestGrowthChart, type TestGrowthPoint } from "@/components/products/TestGrowthChart";
 
 const envSpecs = [
   { k: "Primary model", v: "openai/gpt-oss-120b-maas, hosted open-weight (Vertex AI Model Garden)" },
@@ -109,6 +110,14 @@ const bm25FixRows: Bm25FixRow[] = [
   { corpus: "1,000 documents", beforeUs: 10700, afterUs: 256, beforeLabel: "10.7ms (2.1x over budget)", afterLabel: "256µs (19.5x under)" },
 ];
 
+const testGrowthPoints: TestGrowthPoint[] = [
+  { label: "Before this batch", tests: 555 },
+  { label: "+ real HTTP proxy", tests: 565 },
+  { label: "+ mandatory access control", tests: 586 },
+  { label: "+ server-backed run history", tests: 592 },
+  { label: "+ key rotation & HSM signing", tests: 608, isLatest: true },
+];
+
 const cleanRoomAttempts = [
   { label: "Attempt 1", result: "Every step exited 127 (“command not found”)", detail: "The startup environment's $HOME was empty, which broke the Rust toolchain's own PATH setup, an environment bug, not a code bug. The VM still uploaded its logs and deleted itself on schedule." },
   { label: "Attempt 2", result: "459/459 tests, 0 clippy warnings, all 3 scenarios passed live", detail: "Same source, same live model, fixed environment. Re-confirms the fix from Attempt 1's own diagnosis holds on hardware that had never run this code before." },
@@ -117,8 +126,9 @@ const cleanRoomAttempts = [
 const currentGaps = [
   "Claude, Grok, and Kimi are not yet tested. Claude returned a real \"no access\" response from Vertex, an account-level enablement step, not a code gap. Grok and Kimi were not found under any model id tried, and may not be offered on this platform at all.",
   "Adversarial testing so far covers two crafted prompt-injection payloads against three model families, real evidence, not a comprehensive red-team result.",
-  "The visual surface now has real multi-run history and comparison, but it's still browser-local storage, not a server: nothing is shared across machines or persisted anywhere a second person could see it.",
   "Scaling the real corpus to 48 articles surfaced two genuine limits, reported rather than smoothed over: a fixed relevance floor doesn't cleanly separate every distractor once two articles share enough real vocabulary (Harvard and University of Chicago, both being about American research universities, being the clearest case), and asking a live model to cite one specific passage among many occasionally gets a citation wrong, a case an existing check catches and rejects rather than silently misattributing.",
+  "The static document corpus a running shard-context-proxy serves is loaded once at startup from config, not a live document-management API. Adding a document means restarting the process with an updated config, a real, named simplification, not an oversight.",
+  "Key rotation and HSM-backed signing are two separate, real trust roots today (Ed25519 for local signing, ECDSA P-256 for the Cloud KMS HSM path), not yet unified into one key-ring abstraction. Google Cloud KMS does not support Ed25519 at its HSM protection level, confirmed against the live API, which is why the algorithms differ rather than one silently standing in for the other.",
 ];
 
 export const metadata: Metadata = {
@@ -515,6 +525,124 @@ export default function ShardContextPage() {
             </div>
           </div>
 
+          {/* Structural work: real service, real security */}
+          <div className="mt-12">
+            <h3 className="font-display text-lg font-semibold text-foreground">
+              From a library to a real service: a listening endpoint, mandatory access control, a server-backed viewer, and hardware-backed key management
+            </h3>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Four structural pieces landed together, each verified live against the production GCP
+              project above before moving to the next, not claimed in a batch at the end. Together they
+              turn SHARD Context from something you had to embed as a Rust crate into something you can
+              point an existing OpenAI-compatible client at directly.
+            </p>
+            <div className="mt-5">
+              <TestGrowthChart
+                title="Test count, per feature landed"
+                subtitle="Every feature below shipped with its own new, real tests passing first."
+                points={testGrowthPoints}
+              />
+            </div>
+
+            <h4 className="mt-8 text-sm font-semibold text-foreground">
+              A real listening HTTP proxy
+            </h4>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              A standard <code className="font-mono text-xs">POST /v1/chat/completions</code> request,
+              unmodified, gets a real compiled answer back. Live-verified against the production GCP
+              project: a real question returned <code className="font-mono text-xs">HTTP 200</code>{" "}
+              with a real, context-grounded answer; the same request under an artificially tight budget
+              returned <code className="font-mono text-xs">HTTP 503</code> with the exact reason,{" "}
+              <code className="font-mono text-xs">AbstainBudget</code>, and no model was ever called.
+              Binding to a public address without an explicit override was refused at startup, verified
+              live, not just asserted in code.
+            </p>
+
+            <h4 className="mt-8 text-sm font-semibold text-foreground">
+              Authorization, checked twice per request, not described once
+            </h4>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Every request now needs a real principal (tenant, subject, and roles). Access is checked
+              once before retrieval and again immediately before rendering, a real, independent second
+              check, not a formality: a test proves a document authorized at the first check but revoked
+              before the second is correctly refused, even though the compiler had already decided to
+              dispatch internally. Four real requests against the same single-document corpus, live:
+            </p>
+            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="mb-3 font-mono text-xs font-semibold text-red-400">Right tenant, right role</div>
+                <CodeBlock>{`x-shard-context-principal:
+  tenant-a/subject-1/read:evidence
+
+HTTP 200
+x-shard-context-terminal: compiled
+"Packet switching transmits data in
+packets, each with a header and payload..."`}</CodeBlock>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="mb-3 font-mono text-xs font-semibold text-red-400">Missing principal entirely</div>
+                <CodeBlock>{`(no x-shard-context-principal header)
+
+HTTP 401
+"missing required x-shard-context-principal
+header ... a principal claim is still required"`}</CodeBlock>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="mb-3 font-mono text-xs font-semibold text-red-400">Wrong tenant, matching role name</div>
+                <CodeBlock>{`x-shard-context-principal:
+  tenant-b/subject-2/read:evidence
+
+HTTP 503
+x-shard-context-terminal: abstain
+terminal_detail: AbstainInsufficientEvidence`}</CodeBlock>
+              </div>
+              <div className="rounded-2xl border border-border bg-background p-5">
+                <div className="mb-3 font-mono text-xs font-semibold text-red-400">Right tenant, wrong role</div>
+                <CodeBlock>{`x-shard-context-principal:
+  tenant-a/subject-3/read:pinned
+
+HTTP 503
+x-shard-context-terminal: abstain
+terminal_detail: AbstainInsufficientEvidence`}</CodeBlock>
+              </div>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              A matching role name from the wrong tenant never sees the document, tenant isolation held
+              even under a deliberately confusing test. Being in the right tenant with the wrong role
+              didn&rsquo;t help either, role grants are not a formality.
+            </p>
+
+            <h4 className="mt-8 text-sm font-semibold text-foreground">
+              A server-backed viewer, tenant-isolated
+            </h4>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              The compiled-output viewer previously kept history in browser local storage only, nothing
+              shared across machines. It now also connects live to a running SHARD Context server: every
+              request is recorded into a real, persisted, tenant-scoped history, fetched by the viewer
+              over a real cross-origin request. Live-verified: two different tenants each saw only their
+              own real runs; the server was killed and restarted, and its history reloaded correctly from
+              a real file on disk rather than being lost; switching the principal field in the actual
+              browser correctly switched which tenant&rsquo;s real run rendered.
+            </p>
+
+            <h4 className="mt-8 text-sm font-semibold text-foreground">
+              Real key rotation, and a real hardware-backed signer
+            </h4>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
+              Signing keys now carry an explicit Active, Retiring, or Revoked status. Verified live: a
+              signature made under a key, before that key is rotated out, still verifies through the
+              transition window once a new key takes over, then genuinely stops verifying once the old
+              key is explicitly retired, never a silent, automatic expiry. Separately, a real Google
+              Cloud KMS key now signs live, the private half of which never leaves Google&rsquo;s
+              hardware. A real attempt to create that HSM key using this project&rsquo;s existing
+              Ed25519 algorithm was rejected by the live Cloud KMS API, HSM protection level does not
+              support Ed25519 there, so the HSM key genuinely uses ECDSA P-256 instead, reported as
+              found rather than smoothed over. A real message was signed by a live call to that key,
+              verified locally, and a tampered copy of the same message correctly failed verification
+              against the same signature.
+            </p>
+          </div>
+
           {/* Installation */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
@@ -578,7 +706,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "A working, tested compiler pipeline, not a prototype: ingestion, retrieval, scoring, mandatory-cover and optional-fill solvers, structural firewall, all with real test coverage",
                   "Baseline comparison scaled to 16 real scenarios, live-verified: 0% distractor inclusion, 83.6% fewer tokens than every offline baseline",
                   "A real retrieval budget violation found and fixed at the root, 97.6% faster at 1,000 documents, re-measured, zero regressions",
-                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 555 tests, fuzzing, dependency scanning",
+                  "Security CI gates wired into real automation: fmt, clippy, forbid(unsafe_code), overflow checks, 608 tests, fuzzing, dependency scanning",
                   "Docker image and bare-metal install script, both actually built and run end to end against the live GCP project",
                   "Real adapter portability tested across five distinct model families (OpenAI, Alibaba Qwen, DeepSeek, Google Gemini), zero incorrect selections, plus real prompt-injection tests across three model families that found and fixed a real self-report trust gap",
                   "A real, embedding-backed topical-relevance check on top of the quote-verification fix, re-tested live against the same adversarial scenario, with the honest result (and its real limit) reported, not just the fix",
@@ -586,7 +714,7 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "A real standalone HTML viewer for compiled output, verified against a live compile's own --json-out file, not a mockup, now with real multi-run history and a side-by-side hash-diff compare mode, verified in a live browser session including surviving an actual page reload",
                   "All five required baselines now run live, including Dense (embedding-based) top-K via a real Vertex AI text-embedding-005 adapter, no fake embedder anywhere",
                   "Cross-architecture replay-hash CI: the hash and canonical-encoding primitives every structured replay hash is built on are verified byte-identical on a real x86_64 runner and a real aarch64 runner in the same CI run, not just proven on one architecture",
-                  "Real Ed25519 snapshot signing (ADR-0016): a signed snapshot's tampered content is detected by an actual test that mutates it after signing, not just a construction check. Single-key, no rotation or HSM yet, named honestly rather than oversold",
+                  "Real Ed25519 snapshot signing (ADR-0016): a signed snapshot's tampered content is detected by an actual test that mutates it after signing, not just a construction check. Now joined by real key rotation and a real, hardware-backed signer, both closed for real, see below",
                   "The ECHO-C ablations baseline, real: disabling the structural firewall alone (leaving the mandatory solver and everything else untouched) let a policy-violating selection incorrectly dispatch in a test built to prove exactly that, the single most consequential finding this evaluation work has produced",
                   "Real p95 compile-latency measurement found a real problem at the architecture's own maximum caps (~2-3x over its own stated budget), and it's now fixed: a persistent, structurally-shared data structure replaced a clone happening ~131,000 times per solve, ~4x faster, re-measured and now inside budget, with the same full test suite (including exact-order determinism and concurrency tests) passing unchanged",
                   "The Stratum A controller microbenchmark, real: real compile p50/p95/p99, real single- and multi-threaded requests-per-second, real process memory via a live OS query, real repeated-call determinism, and a real terminal-outcome distribution across engineered scenarios that surfaced an honest, unexpected finding, reported as found rather than smoothed over, and since traced to a real root cause and fixed (see below)",
@@ -604,6 +732,11 @@ shard-context-cli compile --config <path.toml> --document <path> --query <text>`
                   "A gap in the topical-relevance check named honestly for a while has been closed at the root: an off-topic quote used to only get relabeled internally, a relabeling that turned out to have no actual effect for an ordinary, non-critical fact. Now an irrelevant quote is discarded outright, and a real test proves the specific document it came from can no longer satisfy that fact's coverage requirement at all, for any fact, not only the high-stakes ones the original fix covered",
                   "The ablations baseline now covers all four named components, not three: stable-prefix/dynamic-tail packet classification is real and wired into the one place it's actually rendered, routing pinned, version-stable facts into a canonically ordered, cache-friendly prefix instead of leaving everything in the dynamic tail. Proven, not just built: a test shows the split can only change where a packet renders, never which packets get selected, and a second test proves two requests sharing the same pinned fact but differing everywhere else still render a byte-identical, reusable prefix",
                   "CPU cycles, the one Stratum A output this project had named as honestly unmeasured (a wall-clock-and-assumed-frequency number would have been a fabricated precision, not a real one), are now measured for real: actual Linux hardware performance-counter reads, not an estimate, verified on real hardware at 6.17M cycles and 20.29M instructions per compile() call. Falls back to an honest \"not measured\" message, never a guess, on any OS or sandboxed environment without counter access",
+                  "SHARD Context is now a real, listening HTTP service, not only a library you embed. A standard OpenAI-compatible POST /v1/chat/completions request, unmodified, gets a real compiled answer back with real x-shard-context-mode/-terminal/-decision-id headers, live-verified end to end against the production GCP project. Refuses to bind to a public address by default, verified live: it will not start on 0.0.0.0 without an explicit override",
+                  "Authorization is now mandatory and checked twice per request, before retrieval and again immediately before rendering, not described once and assumed to hold. A real test proves the second check is load-bearing: a document authorized at the first check is revoked before the second, and the second check catches it and refuses to render even though the compiler had already decided to dispatch. Live-verified: the right tenant and role gets a real compiled answer; the wrong tenant, even with a matching role name, gets refused with no data exposed; the right tenant with the wrong role gets the same real refusal",
+                  "The compiled-output viewer is no longer browser-local only. A running shard-context-proxy now records every request into a real, tenant-scoped run history, fetched live by the same viewer over a real cross-origin request. Live-verified: two different tenants each see only their own real runs, the server was killed and restarted and its history reloaded correctly from a real file on disk, and switching tenants in the actual browser correctly switched which tenant's real run rendered",
+                  "Real key rotation: signing keys carry an explicit Active, Retiring, or Revoked status, and a signature made under an old key keeps verifying through a real transition window after a new key takes over, then genuinely stops verifying once the old key is explicitly retired. Verified live end to end, not just asserted",
+                  "Real hardware-backed signing via a live Google Cloud KMS key. A real attempt to create that key using this project's existing Ed25519 algorithm at HSM protection level was rejected by the live API, so the HSM key genuinely uses ECDSA P-256 instead, the algorithm Cloud KMS's HSM tier actually supports, reported as found rather than smoothed over. A real message was signed by a live call to that key, the private half of which never leaves Google's hardware, and verified locally, with tampering correctly detected",
                 ].map((item) => (
                   <li key={item} className="flex gap-2.5 text-sm text-foreground/85">
                     <Check size={16} className="mt-0.5 shrink-0 text-red-500" />
