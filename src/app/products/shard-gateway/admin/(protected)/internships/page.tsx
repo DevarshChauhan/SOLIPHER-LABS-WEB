@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { DeleteApplicationButton } from "@/components/admin/DeleteApplicationButton";
+import { IssueCodeButton } from "@/components/admin/InternActions";
 import { listInternshipApplications, hasDb } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
 import { Mail, Phone, ExternalLink, CalendarDays, IdCard } from "lucide-react";
@@ -42,9 +43,17 @@ export default async function InternshipApplicationsPage() {
               public form.
             </p>
           </div>
-          <Link href="/products/shard-gateway/admin" className="text-sm text-muted transition-colors hover:text-foreground">
-            Back to licensing
-          </Link>
+          <div className="flex items-center gap-4 text-sm">
+            <Link
+              href="/products/shard-gateway/admin/interns"
+              className="text-muted transition-colors hover:text-foreground"
+            >
+              Interns &amp; certificates →
+            </Link>
+            <Link href="/products/shard-gateway/admin" className="text-muted transition-colors hover:text-foreground">
+              Back to licensing
+            </Link>
+          </div>
         </div>
 
         {!hasDb && (
@@ -86,6 +95,7 @@ export default async function InternshipApplicationsPage() {
                   </div>
                   <div className="flex flex-col items-end gap-1.5">
                     <span className="text-xs text-muted">{formatDate(app.createdAt)}</span>
+                    <IssueCodeButton applicationId={app.id} />
                     <DeleteApplicationButton applicationId={app.id} />
                   </div>
                 </div>

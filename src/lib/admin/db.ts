@@ -421,6 +421,171 @@ export async function createInternshipApplication(input: {
   return rowToApplication(res.rows[0]);
 }
 
+// --- Interns and certificate verification ---
+
+export type InternStatus = "active" | "submitted" | "verified";
+
+export interface Intern {
+  id: string;
+  code: string;
+  fullName: string;
+  email: string;
+  domainSlug: string;
+  institution: string | null;
+  startDate: string | null;
+  projectUrl: string | null;
+  submittedAt: string | null;
+  status: InternStatus;
+  certificateIssuedAt: string | null;
+  createdAt: string;
+}
+
+/** What the PUBLIC verification page is allowed to see. Deliberately no
+ * email, phone or enrollment number: anyone holding a serial can read this. */
+export interface CertificateRecord {
+  code: string;
+  fullName: string;
+  domainSlug: string;
+  institution: string | null;
+  startDate: string | null;
+  projectUrl: string | null;
+  status: InternStatus;
+  certificateIssuedAt: string | null;
+}
+
+let internsTableReady: Promise<void> | null = null;
+function ensureInternsTable(): Promise<void> {
+  if (!internsTableReady) {
+    const db = getPool();
+    internsTableReady = db
+      .query(
+        `CREATE TABLE IF NOT EXISTS interns (
+           id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+           code                   TEXT NOT NULL,
+           code_key               TEXT NOT NULL UNIQUE,
+           application_id         UUID REFERENCES internship_applications(id) ON DELETE SET NULL,
+           full_name              TEXT NOT NULL,
+           email                  TEXT NOT NULL,
+           domain_slug            TEXT NOT NULL,
+           institution            TEXT,
+           start_date             DATE,
+           project_url            TEXT,
+           submitted_at           TIMESTAMPTZ,
+           status                 TEXT NOT NULL DEFAULT 'active'
+                                    CHECK (status IN ('active', 'submitted', 'verified')),
+           certificate_issued_at  TIMESTAMPTZ,
+           created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
+         )`
+      )
+      .then(() => undefined)
+      .catch((err) => {
+        internsTableReady = null;
+        throw err;
+      });
+  }
+  return internsTableReady;
+}
+
+function rowToIntern(r: Record<string, unknown>): Intern {
+  return {
+    id: r.id as string,
+    code: r.code as string,
+    fullName: r.full_name as string,
+    email: r.email as string,
+    domainSlug: r.domain_slug as string,
+    institution: (r.institution as string | null) ?? null,
+    startDate: r.start_date ? (r.start_date as Date).toISOString().slice(0, 10) : null,
+    projectUrl: (r.project_url as string | null) ?? null,
+    submittedAt: r.submitted_at ? (r.submitted_at as Date).toISOString() : null,
+    status: r.status as InternStatus,
+    certificateIssuedAt: r.certificate_issued_at ? (r.certificate_issued_at as Date).toISOString() : null,
+    createdAt: (r.created_at as Date).toISOString(),
+  };
+}
+
+export async function listInterns(): Promise<Intern[]> {
+  await ensureInternsTable();
+  const res = await getPool().query("SELECT * FROM interns ORDER BY created_at DESC");
+  return res.rows.map(rowToIntern);
+}
+
+export async function createIntern(input: {
+  code: string;
+  codeKey: string;
+  applicationId: string | null;
+  fullName: string;
+  email: string;
+  domainSlug: string;
+  institution: string | null;
+  startDate: string | null;
+}): Promise<Intern> {
+  await ensureApplicationsTable();
+  await ensureInternsTable();
+  const res = await getPool().query(
+    `INSERT INTO interns (code, code_key, application_id, full_name, email, domain_slug, institution, start_date)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+    [
+      input.code,
+      input.codeKey,
+      input.applicationId,
+      input.fullName,
+      input.email,
+      input.domainSlug,
+      input.institution,
+      input.startDate,
+    ]
+  );
+  return rowToIntern(res.rows[0]);
+}
+
+export async function findInternByCodeKey(codeKey: string): Promise<Intern | null> {
+  await ensureInternsTable();
+  const res = await getPool().query("SELECT * FROM interns WHERE code_key = $1", [codeKey]);
+  return res.rows.length ? rowToIntern(res.rows[0]) : null;
+}
+
+/** Records the project link an intern submits against their own code. Only
+ * allowed while the certificate hasn't been issued -- once it has, the link
+ * it was verified against must stay fixed, or the certificate would vouch
+ * for a repository that changed after the fact. */
+export async function submitInternProject(codeKey: string, projectUrl: string): Promise<"ok" | "not_found" | "already_verified"> {
+  await ensureInternsTable();
+  const db = getPool();
+  const existing = await findInternByCodeKey(codeKey);
+  if (!existing) return "not_found";
+  if (existing.status === "verified") return "already_verified";
+  await db.query(
+    "UPDATE interns SET project_url = $1, submitted_at = now(), status = 'submitted' WHERE code_key = $2",
+    [projectUrl, codeKey]
+  );
+  return "ok";
+}
+
+export async function verifyIntern(id: string): Promise<void> {
+  await ensureInternsTable();
+  await getPool().query(
+    "UPDATE interns SET status = 'verified', certificate_issued_at = now() WHERE id = $1",
+    [id]
+  );
+}
+
+/** Sends a submission back for rework: clears the issued certificate too, so
+ * a certificate can never outlive the verification that justified it. */
+export async function unverifyIntern(id: string): Promise<void> {
+  await ensureInternsTable();
+  await getPool().query(
+    `UPDATE interns SET status = CASE WHEN project_url IS NULL THEN 'active' ELSE 'submitted' END,
+                        certificate_issued_at = NULL
+     WHERE id = $1`,
+    [id]
+  );
+}
+
+export async function deleteIntern(id: string): Promise<void> {
+  await ensureInternsTable();
+  await getPool().query("DELETE FROM interns WHERE id = $1", [id]);
+}
+
 export async function deleteInternshipApplication(id: string): Promise<void> {
   await ensureApplicationsTable();
   await getPool().query("DELETE FROM internship_applications WHERE id = $1", [id]);

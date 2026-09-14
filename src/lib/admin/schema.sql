@@ -101,3 +101,26 @@ CREATE INDEX IF NOT EXISTS internship_applications_created_at_idx
 -- spelling per institution rather than whatever the applicant typed.
 CREATE INDEX IF NOT EXISTS internship_applications_institution_idx
   ON internship_applications(institution);
+
+-- An accepted intern, and the certificate serial issued to them. The
+-- serial is the identity a certificate is verified by: code_key is the
+-- same value with case, spaces and dashes stripped, so a serial typed by
+-- hand off a printed certificate still resolves. Created on demand by the
+-- application code, like internship_applications above.
+CREATE TABLE IF NOT EXISTS interns (
+  id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  code                   TEXT NOT NULL,
+  code_key               TEXT NOT NULL UNIQUE,
+  application_id         UUID REFERENCES internship_applications(id) ON DELETE SET NULL,
+  full_name              TEXT NOT NULL,
+  email                  TEXT NOT NULL,
+  domain_slug            TEXT NOT NULL,
+  institution            TEXT,
+  start_date             DATE,
+  project_url            TEXT,
+  submitted_at           TIMESTAMPTZ,
+  status                 TEXT NOT NULL DEFAULT 'active'
+                           CHECK (status IN ('active', 'submitted', 'verified')),
+  certificate_issued_at  TIMESTAMPTZ,
+  created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
+);

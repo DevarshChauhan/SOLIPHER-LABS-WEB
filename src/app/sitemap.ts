@@ -12,6 +12,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/portfolio",
     "/internships",
     ...internshipDomains.map((d) => `/internships/${d.slug}`),
+    "/internships/apply",
+    "/internships/submit",
+    "/verify",
     "/careers",
     "/contact",
   ];

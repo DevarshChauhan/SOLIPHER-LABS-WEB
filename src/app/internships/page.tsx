@@ -66,7 +66,7 @@ const process = [
   {
     icon: Award,
     title: "Finish with proof",
-    description: "A completion certificate, and more importantly the projects themselves, which you can show and explain to an employer.",
+    description: "Submit your project, and once we've verified it your certificate is issued against your own serial code, which any employer can check against this site.",
   },
 ] as const;
 
@@ -185,6 +185,27 @@ export default function InternshipsPage() {
             <Button href={applyHref} className="mt-6">
               Apply Now <ArrowRight size={14} />
             </Button>
+          </div>
+
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div className="rounded-2xl border border-border bg-surface p-6">
+              <h3 className="text-base font-semibold text-foreground">Already an intern with us?</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">
+                Finished your project? Submit your repository against your intern code to get your certificate issued.
+              </p>
+              <Button href="/internships/submit" variant="secondary" className="mt-4">
+                Submit your project <ArrowRight size={14} />
+              </Button>
+            </div>
+            <div className="rounded-2xl border border-border bg-surface p-6">
+              <h3 className="text-base font-semibold text-foreground">Checking a certificate?</h3>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">
+                Every certificate we issue carries a serial code. Enter it to confirm the certificate is genuine.
+              </p>
+              <Button href="/verify" variant="secondary" className="mt-4">
+                Verify a certificate <ArrowRight size={14} />
+              </Button>
+            </div>
           </div>
         </Container>
       </section>

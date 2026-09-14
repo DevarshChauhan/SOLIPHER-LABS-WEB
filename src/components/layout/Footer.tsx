@@ -10,6 +10,7 @@ const footerLinks = [
   { href: "/products", label: "Products" },
   { href: "/services", label: "Services" },
   { href: "/internships", label: "Internships" },
+  { href: "/verify", label: "Verify Certificate" },
   ...navLinks.slice(2),
 ];
 
