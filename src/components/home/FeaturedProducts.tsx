@@ -61,6 +61,28 @@ export function FeaturedProducts() {
               Learn more <ArrowUpRight size={14} />
             </Link>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="flex h-full flex-col rounded-2xl border border-red-500/30 bg-background p-8"
+          >
+            <Badge tone="red">AI infrastructure</Badge>
+            <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-foreground">
+              Solipher SHARD CodeContext
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Compiles the smallest slice of your repository a coding task actually needs, under a hard token budget.
+            </p>
+            <Link
+              href="/products/shard-codecontext"
+              className="mt-6 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+            >
+              Learn more <ArrowUpRight size={14} />
+            </Link>
+          </motion.div>
         </div>
       </Container>
     </section>

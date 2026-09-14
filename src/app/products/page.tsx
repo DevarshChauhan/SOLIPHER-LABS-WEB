@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { FadeInView } from "@/components/ui/FadeInView";
 import { productsVariants, pickVariant } from "@/lib/copyVariants";
-import { Scissors, ArrowRight, Network } from "lucide-react";
+import { Scissors, ArrowRight, Network, FileCode2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -67,6 +67,30 @@ export default function ProductsPage() {
               <div className="mt-8">
                 <Button href="/products/shard-context" variant="primary">
                   The real results, and what&rsquo;s not done yet <ArrowRight size={14} />
+                </Button>
+              </div>
+            </FadeInView>
+
+            <FadeInView index={2} className="flex flex-col rounded-2xl border border-red-500/30 bg-red-500/5 p-8">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-red-500/30 bg-red-500/10">
+                <FileCode2 size={22} className="text-red-500" />
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge>AI infrastructure</Badge>
+                <Badge tone="red">Benchmarked on real repositories</Badge>
+              </div>
+              <h2 className="mt-4 font-display text-lg font-semibold text-foreground">Solipher SHARD CodeContext</h2>
+              <p className="mt-1 text-sm font-medium text-red-400">
+                Compiles the smallest slice of your repository a coding task actually needs, under a hard token budget.
+              </p>
+              <p className="mt-4 text-sm leading-relaxed text-muted">
+                11 real tasks across 4 open repositories in Rust, Python and TypeScript, re-measured by CI on
+                every push, including the three cases where it does not win.
+              </p>
+
+              <div className="mt-8">
+                <Button href="/products/shard-codecontext" variant="primary">
+                  The full benchmark, and the honest gaps <ArrowRight size={14} />
                 </Button>
               </div>
             </FadeInView>
