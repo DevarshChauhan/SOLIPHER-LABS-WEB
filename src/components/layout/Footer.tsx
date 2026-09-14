@@ -9,6 +9,7 @@ const footerLinks = [
   navLinks[1],
   { href: "/products", label: "Products" },
   { href: "/services", label: "Services" },
+  { href: "/internships", label: "Internships" },
   ...navLinks.slice(2),
 ];
 

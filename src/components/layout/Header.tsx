@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { navLinks, productNavLinks, serviceNavLinks } from "@/lib/data/site";
+import { internshipNavLinks } from "@/lib/data/internships";
 import { liquidGlass, type LiquidGlassHandle } from "@/lib/liquidGlass";
 
 interface NavDropdownLink {
@@ -18,15 +19,18 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [productsOpen, setProductsOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
+  const [internshipsOpen, setInternshipsOpen] = useState(false);
   const pathname = usePathname();
   const pillRef = useRef<HTMLDivElement>(null);
   const productsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const servicesCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const internshipsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     setOpen(false);
     setProductsOpen(false);
     setServicesOpen(false);
+    setInternshipsOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -59,8 +63,17 @@ export function Header() {
     servicesCloseTimer.current = setTimeout(() => setServicesOpen(false), 150);
   }
 
+  function openInternships() {
+    if (internshipsCloseTimer.current) clearTimeout(internshipsCloseTimer.current);
+    setInternshipsOpen(true);
+  }
+  function scheduleCloseInternships() {
+    internshipsCloseTimer.current = setTimeout(() => setInternshipsOpen(false), 150);
+  }
+
   const productsActive = pathname.startsWith("/products");
   const servicesActive = pathname.startsWith("/services");
+  const internshipsActive = pathname.startsWith("/internships");
 
   return (
     <header className="sticky top-0 z-50 w-full px-4 pt-4 pb-2">
@@ -94,6 +107,17 @@ export function Header() {
               onOpen={openServices}
               onClose={scheduleCloseServices}
               onToggle={() => setServicesOpen((v) => !v)}
+            />
+
+            <NavDropdown
+              label="Internships"
+              links={internshipNavLinks}
+              active={internshipsActive}
+              open={internshipsOpen}
+              onOpen={openInternships}
+              onClose={scheduleCloseInternships}
+              onToggle={() => setInternshipsOpen((v) => !v)}
+              columns={2}
             />
 
             {navLinks.slice(2).map((link) => (
@@ -159,6 +183,19 @@ export function Header() {
               </div>
 
               <div className="mt-1 border-t border-border pt-2">
+                <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted">Internships</p>
+                {internshipNavLinks.map((link) => (
+                  <NextLink
+                    key={link.href}
+                    href={link.href}
+                    className="block rounded-lg px-3 py-2.5 text-base text-foreground/90 transition-colors hover:bg-surface-raised hover:text-red-400"
+                  >
+                    {link.label}
+                  </NextLink>
+                ))}
+              </div>
+
+              <div className="mt-1 border-t border-border pt-2">
                 {navLinks.slice(2).map((link) => (
                   <NextLink
                     key={link.href}
@@ -198,6 +235,7 @@ function NavDropdown({
   onOpen,
   onClose,
   onToggle,
+  columns = 1,
 }: {
   label: string;
   links: readonly NavDropdownLink[];
@@ -206,6 +244,7 @@ function NavDropdown({
   onOpen: () => void;
   onClose: () => void;
   onToggle: () => void;
+  columns?: 1 | 2;
 }) {
   return (
     <div className="relative" onMouseEnter={onOpen} onMouseLeave={onClose}>
@@ -228,19 +267,26 @@ function NavDropdown({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 6, scale: 0.97 }}
             transition={{ duration: 0.16 }}
-            className="absolute left-1/2 top-full mt-3 w-64 -translate-x-1/2 rounded-2xl border border-border bg-surface/95 p-2 shadow-xl backdrop-blur-xl"
+            className={`absolute left-1/2 top-full mt-3 -translate-x-1/2 rounded-2xl border border-border bg-surface/95 p-2 shadow-xl backdrop-blur-xl ${
+              columns === 2 ? "grid w-[32rem] grid-cols-2 gap-x-1" : "w-64"
+            }`}
           >
-            {links.map((link, i) => (
-              <NextLink
-                key={link.href}
-                href={link.href}
-                className={`block rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-foreground/[0.06] hover:text-red-400 ${
-                  i === links.length - 1 ? "mt-1 border-t border-border pt-3 text-foreground/70" : "text-foreground/85"
-                }`}
-              >
-                {link.label}
-              </NextLink>
-            ))}
+            {links.map((link, i) => {
+              const isLast = i === links.length - 1;
+              return (
+                <NextLink
+                  key={link.href}
+                  href={link.href}
+                  className={`block rounded-xl px-3 py-2.5 text-sm transition-colors hover:bg-foreground/[0.06] hover:text-red-400 ${
+                    isLast
+                      ? `mt-1 border-t border-border pt-3 text-foreground/70 ${columns === 2 ? "col-span-2" : ""}`
+                      : "text-foreground/85"
+                  }`}
+                >
+                  {link.label}
+                </NextLink>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
