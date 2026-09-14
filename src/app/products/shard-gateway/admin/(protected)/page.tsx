@@ -48,6 +48,12 @@ export default async function AdminCompaniesPage() {
             <h1 className="text-2xl font-display font-bold tracking-tight">Companies</h1>
             <p className="text-sm text-muted mt-1">SHARD Gateway licenses across every registered install.</p>
           </div>
+          <Link
+            href="/products/shard-gateway/admin/internships"
+            className="text-sm text-muted transition-colors hover:text-foreground"
+          >
+            Internship applications →
+          </Link>
         </div>
 
         <div className="grid grid-cols-4 gap-3 mb-8">

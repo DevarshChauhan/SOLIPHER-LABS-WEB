@@ -1,8 +1,3 @@
-// Paste the Google Form URL here to point every "Apply Now" button on the
-// internship pages at it. While this is empty, those buttons fall back to a
-// prefilled email to the address in site.ts, so no link is ever dead.
-export const applyFormUrl = "";
-
 export interface InternshipProject {
   title: string;
   description: string;

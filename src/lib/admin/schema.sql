@@ -72,3 +72,25 @@ CREATE TABLE IF NOT EXISTS payment_links (
 );
 
 CREATE INDEX IF NOT EXISTS payment_links_company_id_idx ON payment_links(company_id);
+
+-- Internship applications submitted from the public /internships/apply
+-- form. Unrelated to licensing; it lives here because this is the one
+-- schema file and the one database. The application code creates this
+-- table on demand too, so a fresh environment doesn't need this file run
+-- by hand before the form works.
+CREATE TABLE IF NOT EXISTS internship_applications (
+  id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  domain_slug   TEXT NOT NULL,
+  full_name     TEXT NOT NULL,
+  email         TEXT NOT NULL,
+  phone         TEXT,
+  institution   TEXT,
+  experience    TEXT,
+  portfolio_url TEXT,
+  availability  TEXT,
+  message       TEXT,
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS internship_applications_created_at_idx
+  ON internship_applications(created_at DESC);

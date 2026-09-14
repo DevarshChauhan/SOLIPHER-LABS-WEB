@@ -5,8 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading, Badge } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { FadeInView } from "@/components/ui/FadeInView";
-import { site } from "@/lib/data/site";
-import { internshipDomains, applyFormUrl } from "@/lib/data/internships";
+import { internshipDomains } from "@/lib/data/internships";
 import {
   Globe,
   Smartphone,
@@ -72,8 +71,7 @@ const process = [
 ] as const;
 
 export default function InternshipsPage() {
-  const applyHref =
-    applyFormUrl || `mailto:${site.email}?subject=${encodeURIComponent("Internship application")}`;
+  const applyHref = "/internships/apply";
 
   return (
     <>
@@ -184,7 +182,7 @@ export default function InternshipsPage() {
               Pick the domain you want to work in, tell us what you&rsquo;ve built so far, and we&rsquo;ll get
               back to you directly. We take a small number of interns per domain at a time.
             </p>
-            <Button href={applyHref} external className="mt-6">
+            <Button href={applyHref} className="mt-6">
               Apply Now <ArrowRight size={14} />
             </Button>
           </div>

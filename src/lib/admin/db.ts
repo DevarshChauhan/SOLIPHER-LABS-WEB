@@ -304,3 +304,104 @@ export async function getPaymentLink(id: string): Promise<PaymentLink | null> {
   const res = await db.query("SELECT * FROM payment_links WHERE id = $1", [id]);
   return res.rows.length ? rowToPaymentLink(res.rows[0]) : null;
 }
+
+// --- Internship applications (public form at /internships/apply) ---
+
+export interface InternshipApplication {
+  id: string;
+  domainSlug: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  institution: string | null;
+  experience: string | null;
+  portfolioUrl: string | null;
+  availability: string | null;
+  message: string | null;
+  createdAt: string;
+}
+
+// Deliberately NOT mirrored into the in-memory fixture path the licensing
+// tables use: an application stored in memory would be silently lost on the
+// next deploy, and losing a real person's application is worse than telling
+// them to email instead. Without a database the API route says so outright.
+let applicationsTableReady: Promise<void> | null = null;
+function ensureApplicationsTable(): Promise<void> {
+  if (!applicationsTableReady) {
+    applicationsTableReady = getPool()
+      .query(
+        `CREATE TABLE IF NOT EXISTS internship_applications (
+           id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+           domain_slug   TEXT NOT NULL,
+           full_name     TEXT NOT NULL,
+           email         TEXT NOT NULL,
+           phone         TEXT,
+           institution   TEXT,
+           experience    TEXT,
+           portfolio_url TEXT,
+           availability  TEXT,
+           message       TEXT,
+           created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+         )`
+      )
+      .then(() => undefined)
+      .catch((err) => {
+        applicationsTableReady = null;
+        throw err;
+      });
+  }
+  return applicationsTableReady;
+}
+
+function rowToApplication(r: Record<string, unknown>): InternshipApplication {
+  return {
+    id: r.id as string,
+    domainSlug: r.domain_slug as string,
+    fullName: r.full_name as string,
+    email: r.email as string,
+    phone: (r.phone as string | null) ?? null,
+    institution: (r.institution as string | null) ?? null,
+    experience: (r.experience as string | null) ?? null,
+    portfolioUrl: (r.portfolio_url as string | null) ?? null,
+    availability: (r.availability as string | null) ?? null,
+    message: (r.message as string | null) ?? null,
+    createdAt: (r.created_at as Date).toISOString(),
+  };
+}
+
+export async function createInternshipApplication(input: {
+  domainSlug: string;
+  fullName: string;
+  email: string;
+  phone: string | null;
+  institution: string | null;
+  experience: string | null;
+  portfolioUrl: string | null;
+  availability: string | null;
+  message: string | null;
+}): Promise<InternshipApplication> {
+  await ensureApplicationsTable();
+  const res = await getPool().query(
+    `INSERT INTO internship_applications
+       (domain_slug, full_name, email, phone, institution, experience, portfolio_url, availability, message)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+    [
+      input.domainSlug,
+      input.fullName,
+      input.email,
+      input.phone,
+      input.institution,
+      input.experience,
+      input.portfolioUrl,
+      input.availability,
+      input.message,
+    ]
+  );
+  return rowToApplication(res.rows[0]);
+}
+
+export async function listInternshipApplications(): Promise<InternshipApplication[]> {
+  await ensureApplicationsTable();
+  const res = await getPool().query("SELECT * FROM internship_applications ORDER BY created_at DESC");
+  return res.rows.map(rowToApplication);
+}

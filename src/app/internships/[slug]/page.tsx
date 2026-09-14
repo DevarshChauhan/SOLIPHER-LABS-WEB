@@ -5,8 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { SectionHeading, Badge } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { FadeInView } from "@/components/ui/FadeInView";
-import { site } from "@/lib/data/site";
-import { internshipDomains, getInternshipDomain, applyFormUrl } from "@/lib/data/internships";
+import { internshipDomains, getInternshipDomain } from "@/lib/data/internships";
 import {
   Check,
   ArrowRight,
@@ -82,9 +81,7 @@ export default async function InternshipDomainPage({ params }: { params: Promise
   const domain = getInternshipDomain(slug);
   if (!domain) notFound();
 
-  const applyHref =
-    applyFormUrl ||
-    `mailto:${site.email}?subject=${encodeURIComponent(`Internship application - ${domain.name}`)}`;
+  const applyHref = `/internships/apply?domain=${domain.slug}`;
 
   const otherDomains = internshipDomains.filter((d) => d.slug !== domain.slug).slice(0, 4);
 
@@ -129,7 +126,7 @@ export default async function InternshipDomainPage({ params }: { params: Promise
                 <p className="mt-2 text-sm leading-relaxed text-muted">
                   Tell us what you&rsquo;ve built so far. We read every application ourselves.
                 </p>
-                <Button href={applyHref} external className="mt-5 w-full">
+                <Button href={applyHref} className="mt-5 w-full">
                   Apply Now <ArrowRight size={14} />
                 </Button>
               </div>
@@ -224,7 +221,7 @@ export default async function InternshipDomainPage({ params }: { params: Promise
               We care more about what you&rsquo;ve actually attempted than where you&rsquo;re studying. There are no fixed
               cohort dates; we take a small number of interns per track at a time.
             </p>
-            <Button href={applyHref} external className="mt-6">
+            <Button href={applyHref} className="mt-6">
               Apply Now <ArrowRight size={14} />
             </Button>
           </div>
