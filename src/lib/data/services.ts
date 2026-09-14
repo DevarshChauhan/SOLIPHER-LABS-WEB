@@ -60,6 +60,20 @@ export const services: Service[] = [
     deliverables: ["Pipeline architecture & design", "Model-agnostic triage integration", "Retention & storage design", "PACS/viewer integration"],
   },
   {
+    slug: "academic-research",
+    name: "Research Implementation & Benchmarking",
+    summary: "We implement your design exactly as specified, then benchmark it against a real baseline.",
+    detail:
+      "For professors, master's students, and PhD candidates who need a proposed algorithm, system, or architecture built and measured, not redesigned. We implement your design as-is and hand back a working implementation plus a real, reproducible benchmark against the baseline you specify.",
+    deliverables: [
+      "Faithful implementation of your specification, no unrequested redesign",
+      "Benchmark harness built against your chosen baseline",
+      "Real, reproducible results on real hardware, not simulated",
+      "Handoff package: code, results, and a methodology writeup for your paper or thesis",
+    ],
+    detailSlug: "academic-research",
+  },
+  {
     slug: "bde",
     name: "Business Development Executive (BDE)",
     summary: "Outsourced business development, run like a dedicated hire.",

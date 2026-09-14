@@ -6,13 +6,14 @@ import { SectionHeading, Badge } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { FadeInView } from "@/components/ui/FadeInView";
 import { servicePages, getServicePage } from "@/lib/data/servicePages";
-import { Check, Building2, Smartphone, Handshake, BrainCircuit, ArrowRight, type LucideIcon } from "lucide-react";
+import { Check, Building2, Smartphone, Handshake, BrainCircuit, GraduationCap, ArrowRight, type LucideIcon } from "lucide-react";
 
 const heroIcons: Record<string, LucideIcon> = {
   "odoo-erp": Building2,
   "web-app-development": Smartphone,
   bde: Handshake,
   "ai-development": BrainCircuit,
+  "academic-research": GraduationCap,
 };
 
 export function generateStaticParams() {

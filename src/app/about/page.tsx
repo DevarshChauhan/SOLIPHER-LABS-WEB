@@ -48,6 +48,12 @@ export default function AboutPage() {
                   on Odoo ERP, custom application, and AI/ML development work for teams who need the
                   same level of engineering applied to their own systems.
                 </p>
+                <p>
+                  We&rsquo;ve also taken on a second kind of work: implementing and benchmarking research
+                  designs for professors, master&rsquo;s students, and PhD candidates. You bring the
+                  design, we build it exactly as specified and hand back a real, reproducible benchmark
+                  against your baseline, no redesign, no simulated numbers.
+                </p>
               </div>
 
               <div className="mt-12">
@@ -66,7 +72,8 @@ export default function AboutPage() {
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">Focus</h3>
                   <p className="mt-2 text-sm text-foreground">
                     Medical imaging, high-performance infrastructure, AI inference, network security,
-                    Odoo ERP, and custom application development.
+                    Odoo ERP, custom application development, and research implementation &amp;
+                    benchmarking for academia.
                   </p>
                 </div>
               </FadeInView>

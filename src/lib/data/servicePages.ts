@@ -16,6 +16,10 @@ import {
   FileText,
   TrendingUp,
   ShieldCheck,
+  GraduationCap,
+  FlaskConical,
+  BarChart3,
+  BookOpen,
 } from "lucide-react";
 
 export interface ServicePageExample {
@@ -219,6 +223,66 @@ export const servicePages: ServicePageDetail[] = [
         description:
           "A professional services firm relied entirely on referrals and had no systematic way to reach new accounts. We built an account-based outreach program that reads as informed and specific, not templated, targeted at the accounts most likely to convert.",
         highlights: ["Account-based targeting", "Personalized outreach at scale", "Pipeline reporting & handoff"],
+      },
+    ],
+  },
+  {
+    slug: "academic-research",
+    name: "Research Implementation & Benchmarking",
+    tagline: "We build your design exactly as specified, then benchmark it. Nothing redesigned, nothing simulated.",
+    heroDescription:
+      "For professors, master's students, and PhD candidates who have a design, a proposed algorithm, architecture, or system, and need it implemented as-is and measured against a real baseline. We're the implementation and benchmarking team, not a co-author.",
+    projectType: "Research Implementation & Benchmarking",
+    approach: [
+      {
+        title: "We implement your spec, not our interpretation of it",
+        description: "The design is yours. We build exactly what your paper, proposal, or thesis chapter describes, and flag anything genuinely ambiguous back to you instead of guessing.",
+      },
+      {
+        title: "Baseline first",
+        description: "Before your design is measured, we implement or source the baseline you're comparing against, so the comparison is apples-to-apples from the start.",
+      },
+      {
+        title: "Real hardware, real runs",
+        description: "Every number comes from an executed run on real hardware. No simulated results, no back-of-envelope projections standing in for a benchmark.",
+      },
+      {
+        title: "A handoff you can defend",
+        description: "Code, raw results, and a written methodology section you can put directly into a paper, thesis, or committee presentation, reproducible by anyone who asks.",
+      },
+    ],
+    examples: [
+      {
+        icon: GraduationCap,
+        category: "PhD Research",
+        title: "Turning a thesis chapter's design into a working system",
+        description:
+          "A PhD candidate had a fully specified system design in a thesis proposal, but no bandwidth to also build a production-quality implementation while writing. We implemented the design as specified and delivered a working system the candidate could run experiments against directly.",
+        highlights: ["Implementation from a written specification", "Direct handoff for the candidate's own experiments", "No changes to the underlying design"],
+      },
+      {
+        icon: BarChart3,
+        category: "Master's Research",
+        title: "A benchmark that holds up in a committee review",
+        description:
+          "A master's student had a proposed algorithm and a baseline to compare against, but needed the comparison run on real hardware with a defensible methodology. We built the benchmark harness for both, ran the comparison, and wrote up the methodology for the thesis.",
+        highlights: ["Harness built for the student's exact baseline", "Real hardware, reproducible runs", "Methodology writeup ready for committee review"],
+      },
+      {
+        icon: FlaskConical,
+        category: "Faculty Research",
+        title: "Reproducing a new design across multiple configurations",
+        description:
+          "A professor's lab had a new architecture on paper and needed it implemented and benchmarked across several hardware and workload configurations before submission. We built the implementation once and ran it across every configuration the paper needed.",
+        highlights: ["One implementation, multiple benchmark configurations", "Results delivered per-configuration, not averaged away", "Built for a submission deadline"],
+      },
+      {
+        icon: BookOpen,
+        category: "Publication Support",
+        title: "An artifact reviewers can actually reproduce",
+        description:
+          "A research group needed a public artifact accompanying a submission that reviewers could clone and re-run themselves. We packaged the implementation and benchmark harness into a reproducible artifact with clear setup instructions.",
+        highlights: ["Reproducible artifact packaging", "Setup documented for an external reviewer", "No proprietary dependencies left unexplained"],
       },
     ],
   },

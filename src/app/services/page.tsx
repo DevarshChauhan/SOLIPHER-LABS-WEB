@@ -5,14 +5,14 @@ import { Button } from "@/components/ui/Button";
 import { FadeInView } from "@/components/ui/FadeInView";
 import { services } from "@/lib/data/services";
 import { servicesVariants, pickVariant } from "@/lib/copyVariants";
-import { ArrowRight, Check, Building2, Cpu, Smartphone, BrainCircuit, Gauge, HeartPulse, Handshake, type LucideIcon } from "lucide-react";
+import { ArrowRight, Check, Building2, Cpu, Smartphone, BrainCircuit, Gauge, HeartPulse, Handshake, GraduationCap, type LucideIcon } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Odoo ERP, custom algorithm engineering, Android and web development, custom AI/ML, business development, resource-bounded systems consulting, and medical imaging pipelines.",
+    "Odoo ERP, custom algorithm engineering, Android and web development, custom AI/ML, business development, resource-bounded systems consulting, medical imaging pipelines, and research implementation & benchmarking for academia.",
 };
 
 const serviceIcons: Record<string, LucideIcon> = {
@@ -23,6 +23,7 @@ const serviceIcons: Record<string, LucideIcon> = {
   "resource-bounded-systems": Gauge,
   "medical-imaging-pipelines": HeartPulse,
   bde: Handshake,
+  "academic-research": GraduationCap,
 };
 
 export default function ServicesPage() {

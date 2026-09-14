@@ -6,7 +6,7 @@ export const site = {
   url: "https://solipherlabs.in",
   email: "contact@solipherlabs.in",
   description:
-    "Solipher Labs is an R&D lab building patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software, and shipping them into deployable products.",
+    "Solipher Labs is an R&D lab building patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software, shipping them into deployable products, and implementing and benchmarking research designs for professors, master's students, and PhD candidates.",
   social: {
     linkedin: "https://www.linkedin.com/company/solipher-labs/",
     github: "https://github.com/SOLIPHER-LABS",
@@ -26,6 +26,7 @@ export const navLinks = [
   { href: "/about", label: "About" },
   { href: "/research", label: "Research" },
   { href: "/portfolio", label: "Portfolio" },
+  { href: "/internships", label: "Internships" },
   { href: "/careers", label: "Careers" },
   { href: "/contact", label: "Contact" },
 ] as const;

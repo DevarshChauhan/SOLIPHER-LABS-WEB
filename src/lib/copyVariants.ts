@@ -41,7 +41,7 @@ export const aboutVariants = [
       "Solipher Labs starts where off-the-shelf tools stop, designing the algorithm or data structure a system actually needs, then protecting and shipping it.",
   },
   {
-    title: "One founder. Original engineering.",
+    title: "Five people. Original engineering.",
     description:
       "Solipher Labs is small on purpose. Every product on this site traces back to original, patent-backed work, not integration of someone else's tools.",
   },
@@ -98,7 +98,7 @@ export const servicesVariants = [
   {
     title: "Consulting and development, engineered to your actual constraints.",
     description:
-      "From Odoo implementations to custom AI/ML pipelines, every engagement gets measured against your real performance and reliability requirements, not a generic benchmark.",
+      "From Odoo implementations to custom AI/ML pipelines, and implementing and benchmarking research designs for professors and PhD candidates, every engagement gets measured against your real performance and reliability requirements, not a generic benchmark.",
   },
   {
     title: "When the off-the-shelf answer isn't good enough, we build the one that is.",
