@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { CheckCircle2, AlertCircle } from "lucide-react";
 import { internshipDomains } from "@/lib/data/internships";
 import { site } from "@/lib/data/site";
+import { CollegeSelect } from "./CollegeSelect";
 
 const inputClass =
   "w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10";
@@ -24,7 +25,7 @@ export function ApplicationForm() {
 
     const form = new FormData(e.currentTarget);
     const payload = Object.fromEntries(
-      ["domainSlug", "fullName", "email", "phone", "institution", "experience", "portfolioUrl", "availability", "message", "website"].map(
+      ["domainSlug", "fullName", "email", "phone", "institution", "enrollmentNo", "experience", "portfolioUrl", "startDate", "message", "website"].map(
         (key) => [key, form.get(key)?.toString() ?? ""]
       )
     );
@@ -84,12 +85,20 @@ export function ApplicationForm() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Phone" name="phone" type="tel" />
-        <Field label="College / university" name="institution" />
+        <Field label="Enrollment number" name="enrollmentNo" placeholder="As on your university records" />
       </div>
+
+      <CollegeSelect name="institution" inputClass={inputClass} />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="GitHub, portfolio, or LinkedIn" name="portfolioUrl" type="url" placeholder="https://" />
-        <Field label="Availability" name="availability" placeholder="e.g. 3 months from June, part-time" />
+        <div>
+          <label htmlFor="startDate" className="mb-2 block text-sm font-medium text-foreground/90">
+            Internship start date
+          </label>
+          <input id="startDate" name="startDate" type="date" className={inputClass} />
+          <p className="mt-1.5 text-xs text-muted">The date your university requires the internship to begin.</p>
+        </div>
       </div>
 
       <div>

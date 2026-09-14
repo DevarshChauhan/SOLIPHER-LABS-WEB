@@ -7,11 +7,20 @@ const LIMITS = {
   email: 200,
   phone: 40,
   institution: 200,
+  enrollmentNo: 60,
   experience: 4000,
   portfolioUrl: 500,
-  availability: 200,
   message: 4000,
 } as const;
+
+// Stored as a DATE, so anything that isn't a plain YYYY-MM-DD is dropped
+// rather than handed to Postgres to reject mid-insert.
+function cleanDate(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return null;
+  return Number.isNaN(new Date(trimmed).getTime()) ? null : trimmed;
+}
 
 function clean(value: unknown, max: number): string | null {
   if (typeof value !== "string") return null;
@@ -64,9 +73,10 @@ export async function POST(req: NextRequest) {
       email,
       phone: clean(payload.phone, LIMITS.phone),
       institution: clean(payload.institution, LIMITS.institution),
+      enrollmentNo: clean(payload.enrollmentNo, LIMITS.enrollmentNo),
       experience: clean(payload.experience, LIMITS.experience),
       portfolioUrl: clean(payload.portfolioUrl, LIMITS.portfolioUrl),
-      availability: clean(payload.availability, LIMITS.availability),
+      startDate: cleanDate(payload.startDate),
       message: clean(payload.message, LIMITS.message),
     });
   } catch (err) {

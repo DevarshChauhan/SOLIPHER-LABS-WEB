@@ -85,12 +85,19 @@ CREATE TABLE IF NOT EXISTS internship_applications (
   email         TEXT NOT NULL,
   phone         TEXT,
   institution   TEXT,
+  enrollment_no TEXT,
   experience    TEXT,
   portfolio_url TEXT,
-  availability  TEXT,
+  start_date    DATE,
   message       TEXT,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS internship_applications_created_at_idx
   ON internship_applications(created_at DESC);
+
+-- Applicants are grouped by college in the admin view, which is only
+-- meaningful because the form's college search stores one canonical
+-- spelling per institution rather than whatever the applicant typed.
+CREATE INDEX IF NOT EXISTS internship_applications_institution_idx
+  ON internship_applications(institution);

@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { AdminHeader } from "@/components/admin/AdminHeader";
+import { DeleteApplicationButton } from "@/components/admin/DeleteApplicationButton";
 import { listInternshipApplications, hasDb } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
-import { Mail, Phone, ExternalLink } from "lucide-react";
+import { Mail, Phone, ExternalLink, CalendarDays, IdCard } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -15,8 +16,19 @@ function formatDate(iso: string): string {
   return new Date(iso).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 }
 
+function formatDay(iso: string): string {
+  return new Date(iso).toLocaleDateString("en-IN", { dateStyle: "medium" });
+}
+
 export default async function InternshipApplicationsPage() {
   const applications = hasDb ? await listInternshipApplications() : [];
+
+  const byCollege = new Map<string, number>();
+  for (const app of applications) {
+    const key = app.institution ?? "Not given";
+    byCollege.set(key, (byCollege.get(key) ?? 0) + 1);
+  }
+  const collegeCounts = [...byCollege.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
 
   return (
     <>
@@ -48,6 +60,20 @@ export default async function InternshipApplicationsPage() {
           </p>
         )}
 
+        {collegeCounts.length > 0 && (
+          <div className="mt-8 rounded-2xl border border-border bg-surface p-6">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">By college</h2>
+            <ul className="mt-3 divide-y divide-border">
+              {collegeCounts.map(([college, count]) => (
+                <li key={college} className="flex items-center justify-between gap-4 py-2 text-sm">
+                  <span className="text-foreground/85">{college}</span>
+                  <span className="shrink-0 tabular-nums text-muted">{count}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         <div className="mt-8 space-y-4">
           {applications.map((app) => {
             const domain = getInternshipDomain(app.domainSlug);
@@ -58,7 +84,10 @@ export default async function InternshipApplicationsPage() {
                     <h2 className="text-base font-semibold text-foreground">{app.fullName}</h2>
                     <p className="mt-1 text-sm font-medium text-red-400">{domain?.name ?? app.domainSlug}</p>
                   </div>
-                  <span className="text-xs text-muted">{formatDate(app.createdAt)}</span>
+                  <div className="flex flex-col items-end gap-1.5">
+                    <span className="text-xs text-muted">{formatDate(app.createdAt)}</span>
+                    <DeleteApplicationButton applicationId={app.id} />
+                  </div>
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
@@ -85,10 +114,21 @@ export default async function InternshipApplicationsPage() {
                   )}
                 </div>
 
-                {(app.institution || app.availability) && (
-                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted">
-                    {app.institution && <span>{app.institution}</span>}
-                    {app.availability && <span>Available: {app.availability}</span>}
+                {(app.institution || app.enrollmentNo || app.startDate) && (
+                  <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-sm text-muted">
+                    {app.institution && <span className="text-foreground/85">{app.institution}</span>}
+                    {app.enrollmentNo && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <IdCard size={14} className="text-red-500" />
+                        {app.enrollmentNo}
+                      </span>
+                    )}
+                    {app.startDate && (
+                      <span className="inline-flex items-center gap-1.5">
+                        <CalendarDays size={14} className="text-red-500" />
+                        Starts {formatDay(app.startDate)}
+                      </span>
+                    )}
                   </div>
                 )}
 

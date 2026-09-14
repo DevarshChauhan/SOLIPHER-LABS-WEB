@@ -314,9 +314,10 @@ export interface InternshipApplication {
   email: string;
   phone: string | null;
   institution: string | null;
+  enrollmentNo: string | null;
   experience: string | null;
   portfolioUrl: string | null;
-  availability: string | null;
+  startDate: string | null;
   message: string | null;
   createdAt: string;
 }
@@ -328,7 +329,8 @@ export interface InternshipApplication {
 let applicationsTableReady: Promise<void> | null = null;
 function ensureApplicationsTable(): Promise<void> {
   if (!applicationsTableReady) {
-    applicationsTableReady = getPool()
+    const db = getPool();
+    applicationsTableReady = db
       .query(
         `CREATE TABLE IF NOT EXISTS internship_applications (
            id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -337,12 +339,28 @@ function ensureApplicationsTable(): Promise<void> {
            email         TEXT NOT NULL,
            phone         TEXT,
            institution   TEXT,
+           enrollment_no TEXT,
            experience    TEXT,
            portfolio_url TEXT,
-           availability  TEXT,
+           start_date    DATE,
            message       TEXT,
            created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
          )`
+      )
+      // Brings a table created by an earlier deploy up to the current
+      // shape, so adding a field never needs a migration run by hand.
+      .then(() =>
+        db.query(
+          `ALTER TABLE internship_applications
+             ADD COLUMN IF NOT EXISTS enrollment_no TEXT,
+             ADD COLUMN IF NOT EXISTS start_date    DATE`
+        )
+      )
+      .then(() =>
+        db.query(
+          `CREATE INDEX IF NOT EXISTS internship_applications_institution_idx
+             ON internship_applications(institution)`
+        )
       )
       .then(() => undefined)
       .catch((err) => {
@@ -361,9 +379,10 @@ function rowToApplication(r: Record<string, unknown>): InternshipApplication {
     email: r.email as string,
     phone: (r.phone as string | null) ?? null,
     institution: (r.institution as string | null) ?? null,
+    enrollmentNo: (r.enrollment_no as string | null) ?? null,
     experience: (r.experience as string | null) ?? null,
     portfolioUrl: (r.portfolio_url as string | null) ?? null,
-    availability: (r.availability as string | null) ?? null,
+    startDate: r.start_date ? (r.start_date as Date).toISOString().slice(0, 10) : null,
     message: (r.message as string | null) ?? null,
     createdAt: (r.created_at as Date).toISOString(),
   };
@@ -375,29 +394,36 @@ export async function createInternshipApplication(input: {
   email: string;
   phone: string | null;
   institution: string | null;
+  enrollmentNo: string | null;
   experience: string | null;
   portfolioUrl: string | null;
-  availability: string | null;
+  startDate: string | null;
   message: string | null;
 }): Promise<InternshipApplication> {
   await ensureApplicationsTable();
   const res = await getPool().query(
     `INSERT INTO internship_applications
-       (domain_slug, full_name, email, phone, institution, experience, portfolio_url, availability, message)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, message)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
     [
       input.domainSlug,
       input.fullName,
       input.email,
       input.phone,
       input.institution,
+      input.enrollmentNo,
       input.experience,
       input.portfolioUrl,
-      input.availability,
+      input.startDate,
       input.message,
     ]
   );
   return rowToApplication(res.rows[0]);
+}
+
+export async function deleteInternshipApplication(id: string): Promise<void> {
+  await ensureApplicationsTable();
+  await getPool().query("DELETE FROM internship_applications WHERE id = $1", [id]);
 }
 
 export async function listInternshipApplications(): Promise<InternshipApplication[]> {
