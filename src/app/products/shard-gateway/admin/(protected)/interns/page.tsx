@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { AdminHeader } from "@/components/admin/AdminHeader";
-import { InternActions } from "@/components/admin/InternActions";
+import { InternActions, InternDetailsForm } from "@/components/admin/InternActions";
 import { listInterns, hasDb } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
-import { Mail, ExternalLink, BadgeCheck, Clock, CircleDashed } from "lucide-react";
+import { Mail, ExternalLink, BadgeCheck, Clock, CircleDashed, FileText, Award } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -121,6 +121,31 @@ export default async function InternsPage() {
                 )}
 
                 <div className="mt-5 border-t border-border pt-4">
+                  <InternDetailsForm
+                    internId={intern.id}
+                    startDate={intern.startDate}
+                    endDate={intern.endDate}
+                    mode={intern.mode}
+                  />
+                </div>
+
+                <div className="mt-4 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-4">
+                  <div className="flex items-center gap-4 text-xs">
+                    <Link
+                      href={`/products/shard-gateway/admin/interns/${intern.id}/offer-letter`}
+                      className="inline-flex items-center gap-1.5 font-medium text-foreground/85 transition-colors hover:text-red-400"
+                    >
+                      <FileText size={13} className="text-red-500" />
+                      Offer letter
+                    </Link>
+                    <Link
+                      href={`/products/shard-gateway/admin/interns/${intern.id}/certificate`}
+                      className="inline-flex items-center gap-1.5 font-medium text-foreground/85 transition-colors hover:text-red-400"
+                    >
+                      <Award size={13} className="text-red-500" />
+                      Certificate
+                    </Link>
+                  </div>
                   <InternActions internId={intern.id} status={intern.status} />
                 </div>
               </article>

@@ -89,6 +89,7 @@ CREATE TABLE IF NOT EXISTS internship_applications (
   experience    TEXT,
   portfolio_url TEXT,
   start_date    DATE,
+  mode          TEXT,
   message       TEXT,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -117,6 +118,8 @@ CREATE TABLE IF NOT EXISTS interns (
   domain_slug            TEXT NOT NULL,
   institution            TEXT,
   start_date             DATE,
+  end_date               DATE,
+  mode                   TEXT,
   project_url            TEXT,
   submitted_at           TIMESTAMPTZ,
   status                 TEXT NOT NULL DEFAULT 'active'

@@ -91,7 +91,17 @@ export default async function VerifyPage({
                   <Row label="Issued to" value={intern.fullName} />
                   <Row label="Internship domain" value={domain?.name ?? intern.domainSlug} />
                   {intern.institution && <Row label="College" value={intern.institution} />}
-                  {intern.startDate && <Row label="Internship started" value={formatDay(intern.startDate)} />}
+                  {intern.mode && <Row label="Mode" value={<span className="capitalize">{intern.mode}</span>} />}
+                  {intern.startDate && (
+                    <Row
+                      label="Internship period"
+                      value={
+                        intern.endDate
+                          ? `${formatDay(intern.startDate)} to ${formatDay(intern.endDate)}`
+                          : `From ${formatDay(intern.startDate)}`
+                      }
+                    />
+                  )}
                   {intern.certificateIssuedAt && <Row label="Certificate issued" value={formatDay(intern.certificateIssuedAt)} />}
                   {intern.projectUrl && (
                     <Row

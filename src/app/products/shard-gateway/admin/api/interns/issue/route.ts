@@ -49,6 +49,7 @@ export async function POST(req: NextRequest) {
       domainSlug: application.domainSlug,
       institution: application.institution,
       startDate: application.startDate,
+      mode: application.mode,
     });
     return NextResponse.json({ ok: true, code: intern.code });
   } catch (err) {

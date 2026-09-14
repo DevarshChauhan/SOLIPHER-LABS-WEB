@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createInternshipApplication, hasDb } from "@/lib/admin/db";
+import { createInternshipApplication, hasDb, type InternshipMode } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
 
 const LIMITS = {
@@ -20,6 +20,12 @@ function cleanDate(value: unknown): string | null {
   const trimmed = value.trim();
   if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return null;
   return Number.isNaN(new Date(trimmed).getTime()) ? null : trimmed;
+}
+
+const MODES: InternshipMode[] = ["online", "offline", "hybrid"];
+
+function cleanMode(value: unknown): InternshipMode | null {
+  return typeof value === "string" && MODES.includes(value as InternshipMode) ? (value as InternshipMode) : null;
 }
 
 function clean(value: unknown, max: number): string | null {
@@ -77,6 +83,7 @@ export async function POST(req: NextRequest) {
       experience: clean(payload.experience, LIMITS.experience),
       portfolioUrl: clean(payload.portfolioUrl, LIMITS.portfolioUrl),
       startDate: cleanDate(payload.startDate),
+      mode: cleanMode(payload.mode),
       message: clean(payload.message, LIMITS.message),
     });
   } catch (err) {

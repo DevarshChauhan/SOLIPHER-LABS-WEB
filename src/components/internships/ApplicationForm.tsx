@@ -10,6 +10,12 @@ import { CollegeSelect } from "./CollegeSelect";
 const inputClass =
   "w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10";
 
+const MODES = [
+  { value: "online", label: "Online", description: "Fully remote, from wherever you are." },
+  { value: "offline", label: "Offline", description: "In person, at our office." },
+  { value: "hybrid", label: "Hybrid", description: "A mix of remote and in person." },
+] as const;
+
 export function ApplicationForm() {
   const searchParams = useSearchParams();
   const requestedDomain = searchParams.get("domain") ?? "";
@@ -25,7 +31,7 @@ export function ApplicationForm() {
 
     const form = new FormData(e.currentTarget);
     const payload = Object.fromEntries(
-      ["domainSlug", "fullName", "email", "phone", "institution", "enrollmentNo", "experience", "portfolioUrl", "startDate", "message", "website"].map(
+      ["domainSlug", "fullName", "email", "phone", "institution", "enrollmentNo", "experience", "portfolioUrl", "startDate", "mode", "message", "website"].map(
         (key) => [key, form.get(key)?.toString() ?? ""]
       )
     );
@@ -100,6 +106,33 @@ export function ApplicationForm() {
           <p className="mt-1.5 text-xs text-muted">The date your university requires the internship to begin.</p>
         </div>
       </div>
+
+      <fieldset>
+        <legend className="mb-2 block text-sm font-medium text-foreground/90">
+          Preferred mode <span className="text-red-400">*</span>
+        </legend>
+        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+          {MODES.map((mode, i) => (
+            <label
+              key={mode.value}
+              className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-border bg-surface p-3.5 transition-colors hover:border-red-500/40 has-[:checked]:border-red-500/60 has-[:checked]:bg-red-500/5"
+            >
+              <input
+                type="radio"
+                name="mode"
+                value={mode.value}
+                required
+                defaultChecked={i === 0}
+                className="mt-0.5 h-4 w-4 shrink-0 accent-red-500"
+              />
+              <span>
+                <span className="block text-sm font-medium text-foreground">{mode.label}</span>
+                <span className="mt-0.5 block text-xs leading-relaxed text-muted">{mode.description}</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
 
       <div>
         <label htmlFor="experience" className="mb-2 block text-sm font-medium text-foreground/90">

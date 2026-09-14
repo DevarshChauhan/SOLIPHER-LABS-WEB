@@ -139,6 +139,7 @@ export default async function InternshipApplicationsPage() {
                         Starts {formatDay(app.startDate)}
                       </span>
                     )}
+                    {app.mode && <span className="capitalize">{app.mode}</span>}
                   </div>
                 )}
 

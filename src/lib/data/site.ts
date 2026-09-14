@@ -20,6 +20,14 @@ export const site = {
     },
   ],
   teamSize: 5,
+  // Printed on the offer letter and certificate. Only list what we
+  // actually hold: we are MSME registered, and are NOT ISO certified or
+  // Startup India recognised, so neither is claimed anywhere.
+  credentials: {
+    msme: true,
+    // Set this to print "Udyam Registration No. ..." on both documents.
+    udyamNumber: "",
+  },
 } as const;
 
 export const navLinks = [

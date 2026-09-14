@@ -318,9 +318,12 @@ export interface InternshipApplication {
   experience: string | null;
   portfolioUrl: string | null;
   startDate: string | null;
+  mode: InternshipMode | null;
   message: string | null;
   createdAt: string;
 }
+
+export type InternshipMode = "online" | "offline" | "hybrid";
 
 // Deliberately NOT mirrored into the in-memory fixture path the licensing
 // tables use: an application stored in memory would be silently lost on the
@@ -343,6 +346,7 @@ function ensureApplicationsTable(): Promise<void> {
            experience    TEXT,
            portfolio_url TEXT,
            start_date    DATE,
+           mode          TEXT,
            message       TEXT,
            created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
          )`
@@ -353,7 +357,8 @@ function ensureApplicationsTable(): Promise<void> {
         db.query(
           `ALTER TABLE internship_applications
              ADD COLUMN IF NOT EXISTS enrollment_no TEXT,
-             ADD COLUMN IF NOT EXISTS start_date    DATE`
+             ADD COLUMN IF NOT EXISTS start_date    DATE,
+             ADD COLUMN IF NOT EXISTS mode          TEXT`
         )
       )
       .then(() =>
@@ -383,6 +388,7 @@ function rowToApplication(r: Record<string, unknown>): InternshipApplication {
     experience: (r.experience as string | null) ?? null,
     portfolioUrl: (r.portfolio_url as string | null) ?? null,
     startDate: r.start_date ? (r.start_date as Date).toISOString().slice(0, 10) : null,
+    mode: (r.mode as InternshipMode | null) ?? null,
     message: (r.message as string | null) ?? null,
     createdAt: (r.created_at as Date).toISOString(),
   };
@@ -398,13 +404,14 @@ export async function createInternshipApplication(input: {
   experience: string | null;
   portfolioUrl: string | null;
   startDate: string | null;
+  mode: InternshipMode | null;
   message: string | null;
 }): Promise<InternshipApplication> {
   await ensureApplicationsTable();
   const res = await getPool().query(
     `INSERT INTO internship_applications
-       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, message)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, mode, message)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
     [
       input.domainSlug,
       input.fullName,
@@ -415,6 +422,7 @@ export async function createInternshipApplication(input: {
       input.experience,
       input.portfolioUrl,
       input.startDate,
+      input.mode,
       input.message,
     ]
   );
@@ -433,6 +441,8 @@ export interface Intern {
   domainSlug: string;
   institution: string | null;
   startDate: string | null;
+  endDate: string | null;
+  mode: InternshipMode | null;
   projectUrl: string | null;
   submittedAt: string | null;
   status: InternStatus;
@@ -469,6 +479,8 @@ function ensureInternsTable(): Promise<void> {
            domain_slug            TEXT NOT NULL,
            institution            TEXT,
            start_date             DATE,
+           end_date               DATE,
+           mode                   TEXT,
            project_url            TEXT,
            submitted_at           TIMESTAMPTZ,
            status                 TEXT NOT NULL DEFAULT 'active'
@@ -476,6 +488,13 @@ function ensureInternsTable(): Promise<void> {
            certificate_issued_at  TIMESTAMPTZ,
            created_at             TIMESTAMPTZ NOT NULL DEFAULT now()
          )`
+      )
+      .then(() =>
+        db.query(
+          `ALTER TABLE interns
+             ADD COLUMN IF NOT EXISTS end_date DATE,
+             ADD COLUMN IF NOT EXISTS mode     TEXT`
+        )
       )
       .then(() => undefined)
       .catch((err) => {
@@ -495,6 +514,8 @@ function rowToIntern(r: Record<string, unknown>): Intern {
     domainSlug: r.domain_slug as string,
     institution: (r.institution as string | null) ?? null,
     startDate: r.start_date ? (r.start_date as Date).toISOString().slice(0, 10) : null,
+    endDate: r.end_date ? (r.end_date as Date).toISOString().slice(0, 10) : null,
+    mode: (r.mode as InternshipMode | null) ?? null,
     projectUrl: (r.project_url as string | null) ?? null,
     submittedAt: r.submitted_at ? (r.submitted_at as Date).toISOString() : null,
     status: r.status as InternStatus,
@@ -518,12 +539,13 @@ export async function createIntern(input: {
   domainSlug: string;
   institution: string | null;
   startDate: string | null;
+  mode: InternshipMode | null;
 }): Promise<Intern> {
   await ensureApplicationsTable();
   await ensureInternsTable();
   const res = await getPool().query(
-    `INSERT INTO interns (code, code_key, application_id, full_name, email, domain_slug, institution, start_date)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+    `INSERT INTO interns (code, code_key, application_id, full_name, email, domain_slug, institution, start_date, mode)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
     [
       input.code,
       input.codeKey,
@@ -533,9 +555,31 @@ export async function createIntern(input: {
       input.domainSlug,
       input.institution,
       input.startDate,
+      input.mode,
     ]
   );
   return rowToIntern(res.rows[0]);
+}
+
+export async function getIntern(id: string): Promise<Intern | null> {
+  await ensureInternsTable();
+  const res = await getPool().query("SELECT * FROM interns WHERE id = $1", [id]);
+  return res.rows.length ? rowToIntern(res.rows[0]) : null;
+}
+
+/** Start/end dates and mode drive what the offer letter and certificate
+ * say, so they stay editable after the code is issued. */
+export async function updateInternDetails(
+  id: string,
+  input: { startDate: string | null; endDate: string | null; mode: InternshipMode | null }
+): Promise<void> {
+  await ensureInternsTable();
+  await getPool().query("UPDATE interns SET start_date = $1, end_date = $2, mode = $3 WHERE id = $4", [
+    input.startDate,
+    input.endDate,
+    input.mode,
+    id,
+  ]);
 }
 
 export async function findInternByCodeKey(codeKey: string): Promise<Intern | null> {
