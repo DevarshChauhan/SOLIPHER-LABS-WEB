@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, AlertCircle } from "lucide-react";
+import { CheckCircle2, AlertCircle, Smartphone } from "lucide-react";
 import { internshipDomains } from "@/lib/data/internships";
 import { site } from "@/lib/data/site";
 import { CollegeSelect } from "./CollegeSelect";
@@ -31,7 +31,7 @@ export function ApplicationForm() {
 
     const form = new FormData(e.currentTarget);
     const payload = Object.fromEntries(
-      ["domainSlug", "fullName", "email", "phone", "institution", "enrollmentNo", "experience", "portfolioUrl", "startDate", "mode", "message", "website"].map(
+      ["domainSlug", "fullName", "email", "phone", "institution", "enrollmentNo", "experience", "portfolioUrl", "startDate", "mode", "message", "transactionId", "website"].map(
         (key) => [key, form.get(key)?.toString() ?? ""]
       )
     );
@@ -61,8 +61,9 @@ export function ApplicationForm() {
         <CheckCircle2 size={28} className="mx-auto text-red-500" />
         <h3 className="mt-4 text-lg font-semibold text-foreground">Application received.</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          We read every application ourselves, so a reply takes a little longer than an autoresponder would.
-          If it&rsquo;s a fit for a live engagement, we&rsquo;ll be in touch at the email you gave us.
+          We&rsquo;ll confirm your fee payment against our bank records, then review your application. We read
+          every one ourselves, so a reply takes a little longer than an autoresponder would. Either way,
+          we&rsquo;ll be in touch at the email you gave us.
         </p>
       </div>
     );
@@ -158,6 +159,79 @@ export function ApplicationForm() {
           className={inputClass}
           placeholder="What you want to get out of it, and what you're hoping to work on."
         />
+      </div>
+
+      <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-5">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h3 className="text-sm font-semibold text-foreground">Application fee</h3>
+          <span className="font-display text-lg font-semibold text-foreground">
+            ₹{site.internship.feeAmount.toLocaleString("en-IN")}
+          </span>
+        </div>
+
+        {site.internship.upiId || site.internship.upiQrImage ? (
+          <>
+            <p className="mt-2 text-sm leading-relaxed text-muted">
+              Pay the fee by UPI first, then enter the transaction ID below. We check every payment against our
+              bank by hand before approving an application.
+            </p>
+            <div className="mt-3 flex flex-wrap items-start gap-4">
+              {site.internship.upiQrImage && (
+                <img
+                  src={site.internship.upiQrImage}
+                  alt={`UPI QR code for ${site.internship.upiPayeeName}`}
+                  className="h-36 w-36 shrink-0 rounded-lg border border-border bg-white p-2"
+                />
+              )}
+              {site.internship.upiId && (
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground">
+                    {site.internship.upiId}
+                  </span>
+                  <a
+                    href={`upi://pay?pa=${encodeURIComponent(site.internship.upiId)}&pn=${encodeURIComponent(
+                      site.internship.upiPayeeName
+                    )}&am=${site.internship.feeAmount}&cu=${site.internship.currency}`}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10"
+                  >
+                    <Smartphone size={14} />
+                    Pay with a UPI app
+                  </a>
+                </div>
+              )}
+            </div>
+          </>
+        ) : (
+          <p className="mt-2 text-sm leading-relaxed text-muted">
+            Email{" "}
+            <a href={`mailto:${site.email}`} className="text-red-400 underline underline-offset-2">
+              {site.email}
+            </a>{" "}
+            for payment details, then enter your transaction ID below.
+          </p>
+        )}
+
+        {site.internship.refundPolicy && (
+          <p className="mt-3 text-xs leading-relaxed text-muted">{site.internship.refundPolicy}</p>
+        )}
+
+        <div className="mt-4">
+          <label htmlFor="transactionId" className="mb-2 block text-sm font-medium text-foreground/90">
+            UPI transaction ID <span className="text-red-400">*</span>
+          </label>
+          <input
+            id="transactionId"
+            name="transactionId"
+            required
+            autoComplete="off"
+            spellCheck={false}
+            placeholder="12-digit UPI reference from your payment app"
+            className={`${inputClass} font-mono`}
+          />
+          <p className="mt-1.5 text-xs text-muted">
+            Your payment app shows this as the UPI transaction ID, UTR or reference number.
+          </p>
+        </div>
       </div>
 
       {/* Honeypot: hidden from real users, bots fill it in and get filtered. */}

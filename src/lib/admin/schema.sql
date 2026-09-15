@@ -91,6 +91,14 @@ CREATE TABLE IF NOT EXISTS internship_applications (
   start_date    DATE,
   mode          TEXT,
   message       TEXT,
+  -- Fee payment is confirmed by a person checking transaction_id against
+  -- the bank. payment_status is never set by the public form, so quoting
+  -- an invented reference gets an applicant no further than 'pending'.
+  transaction_id      TEXT,
+  fee_amount          NUMERIC(10, 2),
+  payment_status      TEXT NOT NULL DEFAULT 'pending'
+                        CHECK (payment_status IN ('pending', 'verified', 'rejected')),
+  payment_verified_at TIMESTAMPTZ,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 

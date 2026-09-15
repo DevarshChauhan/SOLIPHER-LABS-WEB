@@ -320,10 +320,18 @@ export interface InternshipApplication {
   startDate: string | null;
   mode: InternshipMode | null;
   message: string | null;
+  transactionId: string | null;
+  feeAmount: number | null;
+  paymentStatus: PaymentStatus;
+  paymentVerifiedAt: string | null;
   createdAt: string;
 }
 
 export type InternshipMode = "online" | "offline" | "hybrid";
+
+/** "pending" means an applicant has quoted a transaction ID that nobody has
+ * checked yet. Only a human marking it verified against the bank moves it on. */
+export type PaymentStatus = "pending" | "verified" | "rejected";
 
 // Deliberately NOT mirrored into the in-memory fixture path the licensing
 // tables use: an application stored in memory would be silently lost on the
@@ -348,6 +356,11 @@ function ensureApplicationsTable(): Promise<void> {
            start_date    DATE,
            mode          TEXT,
            message       TEXT,
+           transaction_id      TEXT,
+           fee_amount          NUMERIC(10, 2),
+           payment_status      TEXT NOT NULL DEFAULT 'pending'
+                                 CHECK (payment_status IN ('pending', 'verified', 'rejected')),
+           payment_verified_at TIMESTAMPTZ,
            created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
          )`
       )
@@ -357,8 +370,12 @@ function ensureApplicationsTable(): Promise<void> {
         db.query(
           `ALTER TABLE internship_applications
              ADD COLUMN IF NOT EXISTS enrollment_no TEXT,
-             ADD COLUMN IF NOT EXISTS start_date    DATE,
-             ADD COLUMN IF NOT EXISTS mode          TEXT`
+             ADD COLUMN IF NOT EXISTS start_date          DATE,
+             ADD COLUMN IF NOT EXISTS mode                TEXT,
+             ADD COLUMN IF NOT EXISTS transaction_id      TEXT,
+             ADD COLUMN IF NOT EXISTS fee_amount          NUMERIC(10, 2),
+             ADD COLUMN IF NOT EXISTS payment_status      TEXT NOT NULL DEFAULT 'pending',
+             ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMPTZ`
         )
       )
       .then(() =>
@@ -390,6 +407,10 @@ function rowToApplication(r: Record<string, unknown>): InternshipApplication {
     startDate: r.start_date ? (r.start_date as Date).toISOString().slice(0, 10) : null,
     mode: (r.mode as InternshipMode | null) ?? null,
     message: (r.message as string | null) ?? null,
+    transactionId: (r.transaction_id as string | null) ?? null,
+    feeAmount: r.fee_amount === null || r.fee_amount === undefined ? null : Number(r.fee_amount),
+    paymentStatus: ((r.payment_status as PaymentStatus | null) ?? "pending") as PaymentStatus,
+    paymentVerifiedAt: r.payment_verified_at ? (r.payment_verified_at as Date).toISOString() : null,
     createdAt: (r.created_at as Date).toISOString(),
   };
 }
@@ -406,12 +427,14 @@ export async function createInternshipApplication(input: {
   startDate: string | null;
   mode: InternshipMode | null;
   message: string | null;
+  transactionId: string | null;
+  feeAmount: number | null;
 }): Promise<InternshipApplication> {
   await ensureApplicationsTable();
   const res = await getPool().query(
     `INSERT INTO internship_applications
-       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, mode, message)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, mode, message, transaction_id, fee_amount)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
     [
       input.domainSlug,
       input.fullName,
@@ -424,6 +447,8 @@ export async function createInternshipApplication(input: {
       input.startDate,
       input.mode,
       input.message,
+      input.transactionId,
+      input.feeAmount,
     ]
   );
   return rowToApplication(res.rows[0]);
@@ -628,6 +653,19 @@ export async function unverifyIntern(id: string): Promise<void> {
 export async function deleteIntern(id: string): Promise<void> {
   await ensureInternsTable();
   await getPool().query("DELETE FROM interns WHERE id = $1", [id]);
+}
+
+/** Records a human's decision after checking the transaction ID against the
+ * bank. Nothing else in the system sets this. */
+export async function setApplicationPaymentStatus(id: string, status: PaymentStatus): Promise<void> {
+  await ensureApplicationsTable();
+  await getPool().query(
+    `UPDATE internship_applications
+       SET payment_status = $1,
+           payment_verified_at = CASE WHEN $1 = 'verified' THEN now() ELSE NULL END
+     WHERE id = $2`,
+    [status, id]
+  );
 }
 
 export async function deleteInternshipApplication(id: string): Promise<void> {

@@ -6,6 +6,7 @@ import { SectionHeading, Badge } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 import { FadeInView } from "@/components/ui/FadeInView";
 import { internshipDomains } from "@/lib/data/internships";
+import { site } from "@/lib/data/site";
 import {
   Globe,
   Smartphone,
@@ -180,7 +181,11 @@ export default function InternshipsPage() {
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">
               Pick the domain you want to work in, tell us what you&rsquo;ve built so far, and we&rsquo;ll get
-              back to you directly. We take a small number of interns per domain at a time.
+              back to you directly. We take a small number of interns per domain at a time. Applying costs{" "}
+              <strong className="text-foreground/90">
+                ₹{site.internship.feeAmount.toLocaleString("en-IN")} per person
+              </strong>
+              , paid by UPI with your application.
             </p>
             <Button href={applyHref} className="mt-6">
               Apply Now <ArrowRight size={14} />

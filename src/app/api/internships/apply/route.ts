@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createInternshipApplication, hasDb, type InternshipMode } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
+import { site } from "@/lib/data/site";
 
 const LIMITS = {
   fullName: 120,
@@ -8,6 +9,7 @@ const LIMITS = {
   phone: 40,
   institution: 200,
   enrollmentNo: 60,
+  transactionId: 80,
   experience: 4000,
   portfolioUrl: 500,
   message: 4000,
@@ -63,6 +65,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "A valid email address is required." }, { status: 400 });
   }
 
+  // Recorded as a claim to be checked against the bank, never treated as
+  // proof of payment: the application stays 'pending' until a human says
+  // otherwise, so a made-up reference buys nothing.
+  const transactionId = clean(payload.transactionId, LIMITS.transactionId);
+  if (!transactionId) {
+    return NextResponse.json({ ok: false, error: "Enter the UPI transaction ID for your application fee." }, { status: 400 });
+  }
+
   // Storing this in memory would lose it on the next deploy, so rather than
   // reporting a success we can't honour, say plainly that it didn't save.
   if (!hasDb) {
@@ -85,6 +95,11 @@ export async function POST(req: NextRequest) {
       startDate: cleanDate(payload.startDate),
       mode: cleanMode(payload.mode),
       message: clean(payload.message, LIMITS.message),
+      transactionId,
+      // Stored per application rather than read from config at display
+      // time, so a later fee change doesn't rewrite what past applicants
+      // were actually asked to pay.
+      feeAmount: site.internship.feeAmount,
     });
   } catch (err) {
     console.error("Failed to store internship application", err);

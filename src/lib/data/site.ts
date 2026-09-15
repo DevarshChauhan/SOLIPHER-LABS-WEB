@@ -28,6 +28,25 @@ export const site = {
     // Set this to print "Udyam Registration No. ..." on both documents.
     udyamNumber: "",
   },
+  internship: {
+    // Application fee, paid by UPI before the form is submitted. The
+    // applicant then enters their UPI transaction ID on the form, and it
+    // is checked against the bank by hand before the application is
+    // approved -- nothing here confirms a payment on its own.
+    feeAmount: 1000,
+    currency: "INR",
+    // Until this UPI ID is filled in, the form asks applicants to email
+    // for payment details instead of showing a payee that doesn't exist.
+    upiId: "0lucifer0@slc",
+    upiPayeeName: "Solipher Labs",
+    // Path to a UPI QR image under public/, e.g. "/upi-qr.png". Shown next
+    // to the UPI ID so someone filling the form on a laptop can scan it
+    // with their phone instead of typing the ID.
+    upiQrImage: "",
+    // Shown verbatim on the apply page when set. Leave empty to show
+    // nothing rather than imply terms that haven't been decided.
+    refundPolicy: "",
+  },
 } as const;
 
 export const navLinks = [

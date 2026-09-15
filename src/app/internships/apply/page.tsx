@@ -4,7 +4,7 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { ApplicationForm } from "@/components/internships/ApplicationForm";
 import { site } from "@/lib/data/site";
-import { Mail, Check } from "lucide-react";
+import { Mail, Check, IndianRupee } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Apply for an Internship",
@@ -45,6 +45,22 @@ export default function InternshipApplyPage() {
                 We care more about what you&rsquo;ve attempted than where you&rsquo;re studying or what your marks
                 are. There are no fixed cohort dates, and we take a small number of interns per domain at a time.
               </p>
+
+              <div className="mt-8 rounded-2xl border border-red-500/30 bg-red-500/5 p-5">
+                <div className="flex items-center gap-2">
+                  <IndianRupee size={15} className="text-red-500" />
+                  <h2 className="text-xs font-semibold uppercase tracking-wider text-red-400">Application fee</h2>
+                </div>
+                <p className="mt-2 text-sm leading-relaxed text-foreground/85">
+                  Applying costs{" "}
+                  <strong>₹{site.internship.feeAmount.toLocaleString("en-IN")} per person</strong>, payable by UPI
+                  before you submit the form. You&rsquo;ll enter your transaction ID as part of the application,
+                  and we confirm it against our bank before reviewing.
+                </p>
+                {site.internship.refundPolicy && (
+                  <p className="mt-2 text-xs leading-relaxed text-muted">{site.internship.refundPolicy}</p>
+                )}
+              </div>
 
               <div className="mt-8">
                 <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">Prefer email?</h2>

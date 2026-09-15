@@ -2,9 +2,10 @@ import Link from "next/link";
 import { AdminHeader } from "@/components/admin/AdminHeader";
 import { DeleteApplicationButton } from "@/components/admin/DeleteApplicationButton";
 import { IssueCodeButton } from "@/components/admin/InternActions";
+import { PaymentStatusControl } from "@/components/admin/PaymentStatusControl";
 import { listInternshipApplications, hasDb } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
-import { Mail, Phone, ExternalLink, CalendarDays, IdCard } from "lucide-react";
+import { Mail, Phone, ExternalLink, CalendarDays, IdCard, IndianRupee } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -142,6 +143,44 @@ export default async function InternshipApplicationsPage() {
                     {app.mode && <span className="capitalize">{app.mode}</span>}
                   </div>
                 )}
+
+                <div
+                  className={`mt-4 rounded-xl border p-4 ${
+                    app.paymentStatus === "verified"
+                      ? "border-emerald-500/30 bg-emerald-500/[0.04]"
+                      : app.paymentStatus === "rejected"
+                        ? "border-rose-500/30 bg-rose-500/[0.04]"
+                        : "border-amber-500/30 bg-amber-500/[0.04]"
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex flex-wrap items-center gap-2.5 text-sm">
+                      <IndianRupee size={14} className="text-muted" />
+                      <span className="font-medium text-foreground">
+                        {app.feeAmount === null ? "Fee not recorded" : `₹${app.feeAmount.toLocaleString("en-IN")}`}
+                      </span>
+                      {app.transactionId ? (
+                        <span className="font-mono text-xs text-foreground/85">{app.transactionId}</span>
+                      ) : (
+                        <span className="text-xs text-muted">No transaction ID given</span>
+                      )}
+                    </div>
+                    <span className="text-xs font-semibold uppercase tracking-wider">
+                      {app.paymentStatus === "verified" ? (
+                        <span className="text-emerald-600 dark:text-emerald-400">
+                          Verified{app.paymentVerifiedAt ? ` · ${formatDay(app.paymentVerifiedAt)}` : ""}
+                        </span>
+                      ) : app.paymentStatus === "rejected" ? (
+                        <span className="text-rose-600 dark:text-rose-400">Not found</span>
+                      ) : (
+                        <span className="text-amber-600 dark:text-amber-400">Unverified</span>
+                      )}
+                    </span>
+                  </div>
+                  <div className="mt-3">
+                    <PaymentStatusControl applicationId={app.id} status={app.paymentStatus} />
+                  </div>
+                </div>
 
                 {app.experience && (
                   <div className="mt-4">
