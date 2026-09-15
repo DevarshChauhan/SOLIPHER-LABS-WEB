@@ -164,6 +164,11 @@ export default async function InternshipApplicationsPage() {
                       ) : (
                         <span className="text-xs text-muted">No transaction ID given</span>
                       )}
+                      {app.couponCode && (
+                        <span className="rounded-full border border-emerald-500/40 px-2 py-0.5 font-mono text-xs text-emerald-600 dark:text-emerald-400">
+                          {app.couponCode}
+                        </span>
+                      )}
                     </div>
                     <span className="text-xs font-semibold uppercase tracking-wider">
                       {app.paymentStatus === "verified" ? (

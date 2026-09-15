@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createInternshipApplication, hasDb, type InternshipMode } from "@/lib/admin/db";
 import { getInternshipDomain } from "@/lib/data/internships";
-import { site } from "@/lib/data/site";
+import { findCoupon, feeWithCoupon } from "@/lib/internships/coupons";
 
 const LIMITS = {
   fullName: 120,
@@ -68,6 +68,10 @@ export async function POST(req: NextRequest) {
   // Recorded as a claim to be checked against the bank, never treated as
   // proof of payment: the application stays 'pending' until a human says
   // otherwise, so a made-up reference buys nothing.
+  // An unrecognised coupon is ignored rather than rejected: the fee simply
+  // stays at full price, which the admin sees on the application.
+  const coupon = findCoupon(payload.couponCode);
+
   const transactionId = clean(payload.transactionId, LIMITS.transactionId);
   if (!transactionId) {
     return NextResponse.json({ ok: false, error: "Enter the UPI transaction ID for your application fee." }, { status: 400 });
@@ -96,10 +100,12 @@ export async function POST(req: NextRequest) {
       mode: cleanMode(payload.mode),
       message: clean(payload.message, LIMITS.message),
       transactionId,
-      // Stored per application rather than read from config at display
-      // time, so a later fee change doesn't rewrite what past applicants
-      // were actually asked to pay.
-      feeAmount: site.internship.feeAmount,
+      couponCode: coupon?.code ?? null,
+      // Recomputed here from the coupon rather than taken from the
+      // request: the browser is told what to pay, never trusted to report
+      // it. Stored per application so a later fee or coupon change
+      // doesn't rewrite what this applicant was actually asked for.
+      feeAmount: feeWithCoupon(coupon),
     });
   } catch (err) {
     console.error("Failed to store internship application", err);

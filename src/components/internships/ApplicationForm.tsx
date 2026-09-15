@@ -23,6 +23,37 @@ export function ApplicationForm() {
 
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [coupon, setCoupon] = useState<{ code: string; discountAmount: number; finalAmount: number } | null>(null);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
+
+  const payable = coupon?.finalAmount ?? site.internship.feeAmount;
+
+  async function applyCoupon() {
+    const code = couponInput.trim();
+    if (!code) return;
+    setCheckingCoupon(true);
+    setCouponError(null);
+    try {
+      const res = await fetch("/api/internships/coupon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        setCoupon(null);
+        setCouponError(data.error ?? "That coupon code isn't valid.");
+        return;
+      }
+      setCoupon({ code: data.code, discountAmount: data.discountAmount, finalAmount: data.finalAmount });
+    } catch {
+      setCouponError("Couldn't check that code. Please try again.");
+    } finally {
+      setCheckingCoupon(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -40,7 +71,7 @@ export function ApplicationForm() {
       const res = await fetch("/api/internships/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({ ...payload, couponCode: coupon?.code ?? "" }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.ok) {
@@ -165,9 +196,20 @@ export function ApplicationForm() {
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="text-sm font-semibold text-foreground">Application fee</h3>
           <span className="font-display text-lg font-semibold text-foreground">
-            ₹{site.internship.feeAmount.toLocaleString("en-IN")}
+            {coupon && (
+              <span className="mr-2 text-sm font-normal text-muted line-through">
+                ₹{site.internship.feeAmount.toLocaleString("en-IN")}
+              </span>
+            )}
+            ₹{payable.toLocaleString("en-IN")}
           </span>
         </div>
+
+        {coupon && (
+          <p className="mt-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+            Coupon {coupon.code} applied — ₹{coupon.discountAmount.toLocaleString("en-IN")} off.
+          </p>
+        )}
 
         {site.internship.upiId || site.internship.upiQrImage ? (
           <>
@@ -191,7 +233,7 @@ export function ApplicationForm() {
                   <a
                     href={`upi://pay?pa=${encodeURIComponent(site.internship.upiId)}&pn=${encodeURIComponent(
                       site.internship.upiPayeeName
-                    )}&am=${site.internship.feeAmount}&cu=${site.internship.currency}`}
+                    )}&am=${payable}&cu=${site.internship.currency}`}
                     className="inline-flex items-center gap-1.5 rounded-full border border-red-500/40 px-4 py-2 text-sm font-medium text-red-400 transition-colors hover:bg-red-500/10"
                   >
                     <Smartphone size={14} />
@@ -214,6 +256,43 @@ export function ApplicationForm() {
         {site.internship.refundPolicy && (
           <p className="mt-3 text-xs leading-relaxed text-muted">{site.internship.refundPolicy}</p>
         )}
+
+        <div className="mt-4">
+          <label htmlFor="couponCode" className="mb-2 block text-sm font-medium text-foreground/90">
+            Coupon code <span className="font-normal text-muted">(optional)</span>
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="couponCode"
+              value={couponInput}
+              onChange={(e) => {
+                setCouponInput(e.target.value);
+                setCouponError(null);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  applyCoupon();
+                }
+              }}
+              autoComplete="off"
+              spellCheck={false}
+              disabled={Boolean(coupon)}
+              placeholder="If you were given one"
+              className={`${inputClass} font-mono disabled:opacity-60`}
+            />
+            <button
+              type="button"
+              onClick={coupon ? () => { setCoupon(null); setCouponInput(""); } : applyCoupon}
+              disabled={checkingCoupon || (!coupon && !couponInput.trim())}
+              className="shrink-0 rounded-lg border border-border px-4 text-sm font-medium text-foreground/85 transition-colors hover:border-foreground/40 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {checkingCoupon ? "Checking…" : coupon ? "Remove" : "Apply"}
+            </button>
+          </div>
+          {couponError && <p className="mt-1.5 text-xs text-red-400">{couponError}</p>}
+          <p className="mt-1.5 text-xs text-muted">Apply your coupon before paying, so you pay the right amount.</p>
+        </div>
 
         <div className="mt-4">
           <label htmlFor="transactionId" className="mb-2 block text-sm font-medium text-foreground/90">

@@ -321,6 +321,7 @@ export interface InternshipApplication {
   mode: InternshipMode | null;
   message: string | null;
   transactionId: string | null;
+  couponCode: string | null;
   feeAmount: number | null;
   paymentStatus: PaymentStatus;
   paymentVerifiedAt: string | null;
@@ -357,6 +358,7 @@ function ensureApplicationsTable(): Promise<void> {
            mode          TEXT,
            message       TEXT,
            transaction_id      TEXT,
+           coupon_code         TEXT,
            fee_amount          NUMERIC(10, 2),
            payment_status      TEXT NOT NULL DEFAULT 'pending'
                                  CHECK (payment_status IN ('pending', 'verified', 'rejected')),
@@ -373,6 +375,7 @@ function ensureApplicationsTable(): Promise<void> {
              ADD COLUMN IF NOT EXISTS start_date          DATE,
              ADD COLUMN IF NOT EXISTS mode                TEXT,
              ADD COLUMN IF NOT EXISTS transaction_id      TEXT,
+             ADD COLUMN IF NOT EXISTS coupon_code         TEXT,
              ADD COLUMN IF NOT EXISTS fee_amount          NUMERIC(10, 2),
              ADD COLUMN IF NOT EXISTS payment_status      TEXT NOT NULL DEFAULT 'pending',
              ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMPTZ`
@@ -408,6 +411,7 @@ function rowToApplication(r: Record<string, unknown>): InternshipApplication {
     mode: (r.mode as InternshipMode | null) ?? null,
     message: (r.message as string | null) ?? null,
     transactionId: (r.transaction_id as string | null) ?? null,
+    couponCode: (r.coupon_code as string | null) ?? null,
     feeAmount: r.fee_amount === null || r.fee_amount === undefined ? null : Number(r.fee_amount),
     paymentStatus: ((r.payment_status as PaymentStatus | null) ?? "pending") as PaymentStatus,
     paymentVerifiedAt: r.payment_verified_at ? (r.payment_verified_at as Date).toISOString() : null,
@@ -428,13 +432,14 @@ export async function createInternshipApplication(input: {
   mode: InternshipMode | null;
   message: string | null;
   transactionId: string | null;
+  couponCode: string | null;
   feeAmount: number | null;
 }): Promise<InternshipApplication> {
   await ensureApplicationsTable();
   const res = await getPool().query(
     `INSERT INTO internship_applications
-       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, mode, message, transaction_id, fee_amount)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
+       (domain_slug, full_name, email, phone, institution, enrollment_no, experience, portfolio_url, start_date, mode, message, transaction_id, coupon_code, fee_amount)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING *`,
     [
       input.domainSlug,
       input.fullName,
@@ -448,6 +453,7 @@ export async function createInternshipApplication(input: {
       input.mode,
       input.message,
       input.transactionId,
+      input.couponCode,
       input.feeAmount,
     ]
   );
