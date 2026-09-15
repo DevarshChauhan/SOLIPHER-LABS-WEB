@@ -58,7 +58,9 @@ export default function InternshipApplyPage() {
                   and we confirm it against our bank before reviewing.
                 </p>
                 {site.internship.refundPolicy && (
-                  <p className="mt-2 text-xs leading-relaxed text-muted">{site.internship.refundPolicy}</p>
+                  <p className="mt-2.5 border-t border-red-500/20 pt-2.5 text-xs leading-relaxed text-foreground/85">
+                    {site.internship.refundPolicy}
+                  </p>
                 )}
               </div>
 

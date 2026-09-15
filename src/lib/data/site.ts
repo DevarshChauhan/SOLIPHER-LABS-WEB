@@ -43,9 +43,12 @@ export const site = {
     // to the UPI ID so someone filling the form on a laptop can scan it
     // with their phone instead of typing the ID.
     upiQrImage: "",
-    // Shown verbatim on the apply page when set. Leave empty to show
-    // nothing rather than imply terms that haven't been decided.
-    refundPolicy: "",
+    // Shown verbatim on the apply page and above the fee on the form.
+    // Stated plainly and before payment rather than buried: the fee is
+    // taken before an application is assessed, so "what if I'm not
+    // selected" has to be answered up front, not after someone has paid.
+    refundPolicy:
+      "The application fee is non-refundable, including if your application is not selected.",
   },
 } as const;
 

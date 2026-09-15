@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CheckCircle2, AlertCircle, Smartphone } from "lucide-react";
+import { CheckCircle2, AlertCircle, Smartphone, Info } from "lucide-react";
 import { internshipDomains } from "@/lib/data/internships";
 import { site } from "@/lib/data/site";
 import { CollegeSelect } from "./CollegeSelect";
@@ -254,7 +254,10 @@ export function ApplicationForm() {
         )}
 
         {site.internship.refundPolicy && (
-          <p className="mt-3 text-xs leading-relaxed text-muted">{site.internship.refundPolicy}</p>
+          <p className="mt-3 flex items-start gap-1.5 text-xs leading-relaxed text-foreground/85">
+            <Info size={13} className="mt-0.5 shrink-0 text-red-500" />
+            {site.internship.refundPolicy}
+          </p>
         )}
 
         <div className="mt-4">
