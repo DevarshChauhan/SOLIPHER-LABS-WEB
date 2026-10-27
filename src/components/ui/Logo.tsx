@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useMounted } from "@/lib/useMounted";
 
 interface LogoProps {
   className?: string;
@@ -12,11 +12,7 @@ interface LogoProps {
 
 export function LogoMark({ className }: { className?: string }) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const src = mounted && resolvedTheme === "light" ? "/logo-light.png" : "/logo.png";
 

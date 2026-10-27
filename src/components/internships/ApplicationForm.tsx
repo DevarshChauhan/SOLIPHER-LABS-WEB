@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import { CheckCircle2, AlertCircle, Smartphone, Info } from "lucide-react";
 import { internshipDomains } from "@/lib/data/internships";
 import { site } from "@/lib/data/site";
@@ -207,7 +208,7 @@ export function ApplicationForm() {
 
         {coupon && (
           <p className="mt-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
-            Coupon {coupon.code} applied — ₹{coupon.discountAmount.toLocaleString("en-IN")} off.
+            Coupon {coupon.code} applied: ₹{coupon.discountAmount.toLocaleString("en-IN")} off.
           </p>
         )}
 
@@ -219,9 +220,11 @@ export function ApplicationForm() {
             </p>
             <div className="mt-3 flex flex-wrap items-start gap-4">
               {site.internship.upiQrImage && (
-                <img
+                <Image
                   src={site.internship.upiQrImage}
                   alt={`UPI QR code for ${site.internship.upiPayeeName}`}
+                  width={144}
+                  height={144}
                   className="h-36 w-36 shrink-0 rounded-lg border border-border bg-white p-2"
                 />
               )}

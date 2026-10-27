@@ -6,10 +6,6 @@ export interface Bm25FixRow {
   afterLabel: string;
 }
 
-function formatUs(us: number) {
-  return us >= 1000 ? `${(us / 1000).toFixed(1)}ms` : `${us.toFixed(1)}µs`;
-}
-
 // Log scale: the real numbers span ~2.4us to ~10.7ms, more than three
 // orders of magnitude, so a linear width would make the "after" bars
 // invisible next to "before". Same log-scale idea the brochure's own

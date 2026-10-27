@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { useMounted } from "@/lib/useMounted";
 import { Sun, Moon } from "lucide-react";
 
 // "floating" is the corner button on large screens. On phones it would sit
 // over page content, so there the toggle lives inside the menu ("menu").
 export function ThemeToggle({ variant = "floating" }: { variant?: "floating" | "menu" }) {
   const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const isDark = resolvedTheme === "dark";
   const label = isDark ? "Switch to light theme" : "Switch to dark theme";

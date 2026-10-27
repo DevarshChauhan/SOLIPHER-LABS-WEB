@@ -27,12 +27,16 @@ export function Header() {
   const servicesCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const internshipsCloseTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(() => {
+  // Close every menu when the route changes. Done during render rather than
+  // in an effect, so the new page never paints with a stale menu open.
+  const [lastPathname, setLastPathname] = useState(pathname);
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname);
     setOpen(false);
     setProductsOpen(false);
     setServicesOpen(false);
     setInternshipsOpen(false);
-  }, [pathname]);
+  }
 
   useEffect(() => {
     if (!open) return;

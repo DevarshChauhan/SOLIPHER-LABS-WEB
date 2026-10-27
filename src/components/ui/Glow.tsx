@@ -1,16 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
+import { useMounted } from "@/lib/useMounted";
 
 export function GridGlow({ className, watermark = true }: { className?: string; watermark?: boolean }) {
   const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useMounted();
 
   const logoSrc = mounted && resolvedTheme === "light" ? "/logo-light.png" : "/logo.png";
 
