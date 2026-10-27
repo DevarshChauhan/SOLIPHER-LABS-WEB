@@ -10,7 +10,7 @@ const stats = [
   { value: "30.5×", label: "Peak SLO-goodput improvement under aggressive overload, real GCP run" },
   { value: "0", label: "Real CUDA out-of-memory crashes found, across every phase and model tested" },
   { value: "30/30", label: "Idle-phase response checks matched baseline vLLM byte-for-byte, across all models" },
-  { value: "2026-07-21", label: "Date of the latest full, repeatable evidence run, real hardware, no simulation" },
+  { value: "110%", label: "Yi-9B throughput through the Gateway at realistic load, versus raw vLLM (1.400 vs 1.269 req/s)" },
 ];
 
 export function ShardEvidenceHighlight() {
@@ -52,7 +52,7 @@ export function ShardEvidenceHighlight() {
 
         <Link
           href="/products/shard-gateway#evidence"
-          className="mt-8 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300 sm:hidden"
+          className="mt-8 flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300 sm:hidden"
         >
           See the full evidence <ArrowUpRight size={14} />
         </Link>

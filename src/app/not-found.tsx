@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/Button";
 
 export const metadata: Metadata = {
   title: "Page not found",
-  robots: { index: false, follow: true },
 };
 
 const suggestions = [

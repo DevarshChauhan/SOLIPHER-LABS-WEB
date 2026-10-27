@@ -26,12 +26,12 @@ const orbitron = Orbitron({
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Patent-Backed Algorithms & Data Structures`,
+    default: `${site.name} | Original Algorithms & Data Structures`,
     template: `%s | ${site.name}`,
   },
-  description: site.description,
+  description: site.metaDescription,
   keywords: [
-    "patent-backed algorithms",
+    "original algorithms",
     "resource-bounded systems",
     "medical imaging AI",
     "high-performance data infrastructure",
@@ -43,14 +43,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: site.url,
-    title: `${site.name} | Patent-Backed Algorithms & Data Structures`,
-    description: site.description,
+    title: `${site.name} | Original Algorithms & Data Structures`,
+    description: site.metaDescription,
     siteName: site.name,
   },
   twitter: {
     card: "summary_large_image",
-    title: `${site.name} | Patent-Backed Algorithms & Data Structures`,
-    description: site.description,
+    title: `${site.name} | Original Algorithms & Data Structures`,
+    description: site.metaDescription,
   },
   robots: {
     index: true,

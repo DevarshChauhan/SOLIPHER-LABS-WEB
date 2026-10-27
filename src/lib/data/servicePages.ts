@@ -39,6 +39,8 @@ export interface ServicePageDetail {
   slug: string;
   name: string;
   tagline: string;
+  // Search-result snippet, kept to roughly 120-160 characters.
+  metaDescription: string;
   heroDescription: string;
   approach: ServicePageStep[];
   examples: ServicePageExample[];
@@ -50,6 +52,8 @@ export const servicePages: ServicePageDetail[] = [
     slug: "odoo-erp",
     name: "Odoo ERP",
     tagline: "Odoo implementation and customization for teams that need their ERP to match how they work.",
+    metaDescription:
+      "Odoo ERP implementation, migration and custom modules from Solipher Labs, scoped to how your team actually works rather than a generic template.",
     heroDescription:
       "We implement, migrate, and extend Odoo for teams that are done reconciling separate systems by hand. Every rollout is scoped to your actual process, not a generic template.",
     projectType: "Odoo ERP",
@@ -110,6 +114,8 @@ export const servicePages: ServicePageDetail[] = [
     slug: "web-app-development",
     name: "Web & App Development",
     tagline: "Custom web and Android applications, built to be maintained for years, not just shipped once.",
+    metaDescription:
+      "Custom web and Android applications from Solipher Labs, from clinic booking systems to storefronts, built to be maintained for years.",
     heroDescription:
       "From booking systems for clinics to storefronts that hold up under a sale-day traffic spike, we build applications around your actual users and your actual load, not a generic template.",
     projectType: "Android or web application",
@@ -168,8 +174,10 @@ export const servicePages: ServicePageDetail[] = [
   },
   {
     slug: "bde",
-    name: "Business Development Executive (BDE)",
+    name: "Business Development (BDE)",
     tagline: "A dedicated business development function, run on your behalf.",
+    metaDescription:
+      "An outsourced business development function: outbound prospecting, partnerships and deal support, run like a hire on your team and reported weekly.",
     heroDescription:
       "Outbound, partnership development, and deal support, run like a hire on your team rather than a subscription. For companies that need pipeline, not another piece of software.",
     projectType: "Business Development (BDE)",
@@ -230,6 +238,8 @@ export const servicePages: ServicePageDetail[] = [
     slug: "academic-research",
     name: "Research Implementation & Benchmarking",
     tagline: "We build your design exactly as specified, then benchmark it. Nothing redesigned, nothing simulated.",
+    metaDescription:
+      "Research implementation and benchmarking for professors, master's and PhD students: your design built exactly as specified, then measured.",
     heroDescription:
       "For professors, master's students, and PhD candidates who have a design, a proposed algorithm, architecture, or system, and need it implemented as-is and measured against a real baseline. We're the implementation and benchmarking team, not a co-author.",
     projectType: "Research Implementation & Benchmarking",
@@ -290,6 +300,8 @@ export const servicePages: ServicePageDetail[] = [
     slug: "ai-development",
     name: "AI Development",
     tagline: "Custom AI/ML systems built around your deployment constraints, not a benchmark leaderboard.",
+    metaDescription:
+      "Custom AI/ML development from Solipher Labs: model development, fine-tuning and evaluation pipelines built around your deployment constraints.",
     heroDescription:
       "Model development, fine-tuning, and evaluation pipelines designed around your actual latency, cost, and privacy requirements, measured on your data before anything ships.",
     projectType: "Custom AI/ML development",

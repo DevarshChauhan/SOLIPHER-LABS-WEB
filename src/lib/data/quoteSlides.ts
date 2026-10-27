@@ -15,7 +15,7 @@ export const quoteSlides: QuoteSlide[] = [
   {
     id: "research-products",
     title: "Research & Products",
-    description: "SHARD Gateway and SHARD Context, our patent-backed AI infrastructure.",
+    description: "SHARD Gateway and SHARD Context, our AI infrastructure products.",
     icon: Cpu,
     href: "/products/shard-gateway",
   },

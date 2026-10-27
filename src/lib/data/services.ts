@@ -75,7 +75,7 @@ export const services: Service[] = [
   },
   {
     slug: "bde",
-    name: "Business Development Executive (BDE)",
+    name: "Business Development (BDE)",
     summary: "Outsourced business development, run like a dedicated hire.",
     detail:
       "A dedicated business development function for teams that need pipeline built, not another software subscription: outbound, partnership development, and deal support run on your behalf.",

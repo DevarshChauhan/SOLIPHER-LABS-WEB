@@ -132,9 +132,9 @@ const currentGaps = [
 ];
 
 export const metadata: Metadata = {
-  title: "Solipher SHARD Context",
+  title: "SHARD Context",
   description:
-    "Solipher SHARD Context compiles the smallest context package that still fits your model's exact token budget, without dropping the facts marked required. Real results below, measured against a live model.",
+    "SHARD Context compiles the smallest context that fits your model's exact token budget without dropping required facts. Results measured against a live model.",
   alternates: { canonical: "/products/shard-context" },
 };
 
@@ -151,7 +151,7 @@ export default function ShardContextPage() {
     <>
       <PageHero
         eyebrow="Products · AI infrastructure"
-        title="Solipher SHARD Context"
+        title="SHARD Context"
         description="Shrinks what you send to an LLM without losing the facts that have to be exactly right, compiled to your model's exact token budget, never an estimate."
       />
 

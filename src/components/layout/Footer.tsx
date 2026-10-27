@@ -58,7 +58,7 @@ export function Footer() {
 
         <div className="mt-6 flex flex-col items-center justify-between gap-2 border-t border-border pt-4 text-xs text-muted sm:flex-row">
           <p>&copy; {new Date().getFullYear()} {site.legalName}. All rights reserved.</p>
-          <p>Patent-backed algorithms and data structures.</p>
+          <p>Original algorithms and data structures.</p>
         </div>
       </div>
     </footer>

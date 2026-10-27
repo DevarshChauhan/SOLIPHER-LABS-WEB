@@ -52,7 +52,7 @@ export function GeneratePaymentLinkForm({ companyId }: { companyId: string }) {
   if (url) {
     return (
       <div className="rounded-xl border border-border bg-surface p-5 flex flex-col gap-3">
-        <p className="text-sm text-muted">Send this link to the company — the amount is locked, valid for 7 days:</p>
+        <p className="text-sm text-muted">Send this link to the company. The amount is locked, valid for 7 days:</p>
         <div className="flex items-center gap-2">
           <code className="flex-1 truncate rounded-lg border border-border bg-background px-3 py-2 text-xs">{url}</code>
           <button onClick={copyUrl} className="shrink-0 rounded-lg border border-border px-3 py-2 hover:border-red-500/40 transition-colors">

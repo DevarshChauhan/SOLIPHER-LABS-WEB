@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Odoo ERP, custom algorithm engineering, Android and web development, custom AI/ML, business development, resource-bounded systems consulting, medical imaging pipelines, and research implementation & benchmarking for academia.",
+    "Odoo ERP, web and Android development, custom AI/ML, business development, and research implementation and benchmarking for academics, from Solipher Labs.",
   alternates: { canonical: "/services" },
 };
 

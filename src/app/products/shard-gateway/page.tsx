@@ -25,12 +25,12 @@ const modelSpecs = [
 ];
 
 const phaseMethodology = [
-  { tag: "Phase A", title: "Moderate load — the realistic case", desc: "64-way concurrency, 200 prompts, a GPU-memory budget any sane operator would actually run in production. This is what a well-provisioned fleet looks like day to day." },
-  { tag: "Phase B", title: "Aggressive overload", desc: "128-way concurrency, 400 prompts, same memory budget as Phase A, pushed past what it can comfortably serve — real demand exceeding real capacity." },
+  { tag: "Phase A", title: "Moderate load: the realistic case", desc: "64-way concurrency, 200 prompts, a GPU-memory budget any sane operator would actually run in production. This is what a well-provisioned fleet looks like day to day." },
+  { tag: "Phase B", title: "Aggressive overload", desc: "128-way concurrency, 400 prompts, same memory budget as Phase A, pushed past what it can comfortably serve: real demand exceeding real capacity." },
   { tag: "Phase C", title: "Connection-backlog burst", desc: "A fast, GPU-free TCP-stack test confirming the Gateway's own listen backlog holds under a connection burst." },
-  { tag: "Phase D", title: "Tight memory budget", desc: "Same load pattern as Phase B, but the GPU-memory-utilization ceiling is deliberately lowered — the lever that actually shrinks the real KV-cache pool." },
-  { tag: "Phase E", title: "OOM hunt — the extreme case", desc: "gpu-memory-utilization pushed to 0.97 with a 256-way concurrent burst. Built for one purpose: find a real CUDA out-of-memory crash." },
-  { tag: "Phase Q", title: "Deterministic response-quality check", desc: "Real prompts at temperature=0, sent through both paths and diffed exactly — idle and under real concurrent contention. Does the Gateway ever alter what the model actually said?" },
+  { tag: "Phase D", title: "Tight memory budget", desc: "Same load pattern as Phase B, but the GPU-memory-utilization ceiling is deliberately lowered, the lever that actually shrinks the real KV-cache pool." },
+  { tag: "Phase E", title: "OOM hunt: the extreme case", desc: "gpu-memory-utilization pushed to 0.97 with a 256-way concurrent burst. Built for one purpose: find a real CUDA out-of-memory crash." },
+  { tag: "Phase Q", title: "Deterministic response-quality check", desc: "Real prompts at temperature=0, sent through both paths and diffed exactly, idle and under real concurrent contention. Does the Gateway ever alter what the model actually said?" },
 ];
 
 const phaseA: PhaseChartRow[] = [
@@ -51,15 +51,15 @@ const phaseD: PhaseChartRow[] = [
 ];
 
 const phaseE: PhaseChartRow[] = [
-  { model: "Yi-9B", baselineLabel: "", gatewayLabel: "", baselineValue: 0, gatewayValue: 0, delta: "", note: "vLLM failed to boot at 0.97 util — real evidence of a floor, not a bug" },
+  { model: "Yi-9B", baselineLabel: "", gatewayLabel: "", baselineValue: 0, gatewayValue: 0, delta: "", note: "vLLM failed to boot at 0.97 util: real evidence of a floor, not a bug" },
   { model: "Qwen2.5-7B (80/80 completed)", baselineLabel: "11.2s", gatewayLabel: "11.2s", baselineValue: 11.2, gatewayValue: 11.2, delta: "tied", deltaTone: "neutral" },
   { model: "OPT-6.7B (50/100 completed)", baselineLabel: "383.3s", gatewayLabel: "182.4s", baselineValue: 383.3, gatewayValue: 182.4, delta: "−52%" },
   { model: "OPT-1.3B (154/400 completed)", baselineLabel: "208.8s", gatewayLabel: "6.5s", baselineValue: 208.8, gatewayValue: 6.5, delta: "−97%" },
 ];
 
 const qualityChecks = [
-  { model: "Yi-9B", score: "20/20", detail: "10 idle · 10 under load — zero mismatches", perfect: true },
-  { model: "OPT-6.7B", score: "20/20", detail: "10 idle · 10 under load — zero mismatches", perfect: true },
+  { model: "Yi-9B", score: "20/20", detail: "10 idle · 10 under load, zero mismatches", perfect: true },
+  { model: "OPT-6.7B", score: "20/20", detail: "10 idle · 10 under load, zero mismatches", perfect: true },
   { model: "Qwen2.5-7B", score: "18/20", detail: "10/10 idle · 8/10 under load", perfect: false },
 ];
 
@@ -87,7 +87,7 @@ const pricingTiers = [
   { name: "Community", price: "Free", desc: "libshard core, self-hosted, MIT-licensed core, community support." },
   { name: "Diagnostic", price: "₹50,000 – ₹1,50,000 (one-time)", desc: "1-week hands-on engagement: a Solipher engineer measures your real baseline, root-causes the problem, and delivers a projected-savings report." },
   { name: "Growth", price: "₹6,000 – ₹12,000 / GPU-node / month (billed annually)", desc: "Production use, up to 8 GPU nodes, signed-license enforcement, business-hours support, 48hr bug-fix SLA.", highlighted: true },
-  { name: "Enterprise", price: "₹15L – ₹40L+ / year, custom", desc: "Unlimited nodes, 24/7 support, dedicated support channel, custom SLA, hash-chained admission audit certificates for regulated industries." },
+  { name: "Enterprise", price: "₹15L – ₹40L+ / year, custom", desc: "Unlimited nodes, priority support through a dedicated channel, response times agreed in a custom SLA, hash-chained admission audit certificates for regulated industries." },
 ];
 
 function CodeBlock({ children }: { children: string }) {
@@ -164,7 +164,7 @@ export default function ShardGatewayPage() {
             The full evidence, generated 2026-07-21
           </h2>
           <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted">
-            Every number below is from a real, repeatable GCP run against a real vLLM instance — no simulation,
+            Every number below is from a real, repeatable GCP run against a real vLLM instance. No simulation,
             no projection presented as measured fact.
           </p>
 
@@ -232,12 +232,12 @@ export default function ShardGatewayPage() {
             <p className="mt-3 text-sm leading-relaxed text-foreground/90">
               <strong>No sane company runs production traffic at Phase D or E&rsquo;s settings.</strong>{" "}
               A 0.16–0.97 GPU-memory-utilization ceiling with 128–256-way concurrency is not a realistic operating
-              point — it&rsquo;s a deliberately manufactured worst case, built specifically to try to force a real
+              point. It&rsquo;s a deliberately manufactured worst case, built specifically to try to force a real
               CUDA out-of-memory crash and see whether admission control prevents it.
             </p>
             <p className="mt-3 text-sm leading-relaxed text-foreground/90">
               Here is the honest result of that search: <strong>within everything we&rsquo;ve been able to test
-              so far, we have not produced a single OOM crash</strong>{" "}— not in baseline, not through the Gateway,
+              so far, we have not produced a single OOM crash</strong>{" "}: not in baseline, not through the Gateway,
               on any of the four models, at any budget down to 0.16 utilization. We are not claiming a crash is
               impossible. We&rsquo;re stating precisely what we found: in the scope we could check, it
               didn&rsquo;t happen. The container-survival record below is the literal evidence for that claim, not
@@ -248,11 +248,11 @@ export default function ShardGatewayPage() {
           {/* Phase A */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              Phase A — at realistic load, the Gateway costs nothing
+              Phase A: at realistic load, the Gateway costs nothing
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
               This is the headline, not Phase B/D/E below. At a budget any real deployment would run, the Gateway
-              matches or beats raw vLLM&rsquo;s own throughput — the admission layer is invisible until it&rsquo;s
+              matches or beats raw vLLM&rsquo;s own throughput. The admission layer is invisible until it&rsquo;s
               actually needed.
             </p>
             <div className="mt-5">
@@ -260,20 +260,20 @@ export default function ShardGatewayPage() {
             </div>
             <p className="mt-3 text-xs text-muted">
               OPT-6.7B and OPT-1.3B were not re-benchmarked at Phase A this cycle (prior clean baselines were
-              reused to avoid redundant GPU spend) — no fresh number to report for them here.
+              reused to avoid redundant GPU spend), so there is no fresh number to report for them here.
             </p>
           </div>
 
           {/* Phase B */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              Phase B — aggressive overload: same useful outcomes, delivered far faster
+              Phase B, aggressive overload: same useful outcomes, delivered far faster
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
               Completion <em>count</em>{" "}drops under the Gateway here, and that&rsquo;s not the story: admission
               control rejects fast and honestly instead of letting every request queue for minutes toward a
               response nobody&rsquo;s still waiting for. The number of requests that actually met the 60s SLO
-              stays roughly the same on both sides — it just arrives 2-4x sooner.
+              stays roughly the same on both sides; it just arrives 2-4x sooner.
             </p>
             <div className="mt-5">
               <PhaseChart title="Median latency, baseline vs. Gateway" rows={phaseB} />
@@ -287,7 +287,7 @@ export default function ShardGatewayPage() {
           {/* Phase D */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              Phase D — tight memory budget: the same pattern holds
+              Phase D, tight memory budget: the same pattern holds
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
               Same story, different lever: instead of pushing more load at a fixed budget, the budget itself is
@@ -301,17 +301,17 @@ export default function ShardGatewayPage() {
           {/* Phase E */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              Phase E — the OOM hunt: zero crashes found, anywhere we tested
+              Phase E, the OOM hunt: zero crashes found, anywhere we tested
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-              0.97 utilization, 256-way burst — the closest this project has come to a deliberate crash test.
+              0.97 utilization, 256-way burst: the closest this project has come to a deliberate crash test.
               Every container, every model, every phase: survived.
             </p>
             <div className="mt-5">
               <PhaseChart title="Median latency, baseline vs. Gateway" rows={phaseE} />
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
-              {["Yi-9B — baseline ✓ gateway ✓ (A/B/D)", "OPT-6.7B — baseline ✓ gateway ✓ (B/D/E)", "OPT-1.3B — baseline ✓ gateway ✓ (B/D/E)", "Qwen2.5-7B — baseline ✓ gateway ✓ (A/E)"].map((s) => (
+              {["Yi-9B: baseline ✓ gateway ✓ (A/B/D)", "OPT-6.7B: baseline ✓ gateway ✓ (B/D/E)", "OPT-1.3B: baseline ✓ gateway ✓ (B/D/E)", "Qwen2.5-7B: baseline ✓ gateway ✓ (A/E)"].map((s) => (
                 <span key={s} className="rounded-full border border-border bg-background px-3 py-1.5 font-mono text-xs text-red-400">
                   {s}
                 </span>
@@ -322,10 +322,10 @@ export default function ShardGatewayPage() {
           {/* Quality check */}
           <div className="mt-12">
             <h3 className="font-display text-lg font-semibold text-foreground">
-              Response-quality verification — does the Gateway ever change what the model said?
+              Response-quality verification: does the Gateway ever change what the model said?
             </h3>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">
-              Real prompts, temperature=0, diffed exactly between direct vLLM and Gateway-fronted calls — idle and
+              Real prompts, temperature=0, diffed exactly between direct vLLM and Gateway-fronted calls, idle and
               under real concurrent contention. 10 prompts each way, per model.
             </p>
             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -340,13 +340,13 @@ export default function ShardGatewayPage() {
               ))}
             </div>
             <p className="mt-5 max-w-3xl text-sm leading-relaxed text-foreground/90">
-              Every idle-phase check across all three models matched byte-for-byte — 30/30. That&rsquo;s the
+              Every idle-phase check across all three models matched byte-for-byte: 30/30. That&rsquo;s the
               direct proxy-transparency proof: the Gateway never touches tokens after admission. The two Qwen
               mismatches happened only under real injected background load, which is the signature of vLLM&rsquo;s
-              own preemption/recompute recovery, not the Gateway — a request preempted for KV-cache pressure and
+              own preemption/recompute recovery, not the Gateway. A request preempted for KV-cache pressure and
               resumed can hit floating-point non-determinism across a different batch composition, occasionally
               flipping a near-tied token even at temperature=0. Both completions were coherent, on-topic, and
-              correct — wording drift, not hallucination.
+              correct: wording drift, not hallucination.
             </p>
           </div>
         </Container>
@@ -531,7 +531,7 @@ export default function ShardGatewayPage() {
           <p className="mt-8 text-sm text-muted">
             Looking for the context-compilation side of this work?{" "}
             <Link href="/products/shard-context" className="text-red-400 underline underline-offset-2 hover:text-red-300">
-              See Solipher SHARD Context on the Products page
+              See SHARD Context
             </Link>
             .
           </p>

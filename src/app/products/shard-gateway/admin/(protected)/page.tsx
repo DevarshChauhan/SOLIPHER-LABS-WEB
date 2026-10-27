@@ -39,7 +39,7 @@ export default async function AdminCompaniesPage() {
       <main className="max-w-5xl mx-auto px-6 py-10">
         {!hasDb && (
           <div className="mb-6 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2.5 text-sm text-amber-700 dark:text-amber-400">
-            No database connected — showing preview data. Set <code className="font-mono text-xs">DATABASE_URL</code> once Neon is added via Vercel.
+            No database connected, showing preview data. Set <code className="font-mono text-xs">DATABASE_URL</code> once Neon is added via Vercel.
           </div>
         )}
 

@@ -54,7 +54,7 @@ export default function PortfolioPage() {
 
                 <Link
                   href={`/research#${cs.researchSlug}`}
-                  className="mt-8 inline-flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+                  className="mt-8 inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
                 >
                   See the research <ArrowUpRight size={14} />
                 </Link>

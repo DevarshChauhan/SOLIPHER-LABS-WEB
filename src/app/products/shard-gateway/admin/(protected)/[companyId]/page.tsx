@@ -107,7 +107,7 @@ export default async function CompanyDetailPage({ params }: { params: Promise<{ 
                 {licenses.length === 0 && (
                   <tr>
                     <td colSpan={6} className="px-4 py-8 text-center text-muted">
-                      No license issued yet — waiting on a Gateway install to self-register.
+                      No license issued yet, waiting on a Gateway install to self-register.
                     </td>
                   </tr>
                 )}

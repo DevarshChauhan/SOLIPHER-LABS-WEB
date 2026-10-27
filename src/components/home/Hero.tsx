@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { Fragment, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, FileText } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -34,7 +34,7 @@ export function Hero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <Badge tone="red">R&amp;D lab · Patent-backed systems</Badge>
+          <Badge tone="red">R&amp;D lab · Original systems research</Badge>
         </motion.div>
 
         <motion.h1
@@ -43,7 +43,17 @@ export function Hero({
           transition={{ duration: 0.6, delay: 0.1 }}
           className="mt-6 font-display text-4xl font-semibold tracking-tight text-foreground sm:text-6xl"
         >
-          {lead} <span className="text-gradient-red">{highlight}</span>
+          {lead}{" "}
+          <span className="text-gradient-red">
+            {/* Lines may break between words but never at a hyphen, so
+                "off-the-shelf" can't split into "off-the- / shelf" on phones. */}
+            {highlight.split(" ").map((word, i) => (
+              <Fragment key={i}>
+                {i > 0 && " "}
+                <span className="whitespace-nowrap">{word}</span>
+              </Fragment>
+            ))}
+          </span>
         </motion.h1>
 
         <motion.p

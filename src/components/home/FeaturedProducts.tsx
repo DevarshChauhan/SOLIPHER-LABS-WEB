@@ -13,7 +13,7 @@ export function FeaturedProducts() {
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
           <SectionHeading
             eyebrow="Products"
-            title="Patent-backed research, packaged into things you can deploy."
+            title="Original research, packaged into things you can deploy."
             description="Every product below solves a specific, named problem, and we can tell you exactly how much better the result is."
           />
           <Link href="/products" className="hidden shrink-0 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300 sm:flex">
@@ -36,7 +36,7 @@ export function FeaturedProducts() {
             </p>
             <Link
               href="/products/shard-gateway"
-              className="mt-6 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+              className="mt-6 flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
             >
               Learn more <ArrowUpRight size={14} />
             </Link>
@@ -50,13 +50,13 @@ export function FeaturedProducts() {
             className="flex h-full flex-col rounded-2xl border border-red-500/30 bg-background p-8"
           >
             <Badge tone="red">AI infrastructure</Badge>
-            <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-foreground">Solipher SHARD Context</h3>
+            <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-foreground">SHARD Context</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Shrinks what you send to an LLM without losing the facts that have to be exactly right.
             </p>
             <Link
               href="/products/shard-context"
-              className="mt-6 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+              className="mt-6 flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
             >
               Learn more <ArrowUpRight size={14} />
             </Link>
@@ -71,14 +71,14 @@ export function FeaturedProducts() {
           >
             <Badge tone="red">AI infrastructure</Badge>
             <h3 className="mt-5 font-display text-lg font-semibold tracking-tight text-foreground">
-              Solipher SHARD CodeContext
+              SHARD CodeContext
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">
               Compiles the smallest slice of your repository a coding task actually needs, under a hard token budget.
             </p>
             <Link
               href="/products/shard-codecontext"
-              className="mt-6 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+              className="mt-6 flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
             >
               Learn more <ArrowUpRight size={14} />
             </Link>

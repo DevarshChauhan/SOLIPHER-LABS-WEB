@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Pause, Play } from "lucide-react";
 import { quoteSlides } from "@/lib/data/quoteSlides";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Container } from "@/components/ui/Container";
@@ -16,7 +16,10 @@ function slideHref(slide: (typeof quoteSlides)[number]) {
   return `/contact?${params.toString()}`;
 }
 
-function SlideCard({ slide }: { slide: (typeof quoteSlides)[number] }) {
+// `duplicate` marks the second copy rendered only to make the loop seamless.
+// It is hidden from screen readers and skipped by Tab, so each card is
+// announced and focused once.
+function SlideCard({ slide, duplicate = false }: { slide: (typeof quoteSlides)[number]; duplicate?: boolean }) {
   const Icon = slide.icon;
   const isFinal = slide.id === "get-a-quote";
 
@@ -24,6 +27,9 @@ function SlideCard({ slide }: { slide: (typeof quoteSlides)[number] }) {
     <Link
       href={slideHref(slide)}
       draggable={false}
+      aria-hidden={duplicate || undefined}
+      tabIndex={duplicate ? -1 : undefined}
+      inert={duplicate || undefined}
       className={`group relative flex h-64 w-[300px] shrink-0 flex-col justify-between overflow-hidden rounded-3xl border p-6 transition-transform duration-300 hover:-translate-y-1 sm:w-[340px] ${
         isFinal ? "border-red-500/40 bg-red-500/[0.06]" : "border-border bg-surface"
       }`}
@@ -67,6 +73,13 @@ export function QuoteSlider() {
   const pausedRef = useRef(false);
   const draggingRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Explicit pause from the button (WCAG 2.2.2). Hover, drag and keyboard
+  // focus pause it only temporarily; this one sticks until pressed again.
+  const [stopped, setStopped] = useState(false);
+  const stoppedRef = useRef(false);
+  useEffect(() => {
+    stoppedRef.current = stopped;
+  }, [stopped]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -78,7 +91,7 @@ export function QuoteSlider() {
     let raf = requestAnimationFrame(step);
 
     function step() {
-      if (track && !pausedRef.current && !draggingRef.current) {
+      if (track && !stoppedRef.current && !pausedRef.current && !draggingRef.current) {
         const half = track.scrollWidth / 2;
         track.scrollLeft += 0.5;
         if (track.scrollLeft >= half) {
@@ -153,6 +166,8 @@ export function QuoteSlider() {
     track.addEventListener("wheel", onWheel, { passive: true });
     track.addEventListener("mouseenter", onEnter);
     track.addEventListener("mouseleave", onLeave);
+    track.addEventListener("focusin", onEnter);
+    track.addEventListener("focusout", onLeave);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -164,6 +179,8 @@ export function QuoteSlider() {
       track.removeEventListener("wheel", onWheel);
       track.removeEventListener("mouseenter", onEnter);
       track.removeEventListener("mouseleave", onLeave);
+      track.removeEventListener("focusin", onEnter);
+      track.removeEventListener("focusout", onLeave);
     };
   }, []);
 
@@ -171,18 +188,27 @@ export function QuoteSlider() {
 
   return (
     <section className="border-t border-border py-16 sm:py-20">
-      <Container className="mb-8">
+      <Container className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           eyebrow="What we can build for you"
           title="Pick a lane, or ask us anything."
           description="Every card below opens a quote request pre-filled for that kind of work. Edit it before it sends, or start from scratch."
         />
+        <button
+          type="button"
+          onClick={() => setStopped((v) => !v)}
+          aria-pressed={stopped}
+          className="inline-flex h-11 shrink-0 items-center gap-2 self-start rounded-full border border-border px-4 text-sm text-foreground/80 transition-colors hover:border-red-500/50 hover:text-red-400 motion-reduce:hidden sm:self-auto"
+        >
+          {stopped ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
+          {stopped ? "Play cards" : "Pause cards"}
+        </button>
       </Container>
 
       <div className="quote-marquee-mask">
         <div ref={trackRef} className="quote-marquee-track flex touch-pan-y gap-5 overflow-x-auto px-6 lg:px-8">
           {doubled.map((slide, i) => (
-            <SlideCard key={`${slide.id}-${i}`} slide={slide} />
+            <SlideCard key={`${slide.id}-${i}`} slide={slide} duplicate={i >= quoteSlides.length} />
           ))}
         </div>
       </div>

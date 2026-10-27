@@ -110,9 +110,9 @@ const currentGaps = [
 ];
 
 export const metadata: Metadata = {
-  title: "Solipher SHARD CodeContext",
+  title: "SHARD CodeContext",
   description:
-    "Solipher SHARD CodeContext compiles the minimal slice of a repository a coding task actually needs, under a hard token budget, with every span traceable to the reason it was included. Real measured results below.",
+    "SHARD CodeContext compiles the smallest slice of a repository a coding task needs, under a hard token budget, with every span traceable to why it was included.",
   alternates: { canonical: "/products/shard-codecontext" },
 };
 
@@ -129,7 +129,7 @@ export default function ShardCodeContextPage() {
     <>
       <PageHero
         eyebrow="Products · AI infrastructure"
-        title="Solipher SHARD CodeContext"
+        title="SHARD CodeContext"
         description="Compiles the smallest slice of your repository a coding task actually needs, under a hard token budget, with every line traceable to the reason it was included."
       />
 

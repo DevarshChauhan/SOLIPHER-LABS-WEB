@@ -48,7 +48,7 @@ export default function ResearchPage() {
                   {paper && (
                     <Link
                       href={`/publications#${paper.slug}`}
-                      className="mt-6 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+                      className="mt-6 flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
                     >
                       Paper: {paper.statusLabel.toLowerCase()} <ArrowUpRight size={14} />
                     </Link>

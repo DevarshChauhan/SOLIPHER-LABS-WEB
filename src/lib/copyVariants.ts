@@ -7,7 +7,7 @@ export const homeVariants = [
     lead: "We solve the hard problem.",
     highlight: "We show you the number.",
     description:
-      "Patent-backed algorithms and data structures, from a data engine measured at 1.83M ops/s to a capsule-endoscopy triage system evaluated on 47,161 real frames. We publish what we solved and how much better the result is.",
+      "Original algorithms and data structures, from a ransomware detector at 0.966 AUROC on unseen hardware to a capsule-endoscopy triage system evaluated on 47,161 real frames. We publish what we solved and how much better the result is.",
   },
   {
     lead: "Built to solve what",
@@ -16,10 +16,10 @@ export const homeVariants = [
       "From medical imaging to AI inference, we design the algorithm most teams end up working around, then measure exactly how much better it makes the result.",
   },
   {
-    lead: "Patent-backed engineering.",
+    lead: "Original engineering.",
     highlight: "Numbers you can check.",
     description:
-      "Original algorithms and data structures, from a data engine measured at 1.83M ops/s to a triage system evaluated on 47,161 real frames. We publish the result, not the recipe.",
+      "Original algorithms and data structures, from an LLM admission gateway tested on real GPUs to a triage system evaluated on 47,161 real frames. We publish the result, not the recipe.",
   },
   {
     lead: "The problem gets solved.",
@@ -33,7 +33,7 @@ export const aboutVariants = [
   {
     title: "We build the hard-to-build parts other companies work around.",
     description:
-      "Solipher Labs is an R&D lab that designs original, patent-backed algorithms and data structures, then ships them as deployable products and custom engineering.",
+      "Solipher Labs is an R&D lab that designs original algorithms and data structures, then ships them as deployable products and custom engineering.",
   },
   {
     title: "Most software is assembled. Ours is designed from the ground up.",
@@ -56,15 +56,15 @@ export const researchVariants = [
   {
     title: "What it solves. How much it solves it.",
     description:
-      "Our algorithms and data structures are patent-backed, so we don't publish how they work. We do publish the problem, the scale we tested at, and the measured result.",
+      "Our algorithms and data structures are proprietary, so we don't publish how they work. We do publish the problem, the scale we tested at, and the measured result.",
   },
   {
     title: "The mechanism is ours. The result is yours to see.",
     description:
-      "Every research program here is patent-backed. What's public is the problem it solves and exactly how much better the measured outcome is.",
+      "Every research program here is proprietary. What's public is the problem it solves and exactly how much better the measured outcome is.",
   },
   {
-    title: "Patent-backed. Proven by the number, not the pitch.",
+    title: "Proprietary. Proven by the number, not the pitch.",
     description:
       "No simulated benchmarks, no back-of-envelope estimates. Real runs, on real hardware and real data, reported as a number, not a story.",
   },
@@ -77,7 +77,7 @@ export const researchVariants = [
 
 export const productsVariants = [
   {
-    title: "Patent-backed research, packaged into things you can deploy.",
+    title: "Original research, packaged into things you can deploy.",
     description: "Each product solves one named problem. Pricing is quote-based; every deployment is different.",
   },
   {
@@ -86,11 +86,11 @@ export const productsVariants = [
   },
   {
     title: "Original engineering, shipped as something you can actually buy.",
-    description: "AI infrastructure, patent-backed, packaged into a product with a price.",
+    description: "AI infrastructure built on original research, packaged into a product with a price.",
   },
   {
     title: "Built in the lab. Ready for production.",
-    description: "Two products, both AI inference infrastructure, both measured against real hardware.",
+    description: "Three products for AI infrastructure, each with measured results you can check.",
   },
 ] as const;
 
@@ -105,12 +105,12 @@ export const servicesVariants = [
     description: "Custom engineering across ERP, applications, AI/ML, and high-performance systems, scoped to what your system actually needs.",
   },
   {
-    title: "Custom engineering, from a team that ships its own products first.",
+    title: "Custom engineering, from a lab that ships its own products first.",
     description: "We hold client work to the same standard as our own products: built for your real constraints, not a generic template.",
   },
   {
     title: "We build our own systems. Then we build yours.",
-    description: "Odoo ERP, custom applications, AI/ML development, and systems consulting, from the same team behind our patent-backed products.",
+    description: "Odoo ERP, custom applications, AI/ML development, and systems consulting, from the same lab behind our own products.",
   },
 ] as const;
 

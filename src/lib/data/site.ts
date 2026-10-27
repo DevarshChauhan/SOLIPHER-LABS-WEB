@@ -5,8 +5,12 @@ export const site = {
   domain: "solipherlabs.in",
   url: "https://solipherlabs.in",
   email: "contact@solipherlabs.in",
+  // Used as the default meta and social description: keep it under ~160
+  // characters so search results show it whole.
+  metaDescription:
+    "An R&D lab building original algorithms and data structures for AI infrastructure, medical imaging and security, with every result measured on a real run.",
   description:
-    "Solipher Labs is an R&D lab building patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software, shipping them into deployable products, and implementing and benchmarking research designs for professors, master's students, and PhD candidates.",
+    "Solipher Labs is an R&D lab building original algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software, shipping them into deployable products, and implementing and benchmarking research designs for professors, master's students, and PhD candidates.",
   social: {
     linkedin: "https://www.linkedin.com/company/solipher-labs/",
     github: "https://github.com/SOLIPHER-LABS",
@@ -16,7 +20,7 @@ export const site = {
     {
       name: "Chauhan Devarsh Rajendra",
       role: "Founder",
-      bio: "Founder of Solipher Labs. Designed, implemented and benchmarked the patent-backed algorithms and data structures behind the company's products, across medical imaging, systems infrastructure, AI inference and security research.",
+      bio: "Founder of Solipher Labs. Designed, implemented and benchmarked the original algorithms and data structures behind the company's products, across medical imaging, systems infrastructure, AI inference and security research.",
     },
   ],
   teamSize: 1,
@@ -80,8 +84,8 @@ export const serviceNavLinks = [
 // the header, which has no room left. /blog redirects to /publications.
 
 export const heroStats = [
-  { value: "1.83M ops/s", label: "Peak throughput measured under concurrent load, up from 54.8k ops/s single-threaded" },
+  { value: "0.966", label: "AUROC detecting ransomware on hardware never seen in training, from disk metadata alone (PRISM-CVM, under review)" },
   { value: "47,161", label: "Endoscopy frames processed in a single real evaluation run, on a public clinical dataset" },
-  { value: "6", label: "Patent-backed products built from original algorithms and data structures" },
+  { value: "3", label: "Deployable AI infrastructure products, each built on original algorithms and data structures" },
   { value: "0", label: "Simulated results. Every number we publish comes from a real, executed run" },
 ] as const;

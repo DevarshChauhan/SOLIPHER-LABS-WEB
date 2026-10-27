@@ -34,7 +34,7 @@ export default function ContactPage() {
             <h2 className="text-xs font-semibold uppercase tracking-wider text-muted">Reach us directly</h2>
             <a
               href={`mailto:${site.email}`}
-              className="mt-3 flex items-center gap-2.5 text-sm text-foreground/90 transition-colors hover:text-red-400"
+              className="mt-1 flex min-h-11 items-center gap-2.5 text-sm text-foreground/90 transition-colors hover:text-red-400"
             >
               <Mail size={16} className="text-red-500" />
               {site.email}

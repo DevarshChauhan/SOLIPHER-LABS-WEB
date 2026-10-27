@@ -56,7 +56,7 @@ export default function PublicationsPage() {
                       href={link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+                      className="flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
                     >
                       {link.label} <ArrowUpRight size={14} />
                     </a>
@@ -64,7 +64,7 @@ export default function PublicationsPage() {
                   {paper.researchSlug && (
                     <Link
                       href={`/research#${paper.researchSlug}`}
-                      className="flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+                      className="flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
                     >
                       Research program <ArrowUpRight size={14} />
                     </Link>

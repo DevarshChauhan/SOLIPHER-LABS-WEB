@@ -40,7 +40,7 @@ export default function AdminLoginPage() {
             <div className="font-display font-bold text-lg tracking-tight">
               SOLIPHER <span className="text-red-500">LABS</span>
             </div>
-            <div className="text-sm text-muted mt-1">SHARD Gateway — Admin</div>
+            <div className="text-sm text-muted mt-1">SHARD Gateway Admin</div>
           </div>
         </div>
 

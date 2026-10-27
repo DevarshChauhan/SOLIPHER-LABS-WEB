@@ -35,7 +35,7 @@ export const researchProjects: ResearchProject[] = [
     codename: "SHARP-WCE",
     domain: "Medical imaging",
     status: "published",
-    statusLabel: "Original research, patent-backed",
+    statusLabel: "Original research",
     problem:
       "A single capsule-endoscopy study produces 50,000–80,000 images per patient, and reviewing that volume is the acknowledged bottleneck of the diagnostic method. The open question isn't just which frames look abnormal, it's how to retain, rank, and triage that volume under real memory and storage limits without losing a defensible record of every decision.",
     scale: "Evaluated on 47,161 labelled frames across 43 real patient studies, against six alternative approaches.",
@@ -51,7 +51,7 @@ export const researchProjects: ResearchProject[] = [
     codename: "SHARP-Serve",
     domain: "AI inference infrastructure",
     status: "published",
-    statusLabel: "Original research, patent-backed",
+    statusLabel: "Original research",
     problem:
       "Production LLM inference clusters running above roughly 60% memory utilization face a scheduling problem, not a modeling one: when a request's cached context has been evicted to slower memory, the system has to decide whether recovery can finish before that request's deadline, before admitting it to the next processing batch. Existing schedulers admit optimistically and only discover a missed deadline after the request has already run.",
     scale: "Validated bare-metal on a 192-core cloud instance: 60 distinct thread-scaling configurations (4 test types × 15 thread counts from 8–384), each the mean of 5 independent runs (300 total runs), plus 13 further configurations comparing against production-style baseline strategies.",

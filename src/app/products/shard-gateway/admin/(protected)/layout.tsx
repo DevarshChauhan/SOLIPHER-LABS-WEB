@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { COOKIE_NAME, verifySessionCookieValue } from "@/lib/admin/session";
 
 export const metadata = {
-  title: "Admin — SHARD Gateway",
+  title: "Admin | SHARD Gateway",
   robots: { index: false, follow: false },
 };
 

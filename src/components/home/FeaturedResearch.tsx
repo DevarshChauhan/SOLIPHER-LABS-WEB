@@ -54,7 +54,7 @@ export function FeaturedResearch() {
           ))}
         </div>
 
-        <Link href="/research" className="mt-8 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300 sm:hidden">
+        <Link href="/research" className="mt-8 flex min-h-11 items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300 sm:hidden">
           All research <ArrowUpRight size={14} />
         </Link>
       </Container>

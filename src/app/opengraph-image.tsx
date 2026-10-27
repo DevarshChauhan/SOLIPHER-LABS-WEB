@@ -46,7 +46,7 @@ export default async function Image() {
         </div>
 
         <div style={{ display: "flex", justifyContent: "space-between", fontSize: 28, color: "#9a9aa2" }}>
-          <span>AI infrastructure and patent-backed systems research</span>
+          <span>AI infrastructure and original systems research</span>
           <span>{site.domain}</span>
         </div>
       </div>

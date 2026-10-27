@@ -8,7 +8,7 @@ import { Gauge, FlaskConical, Users, Layers, Mail, ArrowRight } from "lucide-rea
 
 export const metadata: Metadata = {
   title: "Careers",
-  description: "Work on patent-backed algorithms and data structures at Solipher Labs. No open requisitions posted right now, but we're always open to a conversation.",
+  description: "Work on original algorithms and data structures at Solipher Labs. No open requisitions posted right now, but we're always open to a conversation.",
   alternates: { canonical: "/careers" },
 };
 
@@ -20,7 +20,7 @@ const values = [
   },
   {
     icon: FlaskConical,
-    title: "Patent-backed, not paper-backed",
+    title: "Built, not just proposed",
     description: "We build original algorithms and data structures, then defend them. If you want your work to end at a slide deck, this isn't the place.",
   },
   {
@@ -43,7 +43,7 @@ export default function CareersPage() {
       <PageHero
         eyebrow="Careers"
         title="Build the algorithm, not around it."
-        description="Solipher Labs is a small R&D lab working on patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software."
+        description="Solipher Labs is a small R&D lab working on original algorithms and data structures across medical imaging, high-performance infrastructure, AI inference, and enterprise software."
       />
 
       <section className="py-20 sm:py-24">

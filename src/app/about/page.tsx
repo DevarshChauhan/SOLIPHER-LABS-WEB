@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Solipher Labs is an R&D lab building patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, and AI inference.",
+    "Solipher Labs is an R&D lab building original algorithms and data structures across medical imaging, high-performance infrastructure, and AI inference.",
   alternates: { canonical: "/about" },
 };
 
@@ -82,7 +82,7 @@ export default function AboutPage() {
                 <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-6">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-red-400">IP</h3>
                   <p className="mt-2 text-sm text-foreground">
-                    Every product on this site is built on original, patent-backed algorithms and data
+                    Every product on this site is built on original algorithms and data
                     structures developed in-house.
                   </p>
                 </div>

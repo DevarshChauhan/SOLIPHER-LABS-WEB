@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Products",
   description:
-    "SHARD Gateway and Solipher SHARD Context: patent-backed AI infrastructure from Solipher Labs, packaged into deployable products.",
+    "SHARD Gateway, SHARD Context and SHARD CodeContext: AI infrastructure from Solipher Labs, each with measured results from real runs.",
   alternates: { canonical: "/products" },
 };
 
@@ -56,7 +56,7 @@ export default function ProductsPage() {
                 <Badge>AI infrastructure</Badge>
                 <Badge tone="red">Measured against a live model</Badge>
               </div>
-              <h2 className="mt-4 font-display text-lg font-semibold text-foreground">Solipher SHARD Context</h2>
+              <h2 className="mt-4 font-display text-lg font-semibold text-foreground">SHARD Context</h2>
               <p className="mt-1 text-sm font-medium text-red-400">
                 Shrinks what you send to an LLM without losing the facts that have to be exactly right.
               </p>
@@ -80,7 +80,7 @@ export default function ProductsPage() {
                 <Badge>AI infrastructure</Badge>
                 <Badge tone="red">Benchmarked on real repositories</Badge>
               </div>
-              <h2 className="mt-4 font-display text-lg font-semibold text-foreground">Solipher SHARD CodeContext</h2>
+              <h2 className="mt-4 font-display text-lg font-semibold text-foreground">SHARD CodeContext</h2>
               <p className="mt-1 text-sm font-medium text-red-400">
                 Compiles the smallest slice of your repository a coding task actually needs, under a hard token budget.
               </p>

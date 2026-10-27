@@ -132,6 +132,16 @@ body {
   color: white;
 }
 
+/* One visible, on-brand focus ring for keyboard users everywhere (red in
+   dark, teal in light via the token). In the base layer so a component's
+   own focus utilities still win. */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--red-500);
+    outline-offset: 2px;
+  }
+}
+
 .text-gradient-red {
   background: linear-gradient(120deg, var(--red-400), var(--red-600));
   -webkit-background-clip: text;
@@ -181,6 +191,10 @@ body {
 }
 .quote-marquee-track::-webkit-scrollbar {
   display: none;
+}
+/* The track clips overflow on both axes, so draw the ring inside the card. */
+.quote-marquee-track a:focus-visible {
+  outline-offset: -3px;
 }
 .quote-marquee-track:active {
   cursor: grabbing;

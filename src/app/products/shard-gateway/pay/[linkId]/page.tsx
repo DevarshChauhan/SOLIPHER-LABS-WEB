@@ -49,7 +49,7 @@ export default async function PayPage({ params }: { params: Promise<{ linkId: st
                 Reach out to <span className="text-foreground font-medium">contact@solipherlabs.in</span> to pay this
                 invoice by bank transfer or UPI.
               </p>
-              <p className="text-xs">Mention your company name — we&rsquo;ll confirm receipt and issue your license directly.</p>
+              <p className="text-xs">Mention your company name and we&rsquo;ll confirm receipt and issue your license directly.</p>
             </div>
           </>
         )}
