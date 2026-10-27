@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/home/Hero";
 import { ShardEvidenceHighlight } from "@/components/home/ShardEvidenceHighlight";
 import { QuoteSlider } from "@/components/home/QuoteSlider";
@@ -9,6 +10,10 @@ import { CTABand } from "@/components/home/CTABand";
 import { homeVariants, pickVariant } from "@/lib/copyVariants";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 export default function Home() {
   const hero = pickVariant(homeVariants);

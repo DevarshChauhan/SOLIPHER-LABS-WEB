@@ -25,7 +25,7 @@ function Bar({
   const width = max > 0 ? Math.max((value / max) * 100, value > 0 ? 2 : 0) : 0;
   return (
     <div className="grid grid-cols-[46px_1fr_92px] items-center gap-2.5">
-      <span className="text-right font-mono text-[10px] uppercase tracking-wide text-muted">{label}</span>
+      <span className="text-right font-mono text-xs uppercase tracking-wide text-muted">{label}</span>
       <div className="h-3 overflow-hidden rounded-sm bg-surface">
         <div
           className={`h-full rounded-sm ${tone === "gateway" ? "bg-red-500" : "bg-muted/40"}`}
@@ -33,7 +33,7 @@ function Bar({
         />
       </div>
       <span
-        className={`text-right font-mono text-[11px] tabular-nums ${
+        className={`text-right font-mono text-xs tabular-nums ${
           tone === "gateway" ? "text-foreground" : "text-muted"
         }`}
       >
@@ -92,7 +92,7 @@ export function PhaseChart({
           </div>
         ))}
       </div>
-      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-muted/40" /> raw vLLM
         </span>

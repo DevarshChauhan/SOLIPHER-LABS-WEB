@@ -16,10 +16,10 @@ export const site = {
     {
       name: "Chauhan Devarsh Rajendra",
       role: "Founder",
-      bio: "Founder of Solipher Labs. Leads a five-person in-house team building the patent-backed algorithms and data structures behind the company's products, across medical imaging, systems infrastructure, and AI inference.",
+      bio: "Founder of Solipher Labs. Designed, implemented and benchmarked the patent-backed algorithms and data structures behind the company's products, across medical imaging, systems infrastructure, AI inference and security research.",
     },
   ],
-  teamSize: 5,
+  teamSize: 1,
   // Printed on the offer letter and certificate. Only list what we
   // actually hold: we are MSME registered, and are NOT ISO certified or
   // Startup India recognised, so neither is claimed anywhere.
@@ -75,10 +75,9 @@ export const serviceNavLinks = [
   { href: "/services", label: "All Services" },
 ] as const;
 
-// Publications is intentionally not in navLinks yet: there are no real
-// papers/whitepapers to list. The route below returns notFound() until
-// that changes. Re-add "/blog" here (with a Publications label) once
-// the page has real title/abstract/PDF/DOI/citation/authors/venue entries.
+// Publications (src/lib/data/publications.ts) lists only manuscripts with a
+// checkable status. It is linked from the footer and the Research page, not
+// the header, which has no room left. /blog redirects to /publications.
 
 export const heroStats = [
   { value: "1.83M ops/s", label: "Peak throughput measured under concurrent load, up from 54.8k ops/s single-threaded" },

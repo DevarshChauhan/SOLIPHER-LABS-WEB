@@ -28,7 +28,7 @@ function Bar({ row, max }: { row: BaselineRow; max: number }) {
             style={{ width: `${width}%` }}
           />
         </div>
-        <span className="text-right font-mono text-[11px] tabular-nums text-foreground">
+        <span className="text-right font-mono text-xs tabular-nums text-foreground">
           {row.tokens} tok
         </span>
       </div>
@@ -47,7 +47,7 @@ export function BaselineComparisonChart({ title, subtitle, rows }: { title: stri
           <Bar key={r.name} row={r} max={max} />
         ))}
       </div>
-      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-red-500" /> SHARD Context
         </span>

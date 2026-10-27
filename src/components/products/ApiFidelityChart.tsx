@@ -20,7 +20,7 @@ function Bar({ row }: { row: ApiFidelityRow }) {
     <div>
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-mono text-xs font-semibold text-foreground">{row.task}</span>
-        <span className={`font-mono text-[11px] ${wrongLanguage ? "text-red-400" : "text-muted"}`}>
+        <span className={`font-mono text-xs ${wrongLanguage ? "text-red-400" : "text-muted"}`}>
           no context wrote {row.bareLanguage}
         </span>
       </div>
@@ -30,7 +30,7 @@ function Bar({ row }: { row: ApiFidelityRow }) {
           <div className="h-2.5 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-muted/40" style={{ width: `${bareWidth}%` }} />
           </div>
-          <span className="text-right font-mono text-[11px] tabular-nums text-muted">
+          <span className="text-right font-mono text-xs tabular-nums text-muted">
             {row.bare}/{row.tracked}
           </span>
         </div>
@@ -38,7 +38,7 @@ function Bar({ row }: { row: ApiFidelityRow }) {
           <div className="h-2.5 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-red-500" style={{ width: `${ctxWidth}%` }} />
           </div>
-          <span className="text-right font-mono text-[11px] tabular-nums text-foreground">
+          <span className="text-right font-mono text-xs tabular-nums text-foreground">
             {row.withContext}/{row.tracked}
           </span>
         </div>
@@ -65,7 +65,7 @@ export function ApiFidelityChart({
           <Bar key={r.task} row={r} />
         ))}
       </div>
-      <div className="mt-6 flex flex-wrap items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex flex-wrap items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-red-500" /> with compiled context
         </span>

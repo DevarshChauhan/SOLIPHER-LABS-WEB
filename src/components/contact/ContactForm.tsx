@@ -16,50 +16,53 @@ const projectTypes = [
   "Other / not sure yet",
 ];
 
+type FieldName = "name" | "email" | "message";
+
 export function ContactForm() {
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState<string | null>(null);
+  const [errorField, setErrorField] = useState<FieldName | null>(null);
   const searchParams = useSearchParams();
   const prefillType = searchParams.get("type") ?? "";
   const prefillMessage = searchParams.get("message") ?? "";
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError(null);
+    setErrorField(null);
+    setStatus("sending");
     const form = new FormData(e.currentTarget);
-    const name = form.get("name")?.toString() ?? "";
-    const email = form.get("email")?.toString() ?? "";
-    const company = form.get("company")?.toString() ?? "";
-    const projectType = form.get("projectType")?.toString() ?? "";
-    const message = form.get("message")?.toString() ?? "";
 
-    const subject = `[Quote request] ${projectType || "New project"} (${company || name})`;
-    const body = [
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Company: ${company || "n/a"}`,
-      `Project type: ${projectType || "n/a"}`,
-      "",
-      "Message:",
-      message,
-    ].join("\n");
-
-    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setSubmitted(true);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(form.entries())),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) {
+        setError(data.error ?? "Something went wrong. Please try again.");
+        setErrorField((data.field as FieldName | undefined) ?? null);
+        setStatus("idle");
+        return;
+      }
+      setStatus("sent");
+    } catch {
+      setError("We couldn't reach the server. Please check your connection and try again.");
+      setStatus("idle");
+    }
   }
 
-  if (submitted) {
+  if (status === "sent") {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 text-center">
-        <h3 className="text-lg font-semibold text-foreground">Your email client should be opening now.</h3>
+      <div role="status" className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 text-center">
+        <h3 className="text-lg font-semibold text-foreground">Message received.</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">
-          If it didn&rsquo;t, email us directly at{" "}
-          <a href={`mailto:${site.email}`} className="text-red-400 underline underline-offset-2">
-            {site.email}
-          </a>
-          .
+          We&rsquo;ll reply to the email address you gave.
         </p>
         <button
-          onClick={() => setSubmitted(false)}
-          className="mt-4 text-sm font-medium text-red-400 hover:text-red-300"
+          onClick={() => setStatus("idle")}
+          className="mt-4 min-h-11 text-sm font-medium text-red-400 hover:text-red-300"
         >
           Send another message
         </button>
@@ -68,10 +71,10 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="relative space-y-4">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Field label="Name" name="name" required />
-        <Field label="Email" name="email" type="email" required />
+        <Field label="Name" name="name" required invalid={errorField === "name"} />
+        <Field label="Email" name="email" type="email" required invalid={errorField === "email"} />
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Company" name="company" />
@@ -103,16 +106,37 @@ export function ContactForm() {
           name="message"
           rows={3}
           required
+          aria-invalid={errorField === "message" || undefined}
+          aria-describedby={errorField === "message" ? "contact-error" : undefined}
           defaultValue={prefillMessage}
-          className="w-full rounded-lg border border-border bg-surface px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10"
+          className="w-full rounded-lg border border-border bg-surface px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10 aria-invalid:border-red-500"
           placeholder="Tell us about the system, timeline, and what a good outcome looks like."
         />
       </div>
+      {/* Honeypot: hidden from people and assistive tech, filled in only by bots. */}
+      <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label htmlFor="website">Website</label>
+        <input id="website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
+
+      <div id="contact-error" role="alert" aria-live="assertive">
+        {error && (
+          <p className="rounded-lg border border-red-500/40 bg-red-500/5 px-4 py-3 text-sm text-foreground/90">
+            {error} You can also email{" "}
+            <a href={`mailto:${site.email}`} className="text-red-400 underline underline-offset-2">
+              {site.email}
+            </a>
+            .
+          </p>
+        )}
+      </div>
+
       <button
         type="submit"
-        className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-red-500 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-red-400 hover:shadow-[0_0_24px_color-mix(in_srgb,var(--red-500)_45%,transparent)] sm:w-auto"
+        disabled={status === "sending"}
+        className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-red-500 px-6 py-3 text-sm font-medium text-white transition-all duration-300 hover:bg-red-400 hover:shadow-[0_0_24px_color-mix(in_srgb,var(--red-500)_45%,transparent)] disabled:cursor-wait disabled:opacity-70 sm:w-auto"
       >
-        Send message
+        {status === "sending" ? "Sending…" : "Send message"}
       </button>
     </form>
   );
@@ -123,11 +147,13 @@ function Field({
   name,
   type = "text",
   required,
+  invalid,
 }: {
   label: string;
   name: string;
   type?: string;
   required?: boolean;
+  invalid?: boolean;
 }) {
   return (
     <div>
@@ -139,7 +165,10 @@ function Field({
         name={name}
         type={type}
         required={required}
-        className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10"
+        aria-invalid={invalid || undefined}
+        aria-describedby={invalid ? "contact-error" : undefined}
+        autoComplete={name === "email" ? "email" : name === "name" ? "name" : name === "company" ? "organization" : undefined}
+        className="w-full rounded-lg border border-border bg-surface px-4 py-2.5 text-sm text-foreground outline-none transition-colors focus:border-foreground/40 focus:ring-2 focus:ring-foreground/10 aria-invalid:border-red-500"
       />
     </div>
   );

@@ -14,6 +14,7 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "Solipher Labs is an R&D lab building patent-backed algorithms and data structures across medical imaging, high-performance infrastructure, and AI inference.",
+  alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
@@ -90,8 +91,8 @@ export default function AboutPage() {
                 <div className="rounded-2xl border border-border bg-surface p-6">
                   <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">Team</h3>
                   <p className="mt-2 text-sm text-foreground">
-                    A five-person, founder-led team, working in-house on every product and engagement on
-                    this site.
+                    Founder-built. Every product and research program on this site was designed,
+                    implemented and benchmarked by the founder.
                   </p>
                 </div>
               </FadeInView>
@@ -102,7 +103,7 @@ export default function AboutPage() {
 
       <section className="border-t border-border bg-surface py-24 sm:py-32">
         <Container>
-          <SectionHeading eyebrow="Leadership" title="Five people. Original engineering." />
+          <SectionHeading eyebrow="Leadership" title="One founder. Original engineering." />
           <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
             {site.founders.map((person, i) => (
               <FadeInView key={person.name} index={i}>

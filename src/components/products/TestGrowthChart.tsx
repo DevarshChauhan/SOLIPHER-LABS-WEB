@@ -8,7 +8,7 @@ function Bar({ point, max }: { point: TestGrowthPoint; max: number }) {
   const width = Math.max((point.tests / max) * 100, 2);
   return (
     <div className="grid grid-cols-[168px_1fr_64px] items-center gap-2.5">
-      <span className="text-right font-mono text-[11px] text-muted">{point.label}</span>
+      <span className="text-right font-mono text-xs text-muted">{point.label}</span>
       <div className="h-3 overflow-hidden rounded-sm bg-surface">
         <div
           className={`h-full rounded-sm ${point.isLatest ? "bg-red-500" : "bg-muted/40"}`}
@@ -16,7 +16,7 @@ function Bar({ point, max }: { point: TestGrowthPoint; max: number }) {
         />
       </div>
       <span
-        className={`text-right font-mono text-[11px] tabular-nums ${point.isLatest ? "text-foreground font-semibold" : "text-muted"}`}
+        className={`text-right font-mono text-xs tabular-nums ${point.isLatest ? "text-foreground font-semibold" : "text-muted"}`}
       >
         {point.tests}
       </span>
@@ -43,7 +43,7 @@ export function TestGrowthChart({
           <Bar key={p.label} point={p} max={max} />
         ))}
       </div>
-      <p className="mt-5 border-t border-border pt-4 font-mono text-[10px] text-muted">
+      <p className="mt-5 border-t border-border pt-4 font-mono text-xs text-muted">
         Every feature landed with its own new, real tests passing before the next one started, not one bulk test count claimed at the end.
       </p>
     </div>

@@ -7,6 +7,7 @@ import { site, navLinks } from "@/lib/data/site";
 const footerLinks = [
   navLinks[0],
   navLinks[1],
+  { href: "/publications", label: "Publications" },
   { href: "/products", label: "Products" },
   { href: "/services", label: "Services" },
   { href: "/internships", label: "Internships" },
@@ -21,12 +22,12 @@ export function Footer() {
         <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <Logo />
 
-          <nav className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 md:gap-y-2">
             {footerLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-foreground/70 transition-colors hover:text-red-400"
+                className="inline-flex min-h-11 items-center text-sm text-foreground/70 transition-colors hover:text-red-400 md:min-h-0"
               >
                 {link.label}
               </Link>
@@ -71,7 +72,7 @@ function SocialIcon({ href, label, children }: { href: string; label: string; ch
       target="_blank"
       rel="noopener noreferrer"
       aria-label={label}
-      className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-foreground/70 transition-colors hover:border-red-500/50 hover:text-red-400"
+      className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground/70 transition-colors hover:border-red-500/50 hover:text-red-400 md:h-8 md:w-8"
     >
       {children}
     </a>

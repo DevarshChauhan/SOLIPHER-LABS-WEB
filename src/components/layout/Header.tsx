@@ -9,6 +9,7 @@ import { Logo } from "@/components/ui/Logo";
 import { navLinks, productNavLinks, serviceNavLinks } from "@/lib/data/site";
 import { internshipNavLinks } from "@/lib/data/internships";
 import { liquidGlass, type LiquidGlassHandle } from "@/lib/liquidGlass";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
 interface NavDropdownLink {
   href: string;
@@ -32,6 +33,15 @@ export function Header() {
     setServicesOpen(false);
     setInternshipsOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   useEffect(() => {
     if (!pillRef.current) return;
@@ -126,10 +136,11 @@ export function Header() {
           </nav>
 
           <button
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full border border-border text-foreground lg:hidden"
             onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle menu"
+            aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
+            aria-controls="mobile-menu"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -139,6 +150,8 @@ export function Header() {
       <AnimatePresence>
         {open && (
           <motion.nav
+            id="mobile-menu"
+            aria-label="Main"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -205,6 +218,10 @@ export function Header() {
                     {link.label}
                   </NextLink>
                 ))}
+              </div>
+
+              <div className="mt-1 border-t border-border pt-2">
+                <ThemeToggle variant="menu" />
               </div>
             </div>
           </motion.nav>

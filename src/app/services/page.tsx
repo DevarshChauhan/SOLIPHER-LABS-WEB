@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Services",
   description:
     "Odoo ERP, custom algorithm engineering, Android and web development, custom AI/ML, business development, resource-bounded systems consulting, medical imaging pipelines, and research implementation & benchmarking for academia.",
+  alternates: { canonical: "/services" },
 };
 
 const serviceIcons: Record<string, LucideIcon> = {

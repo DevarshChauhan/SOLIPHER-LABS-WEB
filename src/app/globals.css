@@ -10,6 +10,7 @@
 
   --red-50: #fff0f0;
   --red-200: #ffb3b8;
+  --red-300: #ff8088;
   --red-400: #ff4d55;
   --red-500: #e4002b;
   --red-600: #c4001f;
@@ -36,13 +37,17 @@
   --foreground: #0a0e12;
   --muted: #52585f;
 
-  /* Light theme swaps the accent from red to an emerald-blue teal. */
+  /* Light theme swaps the accent from red to an emerald-blue teal. On a
+     white background the scale runs dark, not light: text-red-400 links
+     and white-on-red-500 buttons both need at least 4.5:1 contrast, which
+     the brighter teals (#2dd4bf is 1.8:1, #0d9488 is 3.7:1) don't give. */
   --red-50: #f0fdfa;
   --red-200: #99f6e4;
-  --red-400: #2dd4bf;
-  --red-500: #0d9488;
-  --red-600: #0f766e;
-  --red-700: #115e59;
+  --red-300: #0f766e;
+  --red-400: #115e59;
+  --red-500: #0f766e;
+  --red-600: #134e4a;
+  --red-700: #042f2e;
 }
 
 @theme inline {
@@ -55,6 +60,7 @@
 
   --color-red-50: var(--red-50);
   --color-red-200: var(--red-200);
+  --color-red-300: var(--red-300);
   --color-red-400: var(--red-400);
   --color-red-500: var(--red-500);
   --color-red-600: var(--red-600);

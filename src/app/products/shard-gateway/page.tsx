@@ -67,6 +67,7 @@ export const metadata: Metadata = {
   title: "SHARD Gateway",
   description:
     "SHARD Gateway is a reverse proxy that sits in front of vLLM and makes a real admission decision before a request reaches the GPU. What it is, how to install it, and how to get it.",
+  alternates: { canonical: "/products/shard-gateway" },
 };
 
 const cliArgs = [
@@ -186,7 +187,7 @@ export default function ShardGatewayPage() {
               <h3 className="text-sm font-semibold uppercase tracking-wider text-muted">Models under test</h3>
               <table className="mt-4 w-full min-w-[420px] border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-wider text-muted">
+                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wider text-muted">
                     <th className="pb-2 font-medium">Model</th>
                     <th className="pb-2 font-medium">Params</th>
                     <th className="pb-2 font-medium">Layers</th>
@@ -311,7 +312,7 @@ export default function ShardGatewayPage() {
             </div>
             <div className="mt-4 flex flex-wrap gap-2">
               {["Yi-9B — baseline ✓ gateway ✓ (A/B/D)", "OPT-6.7B — baseline ✓ gateway ✓ (B/D/E)", "OPT-1.3B — baseline ✓ gateway ✓ (B/D/E)", "Qwen2.5-7B — baseline ✓ gateway ✓ (A/E)"].map((s) => (
-                <span key={s} className="rounded-full border border-border bg-background px-3 py-1.5 font-mono text-[11px] text-red-400">
+                <span key={s} className="rounded-full border border-border bg-background px-3 py-1.5 font-mono text-xs text-red-400">
                   {s}
                 </span>
               ))}

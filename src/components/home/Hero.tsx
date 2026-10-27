@@ -23,7 +23,7 @@ export function Hero({
   const contentOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden pt-20 pb-24 sm:pt-28 sm:pb-32">
+    <section ref={sectionRef} className="relative overflow-hidden pt-12 pb-20 sm:pt-28 sm:pb-32">
       <motion.div style={{ y: glowY }}>
         <GridGlow />
       </motion.div>
@@ -50,7 +50,7 @@ export function Hero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted"
+          className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted sm:mt-6 sm:text-lg"
         >
           {description}
         </motion.p>
@@ -59,7 +59,7 @@ export function Hero({
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
+          className="mt-8 flex flex-col items-center justify-center gap-3 sm:mt-10 sm:flex-row sm:gap-4"
         >
           <Button href="/contact" variant="primary">
             Get a Quote <ArrowRight size={16} />

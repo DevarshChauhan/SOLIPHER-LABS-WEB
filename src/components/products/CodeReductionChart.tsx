@@ -23,7 +23,7 @@ function Row({ row, max }: { row: CodeReductionRow; max: number }) {
     <div>
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-mono text-xs font-semibold text-foreground">
-          <span className="mr-2 rounded-sm border border-border px-1 py-0.5 text-[10px] uppercase text-muted">
+          <span className="mr-2 rounded-sm border border-border px-1 py-0.5 text-xs uppercase text-muted">
             {row.lang}
           </span>
           {row.name}
@@ -38,7 +38,7 @@ function Row({ row, max }: { row: CodeReductionRow; max: number }) {
           <div className="h-2.5 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-muted/40" style={{ width: `${baselineWidth}%` }} />
           </div>
-          <span className="text-right font-mono text-[11px] tabular-nums text-muted">
+          <span className="text-right font-mono text-xs tabular-nums text-muted">
             {row.oneFile.toLocaleString()} tok
           </span>
         </div>
@@ -46,7 +46,7 @@ function Row({ row, max }: { row: CodeReductionRow; max: number }) {
           <div className="h-2.5 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-red-500" style={{ width: `${compiledWidth}%` }} />
           </div>
-          <span className="text-right font-mono text-[11px] tabular-nums text-foreground">
+          <span className="text-right font-mono text-xs tabular-nums text-foreground">
             {row.compiled.toLocaleString()} tok
           </span>
         </div>
@@ -74,7 +74,7 @@ export function CodeReductionChart({
           <Row key={r.name} row={r} max={max} />
         ))}
       </div>
-      <div className="mt-6 flex flex-wrap items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex flex-wrap items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-red-500" /> SHARD CodeContext
         </span>

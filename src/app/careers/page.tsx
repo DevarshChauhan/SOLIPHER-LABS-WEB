@@ -9,6 +9,7 @@ import { Gauge, FlaskConical, Users, Layers, Mail, ArrowRight } from "lucide-rea
 export const metadata: Metadata = {
   title: "Careers",
   description: "Work on patent-backed algorithms and data structures at Solipher Labs. No open requisitions posted right now, but we're always open to a conversation.",
+  alternates: { canonical: "/careers" },
 };
 
 const values = [

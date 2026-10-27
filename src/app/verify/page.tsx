@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Verify a Certificate",
   description:
     "Check whether a Solipher Labs internship certificate is genuine by entering the serial code printed on it.",
+  alternates: { canonical: "/verify" },
 };
 
 const inputClass =

@@ -27,7 +27,7 @@ function Bar({ row, max }: { row: RoutingCostRow; max: number }) {
         >
           {row.approach}
         </span>
-        <span className="font-mono text-[11px] tabular-nums text-muted">
+        <span className="font-mono text-xs tabular-nums text-muted">
           {total.toLocaleString()} tok total
         </span>
       </div>
@@ -42,7 +42,7 @@ function Bar({ row, max }: { row: RoutingCostRow; max: number }) {
             style={{ width: `${outputWidth}%` }}
           />
         </div>
-        <span className="text-right font-mono text-[11px] tabular-nums text-foreground">
+        <span className="text-right font-mono text-xs tabular-nums text-foreground">
           {row.input.toLocaleString()} in
         </span>
       </div>
@@ -67,7 +67,7 @@ export function RoutingCostChart({
       <div className="mt-6 space-y-7">
         {groups.map((g) => (
           <div key={g.task}>
-            <p className="mb-3 font-mono text-[11px] uppercase tracking-wider text-muted">{g.task}</p>
+            <p className="mb-3 font-mono text-xs uppercase tracking-wider text-muted">{g.task}</p>
             <div className="space-y-4">
               {g.rows.map((r) => (
                 <Bar key={r.approach} row={r} max={max} />
@@ -76,7 +76,7 @@ export function RoutingCostChart({
           </div>
         ))}
       </div>
-      <div className="mt-6 flex flex-wrap items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex flex-wrap items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-red-500/50" /> input tokens
         </span>

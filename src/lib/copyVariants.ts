@@ -7,7 +7,7 @@ export const homeVariants = [
     lead: "We solve the hard problem.",
     highlight: "We show you the number.",
     description:
-      "Solipher Labs builds patent-backed algorithms and data structures, from a high-performance data engine measured at 1.83M ops/s under real concurrency, to a capsule-endoscopy triage system evaluated on tens of thousands of real frames. We publish what problem we solved and exactly how much better the result is, not how it works.",
+      "Patent-backed algorithms and data structures, from a data engine measured at 1.83M ops/s to a capsule-endoscopy triage system evaluated on 47,161 real frames. We publish what we solved and how much better the result is.",
   },
   {
     lead: "Built to solve what",
@@ -19,7 +19,7 @@ export const homeVariants = [
     lead: "Patent-backed engineering.",
     highlight: "Numbers you can check.",
     description:
-      "Solipher Labs builds original algorithms and data structures, from a high-performance data engine measured at 1.83M ops/s under real concurrency, to a triage system evaluated on tens of thousands of real frames. We publish the result, not the recipe.",
+      "Original algorithms and data structures, from a data engine measured at 1.83M ops/s to a triage system evaluated on 47,161 real frames. We publish the result, not the recipe.",
   },
   {
     lead: "The problem gets solved.",
@@ -41,9 +41,9 @@ export const aboutVariants = [
       "Solipher Labs starts where off-the-shelf tools stop, designing the algorithm or data structure a system actually needs, then protecting and shipping it.",
   },
   {
-    title: "Five people. Original engineering.",
+    title: "One founder. Original engineering.",
     description:
-      "Solipher Labs is small on purpose. Every product on this site traces back to original, patent-backed work, not integration of someone else's tools.",
+      "Solipher Labs is small on purpose. Every product on this site traces back to original work by its founder, not integration of someone else's tools.",
   },
   {
     title: "We don't glue tools together. We build the missing piece.",

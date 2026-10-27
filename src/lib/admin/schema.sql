@@ -106,6 +106,18 @@ CREATE TABLE IF NOT EXISTS internship_applications (
 CREATE INDEX IF NOT EXISTS internship_applications_created_at_idx
   ON internship_applications(created_at DESC);
 
+-- Enquiries from the public /contact form. Created on demand by the
+-- application code as well, like internship_applications above.
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name         TEXT NOT NULL,
+  email        TEXT NOT NULL,
+  company      TEXT,
+  project_type TEXT,
+  message      TEXT NOT NULL,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- Applicants are grouped by college in the admin view, which is only
 -- meaningful because the form's college search stores one canonical
 -- spelling per institution rather than whatever the applicant typed.

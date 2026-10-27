@@ -41,7 +41,7 @@ export function ProjectSubmitForm() {
 
   if (status === "done") {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 text-center">
+      <div role="status" className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 text-center">
         <CheckCircle2 size={28} className="mx-auto text-red-500" />
         <h3 className="mt-4 text-lg font-semibold text-foreground">Project submitted.</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -88,7 +88,7 @@ export function ProjectSubmitForm() {
       </div>
 
       {error && (
-        <div className="flex items-start gap-2.5 rounded-lg border border-red-500/40 bg-red-500/5 p-3.5 text-sm text-foreground/90">
+        <div role="alert" className="flex items-start gap-2.5 rounded-lg border border-red-500/40 bg-red-500/5 p-3.5 text-sm text-foreground/90">
           <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-500" />
           <span>
             {error}{" "}

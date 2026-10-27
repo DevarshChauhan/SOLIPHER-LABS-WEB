@@ -135,6 +135,7 @@ export const metadata: Metadata = {
   title: "Solipher SHARD Context",
   description:
     "Solipher SHARD Context compiles the smallest context package that still fits your model's exact token budget, without dropping the facts marked required. Real results below, measured against a live model.",
+  alternates: { canonical: "/products/shard-context" },
 };
 
 function CodeBlock({ children }: { children: string }) {
@@ -423,7 +424,7 @@ export default function ShardContextPage() {
             <div className="mt-5 overflow-x-auto rounded-2xl border border-border bg-background p-6">
               <table className="w-full min-w-[560px] border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-border text-left font-mono text-[11px] uppercase tracking-wider text-muted">
+                  <tr className="border-b border-border text-left font-mono text-xs uppercase tracking-wider text-muted">
                     <th className="pb-2 pr-4 font-medium">Question</th>
                     <th className="pb-2 pr-4 font-medium">Ground truth</th>
                     <th className="pb-2 pr-4 font-medium">Full context</th>

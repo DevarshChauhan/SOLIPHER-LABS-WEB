@@ -25,14 +25,14 @@ function Bar({ label, us, minUs, maxUs, display, tone }: { label: string; us: nu
   const width = logWidth(us, minUs, maxUs);
   return (
     <div className="grid grid-cols-[52px_1fr_92px] items-center gap-2.5">
-      <span className="text-right font-mono text-[10px] uppercase tracking-wide text-muted">{label}</span>
+      <span className="text-right font-mono text-xs uppercase tracking-wide text-muted">{label}</span>
       <div className="h-3 overflow-hidden rounded-sm bg-surface">
         <div
           className={`h-full rounded-sm ${tone === "after" ? "bg-red-500" : "bg-muted/40"}`}
           style={{ width: `${width}%` }}
         />
       </div>
-      <span className={`text-right font-mono text-[11px] tabular-nums ${tone === "after" ? "text-foreground" : "text-muted"}`}>
+      <span className={`text-right font-mono text-xs tabular-nums ${tone === "after" ? "text-foreground" : "text-muted"}`}>
         {display}
       </span>
     </div>
@@ -61,7 +61,7 @@ export function Bm25FixChart({ title, subtitle, rows }: { title: string; subtitl
           </div>
         ))}
       </div>
-      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-muted/40" /> before the fix
         </span>
@@ -69,7 +69,7 @@ export function Bm25FixChart({ title, subtitle, rows }: { title: string; subtitl
           <span className="inline-block h-2 w-2 rounded-[1px] bg-red-500" /> after the fix
         </span>
       </div>
-      <p className="mt-3 font-mono text-[10px] text-muted">Log scale, bars are not proportional to raw value</p>
+      <p className="mt-3 font-mono text-xs text-muted">Log scale, bars are not proportional to raw value</p>
     </div>
   );
 }

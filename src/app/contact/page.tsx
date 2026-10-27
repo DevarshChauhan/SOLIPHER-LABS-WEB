@@ -14,6 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Contact",
   description: "Get a quote or start a conversation with Solipher Labs: Odoo ERP, custom AI/ML, and more.",
+  alternates: { canonical: "/contact" },
 };
 
 export default function ContactPage() {

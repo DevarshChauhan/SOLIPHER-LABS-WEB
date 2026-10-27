@@ -16,11 +16,11 @@ export const caseStudies: CaseStudy[] = [
     challenge:
       "A system needed fast exact lookups, priority-ranked retrieval, and ordered range queries over the same data, under a hard resource budget, without running three separate stores that drift out of sync.",
     outcome:
-      "The engine built from this research covers all three access patterns from one engine with a fixed, predictable resource ceiling, validated on production-grade cloud hardware.",
+      "The engine built from this research covers all three access patterns from one engine with a fixed, predictable resource ceiling, measured across five benchmark campaigns on cloud virtual machines.",
     results: [
-      "1,407 of 1,414 real benchmark runs completed exactly as intended",
-      "Throughput scaled from 54.8k to 1.83M ops/s across 1–64 concurrent threads",
-      "Overtook common alternative approaches once real contention kicked in",
+      "2,120 of 2,120 trials completed in the latest benchmark campaign",
+      "Admission check measured at 5–10 ns per put-heavy operation",
+      "Large range queries returned 1.2–7× faster than B+-tree and learned-index baselines",
     ],
     researchSlug: "h-plhf-core",
   },

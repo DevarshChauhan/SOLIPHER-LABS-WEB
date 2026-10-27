@@ -3,16 +3,19 @@ import { PageHero } from "@/components/ui/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Badge } from "@/components/ui/SectionHeading";
 import { FadeInView } from "@/components/ui/FadeInView";
+import Link from "next/link";
 import { researchProjects } from "@/lib/data/research";
+import { publications } from "@/lib/data/publications";
 import { researchVariants, pickVariant } from "@/lib/copyVariants";
-import { TrendingUp, Gauge } from "lucide-react";
+import { TrendingUp, Gauge, ArrowUpRight } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Research & Innovations",
   description:
-    "What each Solipher Labs research program solves, and exactly how much better the measured result is. Patent-backed, mechanism not disclosed.",
+    "What each Solipher Labs research program solves, and exactly how much better the measured result is, with each program's real patent and review status.",
+  alternates: { canonical: "/research" },
 };
 
 export default function ResearchPage() {
@@ -25,7 +28,9 @@ export default function ResearchPage() {
         description={hero.description}      />
 
       <div className="divide-y divide-border">
-        {researchProjects.map((project, i) => (
+        {researchProjects.map((project, i) => {
+          const paper = publications.find((p) => p.researchSlug === project.slug);
+          return (
           <section key={project.slug} id={project.slug} className="scroll-mt-24 py-20 sm:py-24">
             <Container>
               <FadeInView index={i % 3} className="grid grid-cols-1 gap-12 lg:grid-cols-[280px_1fr]">
@@ -35,11 +40,19 @@ export default function ResearchPage() {
                   <p className="mt-1 text-sm text-muted">{project.domain}</p>
                   <div className="mt-6 flex flex-wrap gap-2">
                     {project.keywords.map((kw) => (
-                      <span key={kw} className="rounded-full border border-border px-2.5 py-1 text-[11px] text-muted">
+                      <span key={kw} className="rounded-full border border-border px-2.5 py-1 text-xs text-muted">
                         {kw}
                       </span>
                     ))}
                   </div>
+                  {paper && (
+                    <Link
+                      href={`/publications#${paper.slug}`}
+                      className="mt-6 flex items-center gap-1.5 text-sm font-medium text-red-400 hover:text-red-300"
+                    >
+                      Paper: {paper.statusLabel.toLowerCase()} <ArrowUpRight size={14} />
+                    </Link>
+                  )}
                 </div>
 
                 <div>
@@ -68,7 +81,8 @@ export default function ResearchPage() {
               </FadeInView>
             </Container>
           </section>
-        ))}
+          );
+        })}
       </div>
     </>
   );

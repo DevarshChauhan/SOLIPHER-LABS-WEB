@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "Products",
   description:
     "SHARD Gateway and Solipher SHARD Context: patent-backed AI infrastructure from Solipher Labs, packaged into deployable products.",
+  alternates: { canonical: "/products" },
 };
 
 export default function ProductsPage() {

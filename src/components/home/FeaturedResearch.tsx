@@ -24,7 +24,7 @@ export function FeaturedResearch() {
           </Link>
         </div>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {featured.map((project, i) => (
             <motion.div
               key={project.slug}

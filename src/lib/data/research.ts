@@ -15,19 +15,20 @@ export interface ResearchProject {
 export const researchProjects: ResearchProject[] = [
   {
     slug: "h-plhf-core",
-    codename: "H-PLHF-Core",
+    codename: "SHARP-Core",
     domain: "High-performance data infrastructure",
-    status: "published",
-    statusLabel: "Original research, patent-backed",
+    status: "in-progress",
+    statusLabel: "Patent filed, manuscript in preparation",
     problem:
-      "Systems that need fast exact lookups, priority-ranked retrieval, and ordered range queries over the same data, under a hard resource budget, usually have to choose between one general-purpose structure that's mediocre at all three, or three separate systems that drift out of sync with each other.",
-    scale: "Validated across 1,414 real benchmark runs on production-grade cloud hardware. No simulated results.",
+      "Systems that need fast exact lookups, priority-ranked retrieval, and ordered range queries over the same data, under a hard resource budget, usually have to choose between one general-purpose structure that's mediocre at all three, or three separate systems that drift out of sync with each other. And when a budgeted index refuses an insert, it rarely records whether the budget or the structure itself was the cause.",
+    scale: "Five benchmark campaigns on cloud virtual machines, the last two with paired trials. 2,120 of 2,120 trials completed in the latest campaign. Microbenchmarks only.",
     impact: [
-      "Concurrent throughput scales from 54.8k to 1.83M operations per second across 1–64 threads, overtaking common alternative approaches once real contention kicks in.",
-      "Adds no measurable overhead on 11 of 13 tested workload patterns.",
-      "Builds a queryable snapshot 5.7×–12.5× faster than alternative approaches, with a disclosed trade-off on a different metric depending on deployment pattern.",
+      "The admission check costs 5–10 ns per put-heavy operation under identical dispatch, and at most 2 ns on read-mostly workloads.",
+      "Every refusal is attributed to one cause: in one budget sweep, 8.9 million refusals came from the budget and 16 from the probe bound, with every deferred put accounted for.",
+      "The ordered plane returns ranges of 10,000 keys or more 1.2–7× faster than an STX B+-tree, ALEX and PGM-index, at 15–36% more peak memory. Learned indexes still win point and short-range queries.",
+      "A finding that changed the design: the original owner-thread hand-off cost 78–312× the latency of the same logic run inline, and per-shard locking beat it 6–86× under concurrency, so per-shard locking is now the recommended default. libcuckoo remains up to 1.9× faster while cores are available.",
     ],
-    keywords: ["high-performance infrastructure", "resource-bounded systems", "data structures"],
+    keywords: ["high-performance infrastructure", "admission control", "data structures"],
   },
   {
     slug: "sharp-wce-v2",
@@ -61,6 +62,23 @@ export const researchProjects: ResearchProject[] = [
       "Fairness verified under concurrency: per-thread success-rate variance stayed at floating-point noise levels (under 10⁻¹⁴) across the entire 8–384 thread sweep. No tenant or thread is systematically shortchanged under load.",
     ],
     keywords: ["AI inference infrastructure", "resource-bounded systems", "admission control", "SLO scheduling"],
+  },
+  {
+    slug: "prism-cvm",
+    codename: "PRISM-CVM",
+    domain: "Security",
+    status: "in-progress",
+    statusLabel: "Under review, SN Computer Science",
+    problem:
+      "Confidential virtual machines on AMD SEV-SNP and Intel TDX hide guest memory from the host, which removes the view that hypervisor-level malware detectors rely on. The open question is whether the disk-request metadata the host must still serve (address, size, direction, time) is enough to detect ransomware.",
+    scale: "Evaluated on 530 runs of the public RanSMAP dataset with run-disjoint splits, plus request logging inside real SEV-SNP and TDX cloud guests running benign workloads.",
+    impact: [
+      "AUROC 0.981 on the same hardware and 0.966 on hardware never seen in training: level with intrusive memory-based features, and better on the unseen machine.",
+      "A three-of-five alarm rule caught every ransomware run on the unseen hardware, with 4 of 60 benign runs alarmed.",
+      "Block-request locality survives in-guest disk encryption, and a host-side collector saw every byte of guest block traffic at no measurable cost.",
+      "Stated limits: held-out REvil and WannaCry were detected in only 50% and 59% of runs, a held-out benign program raised alarms in 66% of its runs, and the dataset authors' published F-scores are not beaten.",
+    ],
+    keywords: ["confidential computing", "ransomware detection", "security"],
   },
   {
     slug: "sharp-flow",

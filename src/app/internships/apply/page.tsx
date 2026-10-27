@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Apply for an Internship",
   description:
     "Apply for an internship at Solipher Labs. Pick your domain, tell us what you've built, and we'll get back to you directly.",
+  alternates: { canonical: "/internships/apply" },
 };
 
 const whatWeLookFor = [

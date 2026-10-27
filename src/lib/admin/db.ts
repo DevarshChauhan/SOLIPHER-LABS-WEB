@@ -684,3 +684,75 @@ export async function listInternshipApplications(): Promise<InternshipApplicatio
   const res = await getPool().query("SELECT * FROM internship_applications ORDER BY created_at DESC");
   return res.rows.map(rowToApplication);
 }
+
+// --- Contact form messages ---
+
+// Same rule as internship applications: no in-memory fallback, because a
+// lost enquiry is worse than telling the sender to email instead.
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  company: string | null;
+  projectType: string | null;
+  message: string;
+  createdAt: string;
+}
+
+let contactTableReady: Promise<void> | null = null;
+function ensureContactTable(): Promise<void> {
+  if (!contactTableReady) {
+    contactTableReady = getPool()
+      .query(
+        `CREATE TABLE IF NOT EXISTS contact_messages (
+           id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+           name         TEXT NOT NULL,
+           email        TEXT NOT NULL,
+           company      TEXT,
+           project_type TEXT,
+           message      TEXT NOT NULL,
+           created_at   TIMESTAMPTZ NOT NULL DEFAULT now()
+         )`
+      )
+      .then(() => undefined)
+      .catch((err) => {
+        contactTableReady = null;
+        throw err;
+      });
+  }
+  return contactTableReady;
+}
+
+function rowToContactMessage(r: Record<string, unknown>): ContactMessage {
+  return {
+    id: r.id as string,
+    name: r.name as string,
+    email: r.email as string,
+    company: (r.company as string | null) ?? null,
+    projectType: (r.project_type as string | null) ?? null,
+    message: r.message as string,
+    createdAt: (r.created_at as Date).toISOString(),
+  };
+}
+
+export async function createContactMessage(input: {
+  name: string;
+  email: string;
+  company: string | null;
+  projectType: string | null;
+  message: string;
+}): Promise<ContactMessage> {
+  await ensureContactTable();
+  const res = await getPool().query(
+    `INSERT INTO contact_messages (name, email, company, project_type, message)
+     VALUES ($1, $2, $3, $4, $5) RETURNING *`,
+    [input.name, input.email, input.company, input.projectType, input.message]
+  );
+  return rowToContactMessage(res.rows[0]);
+}
+
+export async function listContactMessages(): Promise<ContactMessage[]> {
+  await ensureContactTable();
+  const res = await getPool().query("SELECT * FROM contact_messages ORDER BY created_at DESC");
+  return res.rows.map(rowToContactMessage);
+}

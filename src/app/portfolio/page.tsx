@@ -13,6 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Portfolio",
   description: "Case studies from Solipher Labs' engineering: the problem, and exactly how much the result moved.",
+  alternates: { canonical: "/portfolio" },
 };
 
 export default function PortfolioPage() {

@@ -15,7 +15,7 @@ function StackedBar({ row }: { row: ModelPortabilityRow }) {
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <span className="font-mono text-xs font-semibold text-foreground">{row.model}</span>
-          <span className="ml-2 text-[11px] text-muted">{row.vendor}</span>
+          <span className="ml-2 text-xs text-muted">{row.vendor}</span>
         </div>
         <span className="font-mono text-xs font-semibold text-red-400">
           {row.correct}/{row.total} correct
@@ -27,7 +27,7 @@ function StackedBar({ row }: { row: ModelPortabilityRow }) {
           <div className="h-full bg-muted/30" style={{ width: `${rateLimitedPct}%` }} />
         </div>
       </div>
-      {row.note && <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{row.note}</p>}
+      {row.note && <p className="mt-1.5 text-xs leading-relaxed text-muted">{row.note}</p>}
     </div>
   );
 }
@@ -42,7 +42,7 @@ export function ModelPortabilityChart({ title, subtitle, rows }: { title: string
           <StackedBar key={r.model} row={r} />
         ))}
       </div>
-      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-red-500" /> correct selection
         </span>
@@ -50,7 +50,7 @@ export function ModelPortabilityChart({ title, subtitle, rows }: { title: string
           <span className="inline-block h-2 w-2 rounded-[1px] bg-muted/30" /> rate limited (429), not a wrong answer
         </span>
       </div>
-      <p className="mt-3 font-mono text-[10px] text-muted">Zero incorrect selections across any model, any scenario</p>
+      <p className="mt-3 font-mono text-xs text-muted">Zero incorrect selections across any model, any scenario</p>
     </div>
   );
 }

@@ -88,7 +88,7 @@ export function ApplicationForm() {
 
   if (status === "done") {
     return (
-      <div className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 text-center">
+      <div role="status" className="rounded-2xl border border-red-500/30 bg-red-500/5 p-8 text-center">
         <CheckCircle2 size={28} className="mx-auto text-red-500" />
         <h3 className="mt-4 text-lg font-semibold text-foreground">Application received.</h3>
         <p className="mt-2 text-sm leading-relaxed text-muted">
@@ -293,7 +293,7 @@ export function ApplicationForm() {
               {checkingCoupon ? "Checking…" : coupon ? "Remove" : "Apply"}
             </button>
           </div>
-          {couponError && <p className="mt-1.5 text-xs text-red-400">{couponError}</p>}
+          {couponError && <p role="alert" className="mt-1.5 text-xs text-red-400">{couponError}</p>}
           <p className="mt-1.5 text-xs text-muted">Apply your coupon before paying, so you pay the right amount.</p>
         </div>
 
@@ -323,7 +323,7 @@ export function ApplicationForm() {
       </div>
 
       {error && (
-        <div className="flex items-start gap-2.5 rounded-lg border border-red-500/40 bg-red-500/5 p-3.5 text-sm text-foreground/90">
+        <div role="alert" className="flex items-start gap-2.5 rounded-lg border border-red-500/40 bg-red-500/5 p-3.5 text-sm text-foreground/90">
           <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-500" />
           <span>
             {error}{" "}

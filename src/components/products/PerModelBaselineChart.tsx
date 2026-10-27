@@ -17,7 +17,7 @@ function ModelGroup({ row }: { row: PerModelBaselineRow }) {
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <span className="font-mono text-xs font-semibold text-foreground">{row.model}</span>
-          <span className="ml-2 text-[11px] text-muted">{row.vendor}</span>
+          <span className="ml-2 text-xs text-muted">{row.vendor}</span>
         </div>
         <span className="font-mono text-xs text-muted">{row.note}</span>
       </div>
@@ -26,7 +26,7 @@ function ModelGroup({ row }: { row: PerModelBaselineRow }) {
           <div className="h-3 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-muted/40" style={{ width: "100%" }} />
           </div>
-          <div className="mt-1 flex justify-between font-mono text-[10px] text-muted">
+          <div className="mt-1 flex justify-between font-mono text-xs text-muted">
             <span>baseline</span>
             <span>{BASELINE_PCT}%</span>
           </div>
@@ -38,7 +38,7 @@ function ModelGroup({ row }: { row: PerModelBaselineRow }) {
               style={{ width: `${Math.max(row.contextPct, 2)}%` }}
             />
           </div>
-          <div className="mt-1 flex justify-between font-mono text-[10px] text-red-400">
+          <div className="mt-1 flex justify-between font-mono text-xs text-red-400">
             <span>SHARD Context</span>
             <span>{row.contextPct}%</span>
           </div>
@@ -58,7 +58,7 @@ export function PerModelBaselineChart({ title, subtitle, rows }: { title: string
           <ModelGroup key={r.model} row={r} />
         ))}
       </div>
-      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-[11px] text-muted">
+      <div className="mt-6 flex items-center gap-5 border-t border-border pt-4 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-muted/40" /> baseline, every offline approach, fixed
         </span>

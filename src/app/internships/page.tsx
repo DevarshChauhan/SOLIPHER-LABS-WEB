@@ -32,6 +32,7 @@ export const metadata: Metadata = {
   title: "Internships",
   description:
     "Internship programs at Solipher Labs across web development, app development, Python, Java, C++, AI, machine learning, data science, cloud computing, UI/UX design, and digital marketing.",
+  alternates: { canonical: "/internships" },
 };
 
 const domainIcons: Record<string, LucideIcon> = {

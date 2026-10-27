@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Submit Your Internship Project",
   description:
     "Finishing your Solipher Labs internship? Submit your project repository against your intern code to have your certificate issued.",
+  alternates: { canonical: "/internships/submit" },
 };
 
 const steps = [

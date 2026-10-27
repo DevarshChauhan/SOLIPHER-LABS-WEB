@@ -113,6 +113,7 @@ export const metadata: Metadata = {
   title: "Solipher SHARD CodeContext",
   description:
     "Solipher SHARD CodeContext compiles the minimal slice of a repository a coding task actually needs, under a hard token budget, with every span traceable to the reason it was included. Real measured results below.",
+  alternates: { canonical: "/products/shard-codecontext" },
 };
 
 function CodeBlock({ children }: { children: string }) {
@@ -232,7 +233,7 @@ codecontext compile --task "write a memoized fibonacci function"
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {envSpecs.map((s) => (
               <div key={s.k} className="rounded-xl border border-border bg-background p-4">
-                <p className="font-mono text-[11px] uppercase tracking-wider text-muted">{s.k}</p>
+                <p className="font-mono text-xs uppercase tracking-wider text-muted">{s.k}</p>
                 <p className="mt-1.5 text-sm leading-relaxed text-foreground/90">{s.v}</p>
               </div>
             ))}

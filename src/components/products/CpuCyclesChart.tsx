@@ -18,11 +18,11 @@ function Bar({ label, value, max, display }: { label: string; value: number; max
   const width = Math.max((value / max) * 100, 2);
   return (
     <div className="grid grid-cols-[88px_1fr_110px] items-center gap-2.5">
-      <span className="text-right font-mono text-[10px] uppercase tracking-wide text-muted">{label}</span>
+      <span className="text-right font-mono text-xs uppercase tracking-wide text-muted">{label}</span>
       <div className="h-3 overflow-hidden rounded-sm bg-surface">
         <div className="h-full rounded-sm bg-red-500" style={{ width: `${width}%` }} />
       </div>
-      <span className="text-right font-mono text-[11px] tabular-nums text-foreground">{display}</span>
+      <span className="text-right font-mono text-xs tabular-nums text-foreground">{display}</span>
     </div>
   );
 }
@@ -48,7 +48,7 @@ export function CpuCyclesChart({ title, subtitle, data }: { title: string; subti
         </span>
         <span className="font-mono text-xs text-muted">{data.iterations.toLocaleString()} compile() calls</span>
       </div>
-      <p className="mt-3 font-mono text-[10px] text-muted">{data.environment}</p>
+      <p className="mt-3 font-mono text-xs text-muted">{data.environment}</p>
     </div>
   );
 }

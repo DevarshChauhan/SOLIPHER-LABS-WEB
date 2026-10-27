@@ -26,7 +26,7 @@ function DualBar({
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <span className="font-mono text-xs font-semibold text-foreground">{row.model}</span>
-          <span className="ml-2 text-[11px] text-muted">{row.vendor}</span>
+          <span className="ml-2 text-xs text-muted">{row.vendor}</span>
         </div>
         <span className={`font-mono text-xs font-semibold ${better ? "text-red-400" : "text-muted"}`}>
           {row.context < row.baseline ? "-" : "+"}{delta.toFixed(0)}% vs baseline
@@ -34,21 +34,21 @@ function DualBar({
       </div>
       <div className="mt-2 space-y-1">
         <div className="grid grid-cols-[46px_1fr_90px] items-center gap-2.5">
-          <span className="text-right font-mono text-[10px] uppercase tracking-wide text-muted">base</span>
+          <span className="text-right font-mono text-xs uppercase tracking-wide text-muted">base</span>
           <div className="h-3 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-muted/40" style={{ width: `${baseWidth}%` }} />
           </div>
-          <span className="text-right font-mono text-[11px] tabular-nums text-muted">{fmt(row.baseline)}</span>
+          <span className="text-right font-mono text-xs tabular-nums text-muted">{fmt(row.baseline)}</span>
         </div>
         <div className="grid grid-cols-[46px_1fr_90px] items-center gap-2.5">
-          <span className="text-right font-mono text-[10px] uppercase tracking-wide text-muted">ctx</span>
+          <span className="text-right font-mono text-xs uppercase tracking-wide text-muted">ctx</span>
           <div className="h-3 overflow-hidden rounded-sm bg-surface">
             <div className="h-full rounded-sm bg-red-500" style={{ width: `${ctxWidth}%` }} />
           </div>
-          <span className="text-right font-mono text-[11px] tabular-nums text-red-400">{fmt(row.context)}</span>
+          <span className="text-right font-mono text-xs tabular-nums text-red-400">{fmt(row.context)}</span>
         </div>
       </div>
-      <p className="mt-1 font-mono text-[10px] text-muted">n={row.n} per condition</p>
+      <p className="mt-1 font-mono text-xs text-muted">n={row.n} per condition</p>
     </div>
   );
 }
@@ -77,7 +77,7 @@ export function PerModelPerfChart({
           <DualBar key={r.model} row={r} max={max} fmt={fmt} lowerIsBetter={lowerIsBetter} />
         ))}
       </div>
-      <div className="mt-4 flex items-center gap-5 border-t border-border pt-3 font-mono text-[10px] text-muted">
+      <div className="mt-4 flex items-center gap-5 border-t border-border pt-3 font-mono text-xs text-muted">
         <span className="flex items-center gap-1.5">
           <span className="inline-block h-2 w-2 rounded-[1px] bg-muted/40" /> baseline, full 6-document context
         </span>
